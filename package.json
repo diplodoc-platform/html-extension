@@ -1,12 +1,12 @@
 {
-  "name": "@diplodoc/package-template",
+  "name": "@diplodoc/html-extension",
   "version": "1.0.0",
   "description": "Template package for Diplodoc platform development",
   "main": "index.js",
   "homepage": "https://diplodoc.com/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/diplodoc-platform/package-template.git"
+    "url": "git+https://github.com/diplodoc-platform/html-extension.git"
   },
   "bugs": {
     "url": "https://github.com/diplodoc-platform/diplodoc/issues"
