@@ -17,3 +17,4 @@ index.d.ts
 *.d.ts
 example/package-lock.json
 example/build
+example/node_modules

@@ -144,27 +144,5 @@ Example with some styles:
 You can use the React hook to interact programmatically with the HTML content inside the block.
 
 ```TypeScript
-import React, { useEffect } from 'react'
-import {useDiplodocHtml, HTMLBlock} from '@diplodoc/html-extension/react';
-
-export const App: React.FC = () => {
-    const selectTabHandler = useCallback<UseDiplodocTabsCallback>(
-        (html: HTMLBlock, currentTabId?: string) => {
-            const {group, key} = tab;
-            // Group could be empty
-            if (group) {
-                // ...
-            }
-        },
-        [],
-    );
-
-    const {selectTab, selectTabById} = useDiplodocTabs(selectTabHandler);
-
-    useEffect(() => {
-        selectTab({ group: 'group_1', key: 'my-key' });
-        // selectTabById('my-key-2');
-    }, [selectTab, selectTabById]);
-
-}
+// TODO
 ```

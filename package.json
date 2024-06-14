@@ -28,8 +28,6 @@
     "url": "https://github.com/diplodoc-platform/diplodoc/issues"
   },
   "private": true,
-  "author": "",
-  "license": "MIT",
   "scripts": {
     "build": "run-p build:*",
     "build:js": "./esbuild/build.mjs",
@@ -59,11 +57,14 @@
   "devDependencies": {
     "@diplodoc/eslint-config": "^2.0.0",
     "@diplodoc/prettier-config": "^2.0.0",
+    "@diplodoc/transform": "^4.19.0",
     "@diplodoc/tsconfig": "^1.0.2",
+    "@gravity-ui/uikit": "^6.17.0",
     "@types/github-slugger": "^1.3.0",
     "@types/jest": "^29.5.2",
     "@types/markdown-it": "^13.0.0",
     "@types/react": "^18.2.14",
+    "@types/sanitize-html": "^2.9.3",
     "esbuild": "^0.19.9",
     "esbuild-sass-plugin": "^2.10.0",
     "github-slugger": "^1.5.0",
@@ -71,7 +72,9 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.7.0",
     "markdown-it": "^13.0.1",
+    "markdown-it-directive": "^2.0.1",
     "npm-run-all": "^4.1.5",
+    "sanitize-html": "^2.11.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.3.3"
   }
