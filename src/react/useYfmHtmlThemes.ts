@@ -1,9 +1,9 @@
 import {DependencyList, RefObject, useEffect} from 'react';
 
-import {useThemeValue} from '@gravity-ui/uikit';
+// import {useThemeValue} from '@gravity-ui/uikit';
 
 export function useYfmHtmlThemes(ref: RefObject<HTMLElement>, deps: DependencyList) {
-    const theme = useThemeValue();
+    const theme = 'dark'; // FIXME: debug only
 
     useEffect(() => {
         if (!ref.current) return;

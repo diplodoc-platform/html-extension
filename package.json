@@ -57,9 +57,7 @@
   "devDependencies": {
     "@diplodoc/eslint-config": "^2.0.0",
     "@diplodoc/prettier-config": "^2.0.0",
-    "@diplodoc/transform": "^4.19.0",
     "@diplodoc/tsconfig": "^1.0.2",
-    "@gravity-ui/uikit": "^6.17.0",
     "@types/github-slugger": "^1.3.0",
     "@types/jest": "^29.5.2",
     "@types/markdown-it": "^13.0.0",

@@ -1,14 +1,14 @@
 import transform from '@diplodoc/transform';
-import tabs from '@diplodoc/tabs-extension';
+import htmlPlugin from '@diplodoc/html-extension';
 
 import {readFile} from 'node:fs/promises';
 
 (async () => {
-    const content = await readFile('./Readme.md', 'utf8');
+    const content = await readFile('./README.md', 'utf8');
     const {result} = await transform(content, {
         output: './build',
         plugins: [
-            tabs.transform({
+            htmlPlugin.transform({
                 bundle: true,
             }),
         ],

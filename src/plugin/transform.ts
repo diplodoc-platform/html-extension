@@ -1,6 +1,6 @@
 import MarkdownIt, {PluginSimple} from 'markdown-it';
 
-import {defaultSanitize} from './utils';
+import {addHiddenProperty, defaultSanitize} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin, {DirectiveBlockHandler} from 'markdown-it-directive';
 import type {MarkdownItWithDirectives} from 'markdown-it-directive';
@@ -37,7 +37,7 @@ export function transform({
     containerClasses = '',
     bundle = true,
     sanitize = defaultSanitize,
-    shouldUseSanitize = true,
+    shouldUseSanitize = false,
     shouldUseIframe = true,
 }: Partial<PluginOptions> = empty) {
     return function html(md: MarkdownIt, options?: TransformOptions) {
@@ -49,6 +49,8 @@ export function transform({
             }
 
             const {env} = state;
+
+            addHiddenProperty(env, 'bundled', new Set<string>());
 
             const tag = shouldUseIframe ? 'iframe' : 'div';
             const token = state.push(TOKEN_TYPE, tag, 0);
