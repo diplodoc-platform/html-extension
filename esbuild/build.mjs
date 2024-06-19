@@ -46,7 +46,7 @@ build({
     entryPoints: ['src/plugin/index.ts'],
     outfile: 'plugin/index.js',
     platform: 'node',
-    external: ['markdown-it', 'node:*'],
+    packages: 'external',
     define: {
         PACKAGE: JSON.stringify(packageJson.name),
     },

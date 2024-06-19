@@ -1,9 +1,9 @@
-import MarkdownIt, {PluginSimple} from 'markdown-it';
+import type {PluginSimple, PluginWithOptions} from 'markdown-it';
 
 import {addHiddenProperty, defaultSanitize} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
-import directivePlugin, {DirectiveBlockHandler} from 'markdown-it-directive';
-import type {MarkdownItWithDirectives} from 'markdown-it-directive';
+import directivePlugin from 'markdown-it-directive';
+import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
 
 export const TOKEN_TYPE = 'yfm_html_block';
 export const HTML_CLASSNAME = 'yfm-html';
@@ -39,8 +39,8 @@ export function transform({
     sanitize = defaultSanitize,
     shouldUseSanitize = false,
     shouldUseIframe = true,
-}: Partial<PluginOptions> = empty) {
-    return function html(md: MarkdownIt, options?: TransformOptions) {
+}: Partial<PluginOptions> = empty): PluginWithOptions<TransformOptions> {
+    return function html(md, options) {
         const {output = '.'} = options || {};
 
         const plugin: DirectiveBlockHandler = ({state, content}) => {
