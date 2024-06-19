@@ -1,15 +1,20 @@
 import transform from '@diplodoc/transform';
 import htmlPlugin from '@diplodoc/html-extension';
 
-import {readFile} from 'node:fs/promises';
+import {readFile, writeFile} from 'node:fs/promises';
+import {exec} from 'node:child_process';
+import {promisify} from 'node:util';
 
 (async () => {
     const content = await readFile('./README.md', 'utf8');
     const {result} = await transform(content, {
+        needToSanitizeHtml: false,
         output: './build',
         plugins: [
             htmlPlugin.transform({
                 bundle: true,
+                shouldUseIframe: true,
+                shouldUseSanitize: false,
             }),
         ],
     });
@@ -17,8 +22,8 @@ import {readFile} from 'node:fs/promises';
     const html = `
 <html>
     <head>
-        ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`)}
-        ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`)}
+        ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`).join('\n')}
+        ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`).join('\n')}
     </head>
     <body>
         ${result.html}
@@ -26,6 +31,6 @@ import {readFile} from 'node:fs/promises';
 </html>
     `;
 
-    // eslint-disable-next-line no-console
-    console.log(html);
+    await writeFile('./build/index.html', html);
+    await promisify(exec)('open build/index.html');
 })();

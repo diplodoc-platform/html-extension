@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node . 1> build/index.html; open build/index.html"
+    "start": "node ."
   },
   "dependencies": {
     "@diplodoc/html-extension": "file:..",

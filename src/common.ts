@@ -1,4 +1,4 @@
-import {HtmlController} from './runtime/HtmlController';
+import type {HtmlController} from './runtime/HtmlController';
 
 export const GLOBAL_SYMBOL: unique symbol = Symbol.for('diplodocHtml');
 
