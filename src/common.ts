@@ -8,7 +8,7 @@ declare global {
     }
 }
 
-export const HTML_CLASSNAME = 'yfm-html';
+export const BLOCK_NAME = 'yfm-html';
 export const HTML_DATA_ID = 'data-diplodoc-id';
 export const HTML_DATA_KEY = 'data-diplodoc-key';
 

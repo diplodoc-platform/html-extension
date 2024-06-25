@@ -4,8 +4,10 @@ import {addHiddenProperty, defaultSanitize} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
+import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
 import {generateID} from '@diplodoc/transform/lib/plugins/utils';
-import {HTML_CLASSNAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
+
+const generateHtmlBlockId = () => `${BLOCK_NAME}-${generateID()}`
 
 export const TokenAttr = {
     class: 'class',
@@ -56,17 +58,17 @@ export function transform({
 
             const tag = shouldUseIframe ? 'iframe' : 'div';
             const token = state.push(TOKEN_TYPE, tag, 0);
-            const htmlBlockId = generateID();
+            const htmlBlockId = generateHtmlBlockId();
 
             token.block = true;
             token.attrSet(
                 TokenAttr.class,
-                [HTML_CLASSNAME, containerClasses, `${HTML_CLASSNAME}-${htmlBlockId}`].filter(Boolean).join(' '),
+                [BLOCK_NAME, containerClasses].filter(Boolean).join(' '),
             );
 
             if (shouldUseIframe) {
                 token.attrPush([TokenAttr.dataId, htmlBlockId]);
-                token.attrPush([TokenAttr.dataKey, 'html-block']);
+                token.attrPush([TokenAttr.dataKey, BLOCK_NAME]);
                 token.attrPush([TokenAttr.frameborder, '0']);
                 token.attrPush([TokenAttr.id, htmlBlockId]);
                 token.attrPush([TokenAttr.style, 'width:100%']);
