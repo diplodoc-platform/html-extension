@@ -1,18 +1,20 @@
-import type {PluginSimple, PluginWithOptions} from 'markdown-it';
+import type {PluginWithOptions} from 'markdown-it';
 
 import {addHiddenProperty, defaultSanitize} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
-
-export const TOKEN_TYPE = 'yfm_html_block';
-export const HTML_CLASSNAME = 'yfm-html';
+import {generateID} from '@diplodoc/transform/lib/plugins/utils';
+import {HTML_CLASSNAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
 
 export const TokenAttr = {
     class: 'class',
+    dataId: HTML_DATA_ID,
+    dataKey: HTML_DATA_KEY,
     frameborder: 'frameborder',
-    style: 'style',
+    id: 'id',
     srcdoc: 'srcdoc',
+    style: 'style',
 } as const;
 
 export type PluginOptions = {
@@ -29,7 +31,7 @@ type TransformOptions = {
     output?: string;
 };
 
-const empty = {};
+const emptyOptions = {};
 
 export function transform({
     runtimeJsPath = '_assets/html-extension.js',
@@ -39,7 +41,7 @@ export function transform({
     sanitize = defaultSanitize,
     shouldUseSanitize = false,
     shouldUseIframe = true,
-}: Partial<PluginOptions> = empty): PluginWithOptions<TransformOptions> {
+}: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
 
@@ -54,14 +56,19 @@ export function transform({
 
             const tag = shouldUseIframe ? 'iframe' : 'div';
             const token = state.push(TOKEN_TYPE, tag, 0);
+            const htmlBlockId = generateID();
+
             token.block = true;
             token.attrSet(
                 TokenAttr.class,
-                [HTML_CLASSNAME, containerClasses].filter(Boolean).join(' '),
+                [HTML_CLASSNAME, containerClasses, `${HTML_CLASSNAME}-${htmlBlockId}`].filter(Boolean).join(' '),
             );
 
             if (shouldUseIframe) {
+                token.attrPush([TokenAttr.dataId, htmlBlockId]);
+                token.attrPush([TokenAttr.dataKey, 'html-block']);
                 token.attrPush([TokenAttr.frameborder, '0']);
+                token.attrPush([TokenAttr.id, htmlBlockId]);
                 token.attrPush([TokenAttr.style, 'width:100%']);
             }
 
@@ -84,7 +91,7 @@ export function transform({
         };
 
         // the directives plugin must be enabled
-        md.use(directivePlugin as PluginSimple);
+        md.use(directivePlugin);
 
         const mdDir = md as MarkdownItWithDirectives;
         mdDir.blockDirectives['html'] = plugin;
