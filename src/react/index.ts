@@ -1,1 +1,1 @@
-export {useYfmHtmlThemes} from './useYfmHtmlThemes';
+export {useYfmHtml} from './useYfmHtml';

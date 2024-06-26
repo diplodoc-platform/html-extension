@@ -7,7 +7,7 @@ import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-
 import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
 import {generateID} from '@diplodoc/transform/lib/plugins/utils';
 
-const generateHtmlBlockId = () => `${BLOCK_NAME}-${generateID()}`
+const generateHtmlBlockId = () => `${BLOCK_NAME}-${generateID()}`;
 
 export const TokenAttr = {
     class: 'class',

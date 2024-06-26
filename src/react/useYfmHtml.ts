@@ -2,11 +2,13 @@ import {DependencyList, RefObject, useEffect} from 'react';
 
 // import {useThemeValue} from '@gravity-ui/uikit';
 
-export function useYfmHtmlThemes(ref: RefObject<HTMLElement>, deps: DependencyList) {
+export function useYfmHtml(ref: RefObject<HTMLElement>, deps: DependencyList) {
     const theme = 'dark'; // FIXME: debug only
 
     useEffect(() => {
-        if (!ref.current) return;
+        if (!ref.current) {
+            return;
+        }
 
         const htmlBlocks = ref.current.querySelectorAll<HTMLIFrameElement>('iframe.yfm_html');
 
