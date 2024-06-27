@@ -6,7 +6,15 @@
 /build
 /coverage
 /node_modules
+/runtime
+/plugin
+/react
 
 # libraries
 npm-debug.log
 
+index.d.ts
+*.d.ts
+example/package-lock.json
+example/build
+example/node_modules
