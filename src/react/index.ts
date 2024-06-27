@@ -1,1 +1,1 @@
-export {useYfmHtml} from './useYfmHtml';
+export {useDiplodocHtml} from './useDiplodocHtml';

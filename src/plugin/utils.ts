@@ -16,24 +16,3 @@ export function addHiddenProperty<
 
     return box as B & {[P in F]: V};
 }
-
-export const resizeIframeToFitContent = (iframe: HTMLIFrameElement): void => {
-    if (iframe.contentWindow) {
-        iframe.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-};
-
-export const isHTMLElement = (node: Node): node is HTMLElement =>
-    node.nodeType === Node.ELEMENT_NODE;
-export const isIFrame = (
-    element?: HTMLElement | EventTarget | null,
-): element is HTMLIFrameElement =>
-    element !== undefined &&
-    element instanceof Element &&
-    element.tagName.toLowerCase() === 'iframe';
-
-export const setIframeStyles = (block: HTMLIFrameElement, styles: Record<string, string>) => {
-    Object.keys(styles).forEach((property) => {
-        block.contentWindow?.document.body.style.setProperty(property, styles[property]);
-    });
-};

@@ -82,8 +82,12 @@ export function transform({
             env.meta = env.meta || {};
             env.meta.script = env.meta.script || [];
             env.meta.style = env.meta.style || [];
-            env.meta.script.push(runtimeJsPath);
-            env.meta.style.push(runtimeCssPath);
+            if (!env.meta.script.includes(runtimeJsPath)) {
+                env.meta.script.push(runtimeJsPath);
+            }
+            if (!env.meta.style.includes(runtimeCssPath)) {
+                env.meta.style.push(runtimeCssPath);
+            }
 
             if (bundle) {
                 copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
