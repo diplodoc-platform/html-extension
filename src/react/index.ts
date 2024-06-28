@@ -1,0 +1,1 @@
+export {useDiplodocHtml} from './useDiplodocHtml';

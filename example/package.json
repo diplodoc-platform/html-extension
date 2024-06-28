@@ -1,0 +1,12 @@
+{
+  "name": "@diplodoc/html-extension-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "@diplodoc/html-extension": "file:..",
+    "@diplodoc/transform": "*"
+  }
+}
