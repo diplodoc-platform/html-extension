@@ -1,4 +1,4 @@
-import {BLOCK_NAME} from '../common';
+import {BLOCK_NAME, HTMLControllerForEachCallback, IHtmlIFrameController} from '../common';
 import {
     QueueManager,
     createQueueWithWait,
@@ -8,29 +8,9 @@ import {
     setIframeStyles,
 } from './utils';
 
-const IFRAME_TAG = 'iframe';
-
-export type HTMLControllerForEachCallback = (
-    block: HtmlDivController | HtmlIFrameController,
-) => void;
-
-export class HtmlDivController {
-    private _block: HTMLDivElement;
-
-    constructor(div: HTMLDivElement) {
-        this._block = div;
-    }
-
-    get block() {
-        return this._block;
-    }
-
-    execute() {}
-}
-
-export class HtmlIFrameController {
+export class HtmlIFrameController implements IHtmlIFrameController {
     private _block: HTMLIFrameElement;
-    private _queueManager: QueueManager<HtmlIFrameController>;
+    private _queueManager: QueueManager<IHtmlIFrameController>;
 
     constructor(iframe: HTMLIFrameElement) {
         this._block = iframe;
@@ -52,7 +32,7 @@ export class HtmlIFrameController {
         return this._block;
     }
 
-    execute(callback: (controller: HtmlIFrameController) => void) {
+    execute(callback: (controller: IHtmlIFrameController) => void) {
         this._queueManager.push(callback);
     }
 
@@ -70,7 +50,7 @@ export class HtmlIFrameController {
 }
 
 export class HtmlController {
-    private _blocks: Map<string, HtmlDivController | HtmlIFrameController> = new Map();
+    private _blocks: Map<string, HtmlIFrameController> = new Map();
     private _document: Document;
 
     constructor(document: Document) {
@@ -82,7 +62,7 @@ export class HtmlController {
         this._document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded);
     }
 
-    get blocks(): (HtmlDivController | HtmlIFrameController)[] {
+    get blocks(): HtmlIFrameController[] {
         return Array.from(this._blocks.values());
     }
 
@@ -103,17 +83,10 @@ export class HtmlController {
                 const {diplodocKey, diplodocId = ''} = block.dataset;
 
                 if (diplodocKey === BLOCK_NAME) {
-                    if (block.tagName.toLowerCase() === IFRAME_TAG) {
-                        this._blocks.set(
-                            diplodocId,
-                            new HtmlIFrameController(block as HTMLIFrameElement),
-                        );
-                    } else {
-                        this._blocks.set(
-                            diplodocId,
-                            new HtmlDivController(block as HTMLDivElement),
-                        );
-                    }
+                    this._blocks.set(
+                        diplodocId,
+                        new HtmlIFrameController(block as HTMLIFrameElement),
+                    );
                 }
             }
         }
@@ -134,9 +107,6 @@ export class HtmlController {
         // filter and collect only clear blocks (with correct data attribute)
         this._createBlocks(dirtyBlocks);
     }
-
-    // ------------------------------
-    // listeners
 
     private _onDOMContentLoaded() {
         this._initialize();

@@ -1,6 +1,6 @@
 import type {PluginWithOptions} from 'markdown-it';
 
-import {addHiddenProperty, defaultSanitize} from './utils';
+import {addHiddenProperty} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
@@ -21,12 +21,9 @@ export const TokenAttr = {
 
 export type PluginOptions = {
     runtimeJsPath: string;
-    runtimeCssPath: string;
     containerClasses: string;
     bundle: boolean;
-    sanitize: (dirtyHtml: string) => string;
-    shouldUseSanitize: boolean;
-    shouldUseIframe: boolean;
+    sanitize?: (dirtyHtml: string) => string;
 };
 
 type TransformOptions = {
@@ -34,15 +31,13 @@ type TransformOptions = {
 };
 
 const emptyOptions = {};
+const TAG = 'iframe';
 
 export function transform({
     runtimeJsPath = '_assets/html-extension.js',
-    runtimeCssPath = '_assets/html-extension.css',
     containerClasses = '',
     bundle = true,
-    sanitize = defaultSanitize,
-    shouldUseSanitize = false,
-    shouldUseIframe = true,
+    sanitize,
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
@@ -56,8 +51,7 @@ export function transform({
 
             addHiddenProperty(env, 'bundled', new Set<string>());
 
-            const tag = shouldUseIframe ? 'iframe' : 'div';
-            const token = state.push(TOKEN_TYPE, tag, 0);
+            const token = state.push(TOKEN_TYPE, TAG, 0);
             const htmlBlockId = generateHtmlBlockId();
 
             token.block = true;
@@ -66,17 +60,12 @@ export function transform({
                 [BLOCK_NAME, containerClasses].filter(Boolean).join(' '),
             );
 
-            if (shouldUseIframe) {
-                token.attrPush([TokenAttr.dataId, htmlBlockId]);
-                token.attrPush([TokenAttr.dataKey, BLOCK_NAME]);
-                token.attrPush([TokenAttr.frameborder, '0']);
-                token.attrPush([TokenAttr.id, htmlBlockId]);
-                token.attrPush([TokenAttr.style, 'width:100%']);
-            }
-
-            const resultHtml = shouldUseSanitize ? sanitize(content) : content;
-
-            token.attrPush([TokenAttr.srcdoc, resultHtml]);
+            token.attrPush([TokenAttr.dataId, htmlBlockId]);
+            token.attrPush([TokenAttr.dataKey, BLOCK_NAME]);
+            token.attrPush([TokenAttr.frameborder, '0']);
+            token.attrPush([TokenAttr.id, htmlBlockId]);
+            token.attrPush([TokenAttr.style, 'width:100%']);
+            token.attrPush([TokenAttr.srcdoc, content]);
 
             // TODO: use collect
             env.meta = env.meta || {};
@@ -85,12 +74,9 @@ export function transform({
             if (!env.meta.script.includes(runtimeJsPath)) {
                 env.meta.script.push(runtimeJsPath);
             }
-            if (!env.meta.style.includes(runtimeCssPath)) {
-                env.meta.style.push(runtimeCssPath);
-            }
 
             if (bundle) {
-                copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
+                copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
             }
 
             return true;
@@ -103,7 +89,10 @@ export function transform({
         mdDir.blockDirectives['html'] = plugin;
         mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
-            return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
+            const rendered = self.renderAttrs(token);
+            const resultRendered = sanitize ? sanitize(rendered) : rendered;
+
+            return `<${token.tag}${resultRendered}></${token.tag}>`;
         };
     };
 }

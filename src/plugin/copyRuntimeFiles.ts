@@ -1,17 +1,17 @@
 const PATH_TO_RUNTIME = '../runtime';
 
+interface CopyRuntimeFilesPaths {
+    runtimeJsPath: string;
+    output: string;
+}
+
 export function copyRuntimeFiles(
-    {
-        runtimeJsPath,
-        runtimeCssPath,
-        output,
-    }: {runtimeJsPath: string; runtimeCssPath: string; output: string},
+    {runtimeJsPath, output}: CopyRuntimeFilesPaths,
     cache: Set<string>,
 ) {
     const {join, resolve} = dynrequire('node:path');
     const runtimeFiles = {
         'index.js': runtimeJsPath,
-        'index.css': runtimeCssPath,
     };
     for (const [originFile, outputFile] of Object.entries(runtimeFiles)) {
         const file = join(PATH_TO_RUNTIME, originFile);

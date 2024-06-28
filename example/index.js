@@ -13,8 +13,6 @@ import {promisify} from 'node:util';
         plugins: [
             htmlPlugin.transform({
                 bundle: true,
-                shouldUseIframe: true,
-                shouldUseSanitize: false,
             }),
         ],
     });

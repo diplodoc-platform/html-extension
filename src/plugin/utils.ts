@@ -1,7 +1,3 @@
-import sanitizeHtml from 'sanitize-html';
-
-export const defaultSanitize = (dirtyHtml: string) => sanitizeHtml(dirtyHtml);
-
 export function addHiddenProperty<
     B extends Record<string | symbol, unknown>,
     F extends string | symbol,

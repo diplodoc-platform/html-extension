@@ -13,14 +13,12 @@ export const setIframeStyles = (block: HTMLIFrameElement, styles: Record<string,
     });
 };
 
-// @ts-ignore  @typescript-eslint/no-explicit-any
-type QueueManagerCallback<T> = (...args: T[]) => any | void;
-
-// @ts-ignore  @typescript-eslint/no-explicit-any
 export interface QueueManager<T extends any> {
     start: () => void;
     push: (callback: QueueManagerCallback<T>) => void;
 }
+
+export type QueueManagerCallback<T> = (...args: T[]) => void;
 
 export const createQueueWithWait = <T extends any>(...args: T[]) => {
     let lastExecuted: Promise<unknown> = Promise.resolve();

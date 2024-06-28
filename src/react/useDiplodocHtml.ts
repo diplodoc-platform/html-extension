@@ -1,6 +1,5 @@
 import {useCallback} from 'react';
-import {GLOBAL_SYMBOL} from '../common';
-import {HTMLControllerForEachCallback} from '../runtime/HtmlController';
+import {GLOBAL_SYMBOL, HTMLControllerForEachCallback} from '../common';
 
 export function useDiplodocHtml() {
     return {

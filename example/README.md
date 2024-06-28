@@ -17,7 +17,7 @@ Then this documentation will be rendered by [@diplodoc/transform](https://github
 Markdown text
 
 ::: html
-<div>Complex HTML code</div>
+<div>HTML code with table</div>
 <style>
 /*****************/
 /***  header   ***/

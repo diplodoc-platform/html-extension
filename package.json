@@ -11,7 +11,6 @@
     },
     "./runtime": {
       "types": "./runtime/index.d.ts",
-      "style": "./runtime/index.css",
       "default": "./runtime/index.js"
     },
     "./react": {
