@@ -26,7 +26,6 @@
   "bugs": {
     "url": "https://github.com/diplodoc-platform/diplodoc/issues"
   },
-  "private": true,
   "scripts": {
     "build": "run-p build:*",
     "build:js": "./esbuild/build.mjs",
