@@ -1,6 +1,5 @@
 # Diplodoc html extension
 
-#### TODO: add html-extension.svg
 [![NPM version](https://img.shields.io/npm/v/@diplodoc/html-extension.svg?style=flat)](https://www.npmjs.org/package/@diplodoc/html-extension)
 
 This is an extension of the Diplodoc platform, which allows adding HTML in the documentation.
