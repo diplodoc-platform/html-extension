@@ -18,6 +18,7 @@ export class HtmlIFrameController implements IHtmlIFrameController {
 
         this._resizeToFitContent = this._resizeToFitContent.bind(this);
         this._onLoadIFrameHandler = this._onLoadIFrameHandler.bind(this);
+        this._onResizeHandler = this._onResizeHandler.bind(this);
 
         this._queueManager.push(this._resizeToFitContent);
 
@@ -25,6 +26,7 @@ export class HtmlIFrameController implements IHtmlIFrameController {
             this._queueManager.start();
         } else {
             this._block.addEventListener('load', this._onLoadIFrameHandler);
+            window.addEventListener('message', this._onResizeHandler);
         }
     }
 
@@ -40,6 +42,10 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         setIframeStyles(this._block, styles);
     }
 
+    resize() {
+        this._resizeToFitContent();
+    }
+
     private _resizeToFitContent() {
         resizeIframeToFitContent(this._block);
     }
@@ -47,11 +53,19 @@ export class HtmlIFrameController implements IHtmlIFrameController {
     private _onLoadIFrameHandler() {
         this._queueManager.start();
     }
+
+    private _onResizeHandler(event: MessageEvent) {
+        console.log('event', event.data.type);
+        if (event.data.type === 'resize') {
+            this._queueManager.push(this._resizeToFitContent);
+        }
+    }
 }
 
 export class HtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
     private _document: Document;
+    private _resizeObserver: ResizeObserver;
 
     constructor(document: Document) {
         this._document = document;
@@ -60,6 +74,7 @@ export class HtmlController {
 
         // initialize on DOM ready
         this._document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded);
+        this._resizeObserver = new window.ResizeObserver(this._onIFrameResize);
     }
 
     get blocks(): HtmlIFrameController[] {
@@ -72,8 +87,8 @@ export class HtmlController {
     }
 
     forEach(callback: HTMLControllerForEachCallback) {
-        return this._blocks.forEach((value) => {
-            value.execute(callback);
+        return this._blocks.forEach((block) => {
+            block.execute(callback);
         });
     }
 
@@ -110,5 +125,12 @@ export class HtmlController {
 
     private _onDOMContentLoaded() {
         this._initialize();
+        this._blocks.forEach((block) => {
+            this._resizeObserver.observe(block.block);
+        });
+    }
+
+    private _onIFrameResize() {
+        window.parent.postMessage({type: 'resize'});
     }
 }

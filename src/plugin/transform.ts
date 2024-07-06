@@ -24,7 +24,6 @@ export type PluginOptions = {
     containerClasses: string;
     bundle: boolean;
     sanitize?: (dirtyHtml: string) => string;
-    withContentWrapper?: boolean;
 };
 
 type TransformOptions = {
@@ -39,7 +38,6 @@ export function transform({
     containerClasses = '',
     bundle = true,
     sanitize,
-    withContentWrapper = true,
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
@@ -56,9 +54,6 @@ export function transform({
             const token = state.push(TOKEN_TYPE, TAG, 0);
             const htmlBlockId = generateHtmlBlockId();
             const className = [BLOCK_NAME, containerClasses].filter(Boolean).join(' ');
-            const resultContent = withContentWrapper
-                ? `<div class="${BLOCK_NAME}__wrapper">${content}</div>`
-                : content;
 
             token.block = true;
 
@@ -68,7 +63,7 @@ export function transform({
             token.attrPush([TokenAttr.frameborder, '0']);
             token.attrPush([TokenAttr.id, htmlBlockId]);
             token.attrPush([TokenAttr.style, 'width:100%']);
-            token.attrPush([TokenAttr.srcdoc, resultContent]);
+            token.attrPush([TokenAttr.srcdoc, content]);
 
             // TODO: use collect
             env.meta = env.meta || {};
@@ -93,12 +88,10 @@ export function transform({
         mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
 
-            if (sanitize && token.attrs) {
-                for (const [index, [attr, value]] of token.attrs.entries()) {
-                    if (attr === TokenAttr.srcdoc && token.attrs[index]) {
-                        token.attrs[index] = [attr, sanitize(value)];
-                        break;
-                    }
+            if (sanitize) {
+                const content = token.attrGet(TokenAttr.srcdoc);
+                if (content) {
+                    token.attrSet(TokenAttr.srcdoc, sanitize(content));
                 }
             }
 

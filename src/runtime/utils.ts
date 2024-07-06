@@ -1,6 +1,11 @@
-export const resizeIframeToFitContent = (iframe: HTMLIFrameElement): void => {
+const DEFAULT_PADDING = 34;
+export const resizeIframeToFitContent = (
+    iframe: HTMLIFrameElement,
+    padding = DEFAULT_PADDING,
+): void => {
     if (iframe.contentWindow) {
-        iframe.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+        const frameDocument = iframe.contentDocument || iframe.contentWindow.document;
+        iframe.style.height = frameDocument.body.scrollHeight + padding + 'px';
     }
 };
 
