@@ -1,11 +1,11 @@
-import type {PluginWithOptions} from 'markdown-it';
-
-import {addHiddenProperty} from './utils';
-import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
-import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
+import type {PluginWithOptions} from 'markdown-it';
 import {generateID} from '@diplodoc/transform/lib/plugins/utils';
+
+import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../constants';
+import {addHiddenProperty} from './utils';
+import {copyRuntimeFiles} from './copyRuntimeFiles';
 
 const generateHtmlBlockId = () => `${BLOCK_NAME}-${generateID()}`;
 

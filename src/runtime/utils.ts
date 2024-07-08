@@ -18,14 +18,14 @@ export const setIframeStyles = (block: HTMLIFrameElement, styles: Record<string,
     });
 };
 
-export interface QueueManager<T extends any> {
+export interface QueueManager<T = any> {
     start: () => void;
     push: (callback: QueueManagerCallback<T>) => void;
 }
 
 export type QueueManagerCallback<T> = (...args: T[]) => void;
 
-export const createQueueWithWait = <T extends any>(...args: T[]) => {
+export const createQueueWithWait = <T = any>(...args: T[]) => {
     let lastExecuted: Promise<unknown> = Promise.resolve();
     let started = false;
 

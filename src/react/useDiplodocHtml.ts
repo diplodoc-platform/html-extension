@@ -1,15 +1,23 @@
-import {useCallback} from 'react';
-import {GLOBAL_SYMBOL, HTMLControllerForEachCallback} from '../common';
+import {useMemo} from 'react';
+import {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
+import {getScriptStore, useController} from '../utils';
+import {GLOBAL_SYMBOL} from '../constants';
 
 export function useDiplodocHtml() {
-    const reinitialize = useCallback(() => window?.[GLOBAL_SYMBOL]?.reinitialize(), []);
-    const forEach = useCallback(
-        (callback: HTMLControllerForEachCallback) => window?.[GLOBAL_SYMBOL]?.forEach(callback),
-        [],
-    );
+    const store = getScriptStore({prefix: GLOBAL_SYMBOL});
+    const controller = useController<IHtmlController>(store);
 
-    return {
-        reinitialize,
-        forEach,
-    };
+    return useMemo(
+        () =>
+            controller
+                ? {
+                      blocks: controller.blocks,
+                      forEach: (callback: ControllerCallback<IHtmlIFrameController>) =>
+                          controller.forEach(callback),
+                      reinitialize: () => controller.reinitialize(),
+                      resizeAll: () => controller.forEach((controller) => controller.resize()),
+                  }
+                : null,
+        [controller],
+    );
 }

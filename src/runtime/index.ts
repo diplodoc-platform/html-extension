@@ -1,6 +1,16 @@
-import {GLOBAL_SYMBOL} from '../common';
+import {Store, createLoadQueue, getScriptStore} from '../utils';
+import {GLOBAL_SYMBOL} from '../constants';
 import {HtmlController} from './HtmlController';
+import {IHtmlController} from '../types';
 
-if (typeof window?.document !== 'undefined' && !window[GLOBAL_SYMBOL]) {
-    window[GLOBAL_SYMBOL] = new HtmlController(document);
+let store: Store<IHtmlController> | null = null;
+
+if (!store) {
+    store = getScriptStore<IHtmlController>({prefix: GLOBAL_SYMBOL});
+    const htmlController = new HtmlController(document);
+
+    createLoadQueue<HtmlController>({
+        store,
+        controller: htmlController,
+    });
 }

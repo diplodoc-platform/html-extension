@@ -1,4 +1,7 @@
-import {BLOCK_NAME, HTMLControllerForEachCallback, IHtmlIFrameController} from '../common';
+import debounce from 'lodash.debounce';
+
+import {BLOCK_NAME} from '../constants';
+import {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
 import {
     QueueManager,
     createQueueWithWait,
@@ -26,7 +29,6 @@ export class HtmlIFrameController implements IHtmlIFrameController {
             this._queueManager.start();
         } else {
             this._block.addEventListener('load', this._onLoadIFrameHandler);
-            window.addEventListener('message', this._onResizeHandler);
         }
     }
 
@@ -55,14 +57,13 @@ export class HtmlIFrameController implements IHtmlIFrameController {
     }
 
     private _onResizeHandler(event: MessageEvent) {
-        console.log('event', event.data.type);
         if (event.data.type === 'resize') {
             this._queueManager.push(this._resizeToFitContent);
         }
     }
 }
 
-export class HtmlController {
+export class HtmlController implements IHtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
     private _document: Document;
     private _resizeObserver: ResizeObserver;
@@ -74,7 +75,7 @@ export class HtmlController {
 
         // initialize on DOM ready
         this._document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded);
-        this._resizeObserver = new window.ResizeObserver(this._onIFrameResize);
+        this._resizeObserver = new window.ResizeObserver(debounce(this._onIFrameResize, 150));
     }
 
     get blocks(): HtmlIFrameController[] {
@@ -86,7 +87,7 @@ export class HtmlController {
         this._initialize();
     }
 
-    forEach(callback: HTMLControllerForEachCallback) {
+    forEach(callback: ControllerCallback<IHtmlIFrameController>) {
         return this._blocks.forEach((block) => {
             block.execute(callback);
         });
@@ -130,7 +131,9 @@ export class HtmlController {
         });
     }
 
-    private _onIFrameResize() {
-        window.parent.postMessage({type: 'resize'});
+    private _onIFrameResize(entries: ResizeObserverEntry[]) {
+        for (const entry of entries) {
+            resizeIframeToFitContent(entry.target as HTMLIFrameElement);
+        }
     }
 }

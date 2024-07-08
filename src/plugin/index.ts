@@ -1,2 +1,2 @@
-export type {HTMLControllerForEachCallback} from '../common';
+export type {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
 export {transform} from './transform';
