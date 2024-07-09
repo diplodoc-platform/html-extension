@@ -9,11 +9,15 @@
 /runtime
 /plugin
 /react
+/utils
 
 # libraries
 npm-debug.log
 
 index.d.ts
+common.d.ts
+constants.d.ts
+
 *.d.ts
 example/package-lock.json
 example/build

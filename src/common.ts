@@ -1,23 +1,84 @@
-import type {HtmlController} from './runtime/HtmlController';
+import {useEffect, useState} from 'react';
 
-export const GLOBAL_SYMBOL: unique symbol = Symbol.for('diplodocHtml');
+type Callback<T> = (controller: T) => void;
 
-declare global {
-    interface Window {
-        [GLOBAL_SYMBOL]: HtmlController;
-    }
+export type ScriptStore<T> = Callback<T>[] | null;
+
+export interface CreateLoadQueueArgs<T> {
+    store: ScriptStore<T>;
+    controller: T;
 }
 
-export const BLOCK_NAME = 'yfm-html';
-export const HTML_DATA_ID = 'data-diplodoc-id';
-export const HTML_DATA_KEY = 'data-diplodoc-key';
+export const isBrowser = () => typeof window !== 'undefined' && typeof document !== 'undefined';
+export const hasScriptStore = (key: symbol) => Boolean((window as any)[key]);
 
-export const TOKEN_TYPE = 'yfm_html_block';
+export const getScriptStore = <T = any>(key: symbol): ScriptStore<T> => {
+    if (isBrowser()) {
+        (window as any)[key] = (window as any)[key] || [];
+        return (window as any)[key];
+    }
 
-export type HTMLControllerForEachCallback = (block: IHtmlIFrameController) => void;
+    return null;
+};
 
-export interface IHtmlIFrameController {
-    readonly block: HTMLIFrameElement;
-    execute(callback: (controller: IHtmlIFrameController) => void): void;
-    setStyles(styles: Record<string, string>): void;
+export const createLoadQueue = <T = any>({store, controller}: CreateLoadQueueArgs<T>) => {
+    if (!store) {
+        return;
+    }
+
+    const queue = store.splice(0, store.length);
+
+    store.push = function (...args) {
+        args.forEach((callback) => {
+            queue.push(callback);
+            unqueue();
+        });
+
+        return queue.length;
+    };
+
+    let processing = false;
+
+    function unqueue() {
+        if (!processing) {
+            next();
+        }
+    }
+
+    async function next(): Promise<void> {
+        processing = true;
+
+        const callback = queue.shift();
+        if (callback) {
+            await callback(controller);
+            return next();
+        }
+
+        processing = false;
+    }
+
+    unqueue();
+};
+
+const noop = () => {};
+
+export function useController<T>(store: ScriptStore<T>) {
+    const [controller, setController] = useState<T | null>(null);
+
+    useEffect(() => {
+        if (store) {
+            store.push(setController);
+
+            return () => {
+                const index = store.indexOf(setController);
+                if (index > -1) {
+                    store.splice(index, 1);
+                }
+            };
+        }
+
+        return noop;
+    }, []);
+
+    return controller;
 }

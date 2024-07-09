@@ -1,30 +1,51 @@
-import {BLOCK_NAME, HTMLControllerForEachCallback, IHtmlIFrameController} from '../common';
+import debounce from 'lodash.debounce';
+
+import {BLOCK_NAME} from '../constants';
+import {
+    ControllerCallback,
+    IHTMLIFrameElementConfig,
+    IHtmlController,
+    IHtmlIFrameController,
+} from '../types';
 import {
     QueueManager,
     createQueueWithWait,
     isHTMLElement,
     isIFrameLoaded,
-    resizeIframeToFitContent,
     setIframeStyles,
 } from './utils';
+import {DEFAULT_PADDING, resizeIframeToFitContent} from '../utils';
+
+const DEFAULT_CONFIG = {
+    resizeDelay: 150,
+    resizePadding: DEFAULT_PADDING,
+};
 
 export class HtmlIFrameController implements IHtmlIFrameController {
     private _block: HTMLIFrameElement;
+    private _config: IHTMLIFrameElementConfig;
     private _queueManager: QueueManager<IHtmlIFrameController>;
+    private _resizeObserver: ResizeObserver;
 
-    constructor(iframe: HTMLIFrameElement) {
+    constructor(iframe: HTMLIFrameElement, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
         this._block = iframe;
+        this._config = config;
         this._queueManager = createQueueWithWait(this);
 
-        this._resizeToFitContent = this._resizeToFitContent.bind(this);
         this._onLoadIFrameHandler = this._onLoadIFrameHandler.bind(this);
+        this._onResizeHandler = this._onResizeHandler.bind(this);
+        this._resizeToFitContent = this._resizeToFitContent.bind(this);
 
         this._queueManager.push(this._resizeToFitContent);
+        this._resizeObserver = new window.ResizeObserver(
+            debounce(this._onResizeHandler, this._config.resizeDelay),
+        );
 
         if (isIFrameLoaded(this._block)) {
             this._queueManager.start();
         } else {
             this._block.addEventListener('load', this._onLoadIFrameHandler);
+            this._resizeObserver.observe(this._block);
         }
     }
 
@@ -40,16 +61,25 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         setIframeStyles(this._block, styles);
     }
 
+    resize() {
+        this._resizeToFitContent();
+    }
+
     private _resizeToFitContent() {
-        resizeIframeToFitContent(this._block);
+        resizeIframeToFitContent(this._block, this._config.resizePadding);
     }
 
     private _onLoadIFrameHandler() {
         this._queueManager.start();
     }
+
+    private _onResizeHandler() {
+        this._queueManager.push(this._resizeToFitContent);
+    }
 }
 
-export class HtmlController {
+// Finds all iframes and creates controllers for each iframe
+export class HtmlController implements IHtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
     private _document: Document;
 
@@ -71,9 +101,9 @@ export class HtmlController {
         this._initialize();
     }
 
-    forEach(callback: HTMLControllerForEachCallback) {
-        return this._blocks.forEach((value) => {
-            value.execute(callback);
+    forEach(callback: ControllerCallback<IHtmlIFrameController>) {
+        return this._blocks.forEach((block) => {
+            block.execute(callback);
         });
     }
 

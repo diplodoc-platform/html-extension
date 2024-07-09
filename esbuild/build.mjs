@@ -22,6 +22,14 @@ const common = {
 
 build({
     ...common,
+    entryPoints: ['src/utils/index.ts'],
+    outfile: 'utils/index.js',
+    minify: true,
+    platform: 'browser',
+});
+
+build({
+    ...common,
     entryPoints: ['src/runtime/index.ts'],
     outfile: 'runtime/index.js',
     minify: true,

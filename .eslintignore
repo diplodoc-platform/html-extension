@@ -4,5 +4,6 @@
 /runtime
 /react
 /plugin
+/utils
 /example/node_modules
 /example/build

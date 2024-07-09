@@ -1,6 +1,14 @@
-import {GLOBAL_SYMBOL} from '../common';
+import {createLoadQueue, getScriptStore, hasScriptStore, isBrowser} from '../common';
+import {GLOBAL_SYMBOL} from '../constants';
 import {HtmlController} from './HtmlController';
+import {IHtmlController} from '../types';
 
-if (typeof window?.document !== 'undefined' && !window[GLOBAL_SYMBOL]) {
-    window[GLOBAL_SYMBOL] = new HtmlController(document);
+if (isBrowser() && !hasScriptStore(GLOBAL_SYMBOL)) {
+    const store = getScriptStore<IHtmlController>(GLOBAL_SYMBOL);
+    const htmlController = new HtmlController(document);
+
+    createLoadQueue<HtmlController>({
+        store,
+        controller: htmlController,
+    });
 }

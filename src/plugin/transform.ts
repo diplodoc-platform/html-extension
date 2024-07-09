@@ -1,11 +1,11 @@
-import type {PluginWithOptions} from 'markdown-it';
-
-import {addHiddenProperty} from './utils';
-import {copyRuntimeFiles} from './copyRuntimeFiles';
 import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
-import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../common';
+import type {PluginWithOptions} from 'markdown-it';
 import {generateID} from '@diplodoc/transform/lib/plugins/utils';
+
+import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../constants';
+import {addHiddenProperty} from './utils';
+import {copyRuntimeFiles} from './copyRuntimeFiles';
 
 const generateHtmlBlockId = () => `${BLOCK_NAME}-${generateID()}`;
 
@@ -53,13 +53,11 @@ export function transform({
 
             const token = state.push(TOKEN_TYPE, TAG, 0);
             const htmlBlockId = generateHtmlBlockId();
+            const className = [BLOCK_NAME, containerClasses].filter(Boolean).join(' ');
 
             token.block = true;
-            token.attrSet(
-                TokenAttr.class,
-                [BLOCK_NAME, containerClasses].filter(Boolean).join(' '),
-            );
 
+            token.attrSet(TokenAttr.class, className);
             token.attrPush([TokenAttr.dataId, htmlBlockId]);
             token.attrPush([TokenAttr.dataKey, BLOCK_NAME]);
             token.attrPush([TokenAttr.frameborder, '0']);
@@ -89,10 +87,15 @@ export function transform({
         mdDir.blockDirectives['html'] = plugin;
         mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
-            const rendered = self.renderAttrs(token);
-            const resultRendered = sanitize ? sanitize(rendered) : rendered;
 
-            return `<${token.tag}${resultRendered}></${token.tag}>`;
+            if (sanitize) {
+                const content = token.attrGet(TokenAttr.srcdoc);
+                if (content) {
+                    token.attrSet(TokenAttr.srcdoc, sanitize(content));
+                }
+            }
+
+            return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
         };
     };
 }
