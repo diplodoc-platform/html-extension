@@ -1,5 +1,4 @@
-// export const GLOBAL_SYMBOL: unique symbol = Symbol.for('diplodocHtml');
-export const GLOBAL_SYMBOL = 'diplodocHtml';
+export const GLOBAL_SYMBOL: unique symbol = Symbol.for('diplodocHtml');
 
 export const BLOCK_NAME = 'yfm-html';
 export const HTML_DATA_ID = 'data-diplodoc-id';

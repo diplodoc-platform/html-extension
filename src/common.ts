@@ -2,30 +2,32 @@ import {useEffect, useState} from 'react';
 
 type Callback<T> = (controller: T) => void;
 
-export type Store<T> = Callback<T>[];
+export type ScriptStore<T> = Callback<T>[] | null;
 
 export interface CreateLoadQueueArgs<T> {
-    store: Store<T>;
+    store: ScriptStore<T>;
     controller: T;
 }
 
-export interface GetScriptStoreArgs {
-    readonly prefix: string;
-}
+const w = window as any;
 
-export const getScriptStore = <T = any>({prefix}: GetScriptStoreArgs): Store<T> => {
-    try {
-        if (!(window as any)[prefix]) {
-            (window as any)[prefix] = [];
-            (window as any)[prefix]._store = new Proxy((window as any)[prefix], {});
-        }
-        return (window as any)[prefix]._store;
-    } catch {
-        throw new Error('window is not defined');
+export const isBrowser = () => typeof w !== 'undefined' && typeof document !== 'undefined';
+export const hasScriptStore = (prefix: symbol) => Boolean(w[prefix]);
+
+export const getScriptStore = <T = any>(prefix: symbol): ScriptStore<T> => {
+    if (isBrowser()) {
+        w[prefix] = w[prefix] || [];
+        return w[prefix];
     }
+
+    return null;
 };
 
 export const createLoadQueue = <T = any>({store, controller}: CreateLoadQueueArgs<T>) => {
+    if (!store) {
+        return;
+    }
+
     const queue = store.splice(0, store.length);
 
     store.push = function (...args) {
@@ -60,18 +62,24 @@ export const createLoadQueue = <T = any>({store, controller}: CreateLoadQueueArg
     unqueue();
 };
 
-export function useController<T>(store: Store<T>) {
+const noop = () => {};
+
+export function useController<T>(store: ScriptStore<T>) {
     const [controller, setController] = useState<T | null>(null);
 
     useEffect(() => {
-        store.push(setController);
+        if (store) {
+            store.push(setController);
 
-        return () => {
-            const index = store.indexOf(setController);
-            if (index > -1) {
-                store.splice(index, 1);
-            }
-        };
+            return () => {
+                const index = store.indexOf(setController);
+                if (index > -1) {
+                    store.splice(index, 1);
+                }
+            };
+        }
+
+        return noop;
     }, []);
 
     return controller;

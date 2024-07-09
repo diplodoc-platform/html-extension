@@ -1,4 +1,5 @@
 import {GLOBAL_SYMBOL} from './constants';
+import {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
@@ -6,6 +7,11 @@ export interface IHtmlController {
     readonly blocks: IHtmlIFrameController[];
     forEach(callback: ControllerCallback<IHtmlIFrameController>): void;
     reinitialize(): void;
+}
+
+export interface IHTMLIFrameElementConfig {
+    resizeDelay?: number;
+    resizePadding?: number;
 }
 
 export interface IHtmlIFrameController {
@@ -17,6 +23,6 @@ export interface IHtmlIFrameController {
 
 declare global {
     interface Window {
-        [GLOBAL_SYMBOL]: IHtmlController;
+        [GLOBAL_SYMBOL]: ScriptStore<IHtmlController>;
     }
 }

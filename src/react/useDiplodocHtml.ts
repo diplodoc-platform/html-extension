@@ -1,10 +1,10 @@
 import {useMemo} from 'react';
 import {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
-import {getScriptStore, useController} from '../utils';
+import {getScriptStore, useController} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
 
 export function useDiplodocHtml() {
-    const store = getScriptStore({prefix: GLOBAL_SYMBOL});
+    const store = getScriptStore<IHtmlController>(GLOBAL_SYMBOL);
     const controller = useController<IHtmlController>(store);
 
     return useMemo(
