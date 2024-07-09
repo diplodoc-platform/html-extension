@@ -9,15 +9,13 @@ export interface CreateLoadQueueArgs<T> {
     controller: T;
 }
 
-const w = window as any;
+export const isBrowser = () => typeof window !== 'undefined' && typeof document !== 'undefined';
+export const hasScriptStore = (key: symbol) => Boolean((window as any)[key]);
 
-export const isBrowser = () => typeof w !== 'undefined' && typeof document !== 'undefined';
-export const hasScriptStore = (prefix: symbol) => Boolean(w[prefix]);
-
-export const getScriptStore = <T = any>(prefix: symbol): ScriptStore<T> => {
+export const getScriptStore = <T = any>(key: symbol): ScriptStore<T> => {
     if (isBrowser()) {
-        w[prefix] = w[prefix] || [];
-        return w[prefix];
+        (window as any)[key] = (window as any)[key] || [];
+        return (window as any)[key];
     }
 
     return null;
