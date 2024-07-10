@@ -18,4 +18,3 @@ git remote set-url origin ${ORIGIN/package-template/$NAME}
 git add --all
 git commit --amend -m "initial"
 git push
-
