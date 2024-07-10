@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/diplodoc-platform/html-extension/compare/v1.2.0...v1.2.1) (2024-07-10)
+
+
+### Bug Fixes
+
+* **release:** fixed .npmignore ([ad7057e](https://github.com/diplodoc-platform/html-extension/commit/ad7057e635026d9619ff9182b6d6e9ce136d53cf))
+* **release:** fixed .npmignore ([9dd6766](https://github.com/diplodoc-platform/html-extension/commit/9dd676633a80f0aec97ee02157271e09dd366542))
+
 ## [1.2.0](https://github.com/diplodoc-platform/html-extension/compare/v1.1.0...v1.2.0) (2024-07-10)
 
 
