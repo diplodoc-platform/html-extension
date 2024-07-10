@@ -46,7 +46,8 @@
   "files": [
     "plugin",
     "runtime",
-    "react"
+    "react",
+    "utils"
   ],
   "peerDependencies": {
     "@diplodoc/transform": "^4.0.0",
