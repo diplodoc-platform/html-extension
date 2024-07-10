@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/diplodoc-platform/html-extension/compare/v1.2.3...v1.2.4) (2024-07-10)
+
+
+### Bug Fixes
+
+* **build:** fixed exports ([90e72a7](https://github.com/diplodoc-platform/html-extension/commit/90e72a7318c1c79dd7f7eacd4398a9a61082c4fe))
+
 ## [1.2.3](https://github.com/diplodoc-platform/html-extension/compare/v1.2.2...v1.2.3) (2024-07-10)
 
 

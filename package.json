@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/html-extension",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "HTML plugin for Diplodoc transformer and builder",
   "main": "plugin/index.js",
   "types": "plugin/index.d.ts",
