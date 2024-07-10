@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/diplodoc-platform/html-extension/compare/v1.1.0...v1.2.0) (2024-07-10)
+
+
+### Features
+
+* **hook:** updated useDiplodocHtml ([030de2d](https://github.com/diplodoc-platform/html-extension/commit/030de2dcb8fe0aa2f054f0160f07d05a22ae86c8))
+
+
+### Bug Fixes
+
+* **package:** fixed private ([0f574fa](https://github.com/diplodoc-platform/html-extension/commit/0f574faeb340491703ad3a33103850051983a1e8))
+* **release:** updated main branch ([4373f6e](https://github.com/diplodoc-platform/html-extension/commit/4373f6e875e369859898b211799dd165f94281ef))
+
 ## [1.1.0](https://github.com/diplodoc-platform/html-extension/compare/v1.0.0...v1.1.0) (2024-06-28)
 
 
