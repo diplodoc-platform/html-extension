@@ -70,7 +70,6 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/markdown-it": "^13.0.0",
     "@types/react": "^18.2.14",
-    "@types/sanitize-html": "^2.9.3",
     "esbuild": "^0.19.9",
     "esbuild-sass-plugin": "^2.10.0",
     "github-slugger": "^1.5.0",
@@ -79,7 +78,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "markdown-it": "^13.0.1",
     "npm-run-all": "^4.1.5",
-    "sanitize-html": "^2.11.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.3.3"
   }
