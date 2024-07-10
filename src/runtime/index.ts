@@ -12,3 +12,6 @@ if (isBrowser() && !hasScriptStore(GLOBAL_SYMBOL)) {
         controller: htmlController,
     });
 }
+
+export {HtmlController};
+export type {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';

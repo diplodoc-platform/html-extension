@@ -16,6 +16,10 @@
     "./react": {
       "types": "./react/index.d.ts",
       "default": "./react/index.js"
+    },
+    "./utils": {
+      "types": "./utils/index.d.ts",
+      "default": "./utils/index.js"
     }
   },
   "homepage": "https://diplodoc.com/",
