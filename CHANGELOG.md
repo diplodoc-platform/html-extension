@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/diplodoc-platform/html-extension/compare/v1.2.1...v1.2.2) (2024-07-10)
+
+
+### Bug Fixes
+
+* **import:** fixed generate-id ([1be36ed](https://github.com/diplodoc-platform/html-extension/commit/1be36edf5562d293bff226f91218bd44bdfd1276))
+
 ## [1.2.1](https://github.com/diplodoc-platform/html-extension/compare/v1.2.0...v1.2.1) (2024-07-10)
 
 
