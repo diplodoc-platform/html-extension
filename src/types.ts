@@ -4,9 +4,10 @@ import {ScriptStore} from './common';
 export type ControllerCallback<T> = (controller: T) => void;
 
 export interface IHtmlController {
-    readonly blocks: IHtmlIFrameController[];
     forEach(callback: ControllerCallback<IHtmlIFrameController>): void;
+    readonly blocks: IHtmlIFrameController[];
     reinitialize(): void;
+    setConfig(config: IHTMLIFrameElementConfig): void;
 }
 
 export interface IHTMLIFrameElementConfig {
@@ -15,9 +16,10 @@ export interface IHTMLIFrameElementConfig {
 }
 
 export interface IHtmlIFrameController {
-    readonly block: HTMLIFrameElement;
     execute(callback: ControllerCallback<IHtmlIFrameController>): void;
+    readonly block: HTMLIFrameElement;
     resize(): void;
+    setConfig(config: IHTMLIFrameElementConfig): void;
     setStyles(styles: Record<string, string>): void;
 }
 

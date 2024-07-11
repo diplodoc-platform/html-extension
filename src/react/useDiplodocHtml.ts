@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
+import {ControllerCallback, IHTMLIFrameElementConfig, IHtmlController, IHtmlIFrameController} from '../types';
 import {getScriptStore, useController} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
 
@@ -16,6 +16,7 @@ export function useDiplodocHtml() {
                           controller.forEach(callback),
                       reinitialize: () => controller.reinitialize(),
                       resizeAll: () => controller.forEach((controller) => controller.resize()),
+                      setConfig: (config: IHTMLIFrameElementConfig) => controller.setConfig(config),
                   }
                 : null,
         [controller],

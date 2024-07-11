@@ -65,6 +65,10 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         this._resizeToFitContent();
     }
 
+    setConfig(config: IHTMLIFrameElementConfig) {
+        this._config = config;
+    }
+
     private _resizeToFitContent() {
         resizeIframeToFitContent(this._block, this._config.resizePadding);
     }
@@ -81,9 +85,11 @@ export class HtmlIFrameController implements IHtmlIFrameController {
 // Finds all iframes and creates controllers for each iframe
 export class HtmlController implements IHtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
+    private _config: IHTMLIFrameElementConfig;
     private _document: Document;
 
-    constructor(document: Document) {
+    constructor(document: Document, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
+        this._config = config;
         this._document = document;
 
         this._onDOMContentLoaded = this._onDOMContentLoaded.bind(this);
@@ -101,6 +107,10 @@ export class HtmlController implements IHtmlController {
         this._initialize();
     }
 
+    setConfig(config: IHTMLIFrameElementConfig) {
+        this._config = config;
+    }
+
     forEach(callback: ControllerCallback<IHtmlIFrameController>) {
         return this._blocks.forEach((block) => {
             block.execute(callback);
@@ -115,7 +125,7 @@ export class HtmlController implements IHtmlController {
                 if (diplodocKey === BLOCK_NAME) {
                     this._blocks.set(
                         diplodocId,
-                        new HtmlIFrameController(block as HTMLIFrameElement),
+                        new HtmlIFrameController(block as HTMLIFrameElement, this._config),
                     );
                 }
             }
