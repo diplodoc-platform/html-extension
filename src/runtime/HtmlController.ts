@@ -107,7 +107,6 @@ export class HtmlController implements IHtmlController {
         this._document.removeEventListener('DOMContentLoaded', this._onDOMContentLoaded);
     }
 
-
     get blocks(): HtmlIFrameController[] {
         return Array.from(this._blocks.values());
     }
