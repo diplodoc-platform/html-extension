@@ -49,6 +49,11 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         }
     }
 
+    destroy() {
+        this._block.removeEventListener('load', this._onLoadIFrameHandler);
+        this._resizeObserver.disconnect();
+    }
+
     get block() {
         return this._block;
     }
@@ -63,6 +68,10 @@ export class HtmlIFrameController implements IHtmlIFrameController {
 
     resize() {
         this._resizeToFitContent();
+    }
+
+    setConfig(config: IHTMLIFrameElementConfig) {
+        this._config = config;
     }
 
     private _resizeToFitContent() {
@@ -81,15 +90,21 @@ export class HtmlIFrameController implements IHtmlIFrameController {
 // Finds all iframes and creates controllers for each iframe
 export class HtmlController implements IHtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
+    private _config: IHTMLIFrameElementConfig;
     private _document: Document;
 
-    constructor(document: Document) {
+    constructor(document: Document, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
+        this._config = config;
         this._document = document;
 
         this._onDOMContentLoaded = this._onDOMContentLoaded.bind(this);
 
         // initialize on DOM ready
         this._document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded);
+    }
+
+    destroy() {
+        this._document.removeEventListener('DOMContentLoaded', this._onDOMContentLoaded);
     }
 
     get blocks(): HtmlIFrameController[] {
@@ -99,6 +114,10 @@ export class HtmlController implements IHtmlController {
     reinitialize() {
         this._destroyBlocks();
         this._initialize();
+    }
+
+    setConfig(config: IHTMLIFrameElementConfig) {
+        this._config = config;
     }
 
     forEach(callback: ControllerCallback<IHtmlIFrameController>) {
@@ -115,7 +134,7 @@ export class HtmlController implements IHtmlController {
                 if (diplodocKey === BLOCK_NAME) {
                     this._blocks.set(
                         diplodocId,
-                        new HtmlIFrameController(block as HTMLIFrameElement),
+                        new HtmlIFrameController(block as HTMLIFrameElement, this._config),
                     );
                 }
             }
