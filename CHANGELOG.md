@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.5](https://github.com/diplodoc-platform/html-extension/compare/v1.2.4...v1.2.5) (2024-07-11)
+
+
+### Bug Fixes
+
+* **runtime:** added destroy methods ([dcc0629](https://github.com/diplodoc-platform/html-extension/commit/dcc06293ca57de06bdb11153d13c176b341baa16))
+* **runtime:** fixed lint errors ([e34e893](https://github.com/diplodoc-platform/html-extension/commit/e34e8937906eb0dad73e1a0d0aeb39b7668839a2))
+* **runtime:** fixed lint errors ([9abf094](https://github.com/diplodoc-platform/html-extension/commit/9abf094361ba9757f14efa006e0f0b4c9f48424e))
+* **runtime:** updated runtime load logic, updated hook methods ([5e194a7](https://github.com/diplodoc-platform/html-extension/commit/5e194a7596cd6b7475fceff48ca5563f6c137149))
+
 ## [1.2.4](https://github.com/diplodoc-platform/html-extension/compare/v1.2.3...v1.2.4) (2024-07-10)
 
 
