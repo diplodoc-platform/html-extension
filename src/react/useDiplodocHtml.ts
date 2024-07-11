@@ -1,5 +1,10 @@
 import {useMemo} from 'react';
-import {ControllerCallback, IHTMLIFrameElementConfig, IHtmlController, IHtmlIFrameController} from '../types';
+import {
+    ControllerCallback,
+    IHTMLIFrameElementConfig,
+    IHtmlController,
+    IHtmlIFrameController,
+} from '../types';
 import {getScriptStore, useController} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
 

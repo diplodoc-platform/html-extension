@@ -37,7 +37,12 @@ export const handleQueueCreated = (created: boolean) => {
     (window as any)[QUEUE_SYMBOL] = created;
 };
 
-export const createLoadQueue = <T = any>({store, createController, isQueueCreated = getQueueStore(), onQueueCreated = handleQueueCreated}: CreateLoadQueueArgs<T>) => {
+export const createLoadQueue = <T = any>({
+    store,
+    createController,
+    isQueueCreated = getQueueStore(),
+    onQueueCreated = handleQueueCreated,
+}: CreateLoadQueueArgs<T>) => {
     if (!store || isQueueCreated) {
         return;
     }
