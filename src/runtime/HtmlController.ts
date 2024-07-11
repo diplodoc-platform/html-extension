@@ -49,6 +49,11 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         }
     }
 
+    destroy() {
+        this._block.removeEventListener('load', this._onLoadIFrameHandler);
+        this._resizeObserver.disconnect();
+    }
+
     get block() {
         return this._block;
     }
@@ -97,6 +102,11 @@ export class HtmlController implements IHtmlController {
         // initialize on DOM ready
         this._document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded);
     }
+
+    destroy() {
+        this._document.removeEventListener('DOMContentLoaded', this._onDOMContentLoaded);
+    }
+
 
     get blocks(): HtmlIFrameController[] {
         return Array.from(this._blocks.values());
