@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.6](https://github.com/diplodoc-platform/html-extension/compare/v1.2.5...v1.2.6) (2024-07-12)
+
+
+### Bug Fixes
+
+* **react:** added export types ([a374ce5](https://github.com/diplodoc-platform/html-extension/commit/a374ce57c695991aaec0f6a932e7ad1f426e9edc))
+* **react:** fixed lint errors ([308b8c1](https://github.com/diplodoc-platform/html-extension/commit/308b8c13943575d78de866bbe44aa12706d9dee7))
+* **react:** fixed types ([cc6d6ab](https://github.com/diplodoc-platform/html-extension/commit/cc6d6abdb2ff063675dc70fb2836e6e13380bbaa))
+* **react:** fixed types ([e4f2092](https://github.com/diplodoc-platform/html-extension/commit/e4f2092eb740b28c761c2519393f6af48ba5e30c))
+* **react:** fixed types ([f9596fd](https://github.com/diplodoc-platform/html-extension/commit/f9596fd735f564fa63572e46a25b824b82331d7b))
+* **react:** fixed types ([12b8826](https://github.com/diplodoc-platform/html-extension/commit/12b88268d1484ded0b1e4ee8969b1245f76d454c))
+* **runtime:** added setClassNames, setStyles methods to HtmlIFrameController ([4eb3db9](https://github.com/diplodoc-platform/html-extension/commit/4eb3db99b5ae58fc48518187335bb0a0b676b342))
+
 ## [1.2.5](https://github.com/diplodoc-platform/html-extension/compare/v1.2.4...v1.2.5) (2024-07-11)
 
 
