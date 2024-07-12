@@ -1,15 +1,15 @@
 import {useMemo} from 'react';
 import {
     ControllerCallback,
+    ForEachCallbackArgs,
     IHTMLIFrameElementConfig,
     IHtmlController,
     IHtmlIFrameController,
+    SetConfigArgs,
 } from '../types';
+
 import {getScriptStore, useController} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
-
-export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
-export type SetConfigArgs = IHTMLIFrameElementConfig;
 
 export interface DiplodocHtmlMethods {
     blocks: IHtmlIFrameController[];

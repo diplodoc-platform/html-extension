@@ -17,4 +17,11 @@ if (isBrowser()) {
 }
 
 export {HtmlController};
-export type {ControllerCallback, IHtmlController, IHtmlIFrameController} from '../types';
+
+export type {
+    ControllerCallback,
+    ForEachCallbackArgs,
+    IHtmlController,
+    IHtmlIFrameController,
+    SetConfigArgs,
+} from '../types';

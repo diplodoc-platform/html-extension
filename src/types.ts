@@ -3,12 +3,15 @@ import {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
+export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
+export type SetConfigArgs = IHTMLIFrameElementConfig;
+
 export interface IHtmlController {
     destroy(): void;
-    forEach(callback: ControllerCallback<IHtmlIFrameController>): void;
+    forEach(callback: ForEachCallbackArgs): void;
     readonly blocks: IHtmlIFrameController[];
     reinitialize(): void;
-    setConfig(config: IHTMLIFrameElementConfig): void;
+    setConfig(config: SetConfigArgs): void;
 }
 
 export interface IHTMLIFrameElementConfig {
