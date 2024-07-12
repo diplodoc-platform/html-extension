@@ -12,7 +12,7 @@ import {getScriptStore, useController} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
 
 export interface DiplodocHtmlMethods {
-    blocks: IHtmlIFrameController[];
+    readonly blocks: IHtmlIFrameController[];
     destroy: () => void;
     forEach: (callback: ForEachCallbackArgs) => void;
     reinitialize: () => void;
