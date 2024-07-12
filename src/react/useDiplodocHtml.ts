@@ -17,6 +17,7 @@ export function useDiplodocHtml() {
             controller
                 ? {
                       blocks: controller.blocks,
+                      destroy: () => controller.destroy(),
                       forEach: (callback: ControllerCallback<IHtmlIFrameController>) =>
                           controller.forEach(callback),
                       reinitialize: () => controller.reinitialize(),
@@ -27,3 +28,8 @@ export function useDiplodocHtml() {
         [controller],
     );
 }
+
+export type ForEachCallback = (callback: ControllerCallback<IHtmlIFrameController>) => void;
+export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
+export type SetConfigCallback = (config: IHTMLIFrameElementConfig) => void;
+export type SetConfigCallbackArgs = IHTMLIFrameElementConfig;
