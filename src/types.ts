@@ -21,6 +21,8 @@ export interface IHTMLIFrameElementConfig {
     styles?: Record<string, string>;
 }
 
+export type IHtmlControllerConfig = IHTMLIFrameElementConfig;
+
 export interface IHtmlIFrameController {
     destroy(): void;
     execute(callback: ControllerCallback<IHtmlIFrameController>): void;

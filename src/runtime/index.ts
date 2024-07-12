@@ -23,5 +23,6 @@ export type {
     ForEachCallbackArgs,
     IHtmlController,
     IHtmlIFrameController,
+    IHtmlControllerConfig,
     SetConfigArgs,
 } from '../types';
