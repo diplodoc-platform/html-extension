@@ -1,2 +1,2 @@
 export {useDiplodocHtml} from './useDiplodocHtml';
-export type {DiplodocHtmlMethods} from './useDiplodocHtml';
+export type {IHtmlController} from '../types';
