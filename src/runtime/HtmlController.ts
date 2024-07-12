@@ -7,12 +7,7 @@ import {
     IHtmlController,
     IHtmlIFrameController,
 } from '../types';
-import {
-    QueueManager,
-    createQueueWithWait,
-    isHTMLElement,
-    isIFrameLoaded,
-} from './utils';
+import {QueueManager, createQueueWithWait, isHTMLElement, isIFrameLoaded} from './utils';
 import {DEFAULT_PADDING, resizeIframeToFitContent} from '../utils';
 
 const DEFAULT_CONFIG = {
@@ -83,14 +78,14 @@ export class HtmlIFrameController implements IHtmlIFrameController {
             const previousClassNames = this._classNames || [];
 
             // remove all classes that were in previousClassNames but are not in classNames
-            previousClassNames.forEach(className => {
+            previousClassNames.forEach((className) => {
                 if (!classNames.includes(className)) {
                     body.classList.remove(className);
                 }
             });
 
             // add classes that are in classNames
-            classNames.forEach(className => {
+            classNames.forEach((className) => {
                 if (!body.classList.contains(className)) {
                     body.classList.add(className);
                 }
@@ -107,14 +102,14 @@ export class HtmlIFrameController implements IHtmlIFrameController {
             const previousStyles = this._styles;
 
             // remove all styles that are in previousStyles but not in styles
-            Object.keys(previousStyles).forEach(property => {
+            Object.keys(previousStyles).forEach((property) => {
                 if (!Object.prototype.hasOwnProperty.call(styles, property)) {
                     body.style.removeProperty(property);
                 }
             });
 
             // sdd or update styles that are in styles
-            Object.keys(styles).forEach(property => {
+            Object.keys(styles).forEach((property) => {
                 body.style.setProperty(property, styles[property]);
             });
 

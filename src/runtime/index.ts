@@ -7,13 +7,7 @@ if (isBrowser()) {
     const store = getScriptStore<IHtmlController>(GLOBAL_SYMBOL);
 
     if (store) {
-        const createController = () => new HtmlController(document, {
-            classNames: ['dark'],
-            styles: {
-                'background-color': '#BBB',
-                'color': '#A33',
-            },
-        });
+        const createController = () => new HtmlController(document);
 
         createLoadQueue<HtmlController>({
             store,
