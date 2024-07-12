@@ -1,12 +1,6 @@
 export const isHTMLElement = (node: Node): node is HTMLElement =>
     node.nodeType === Node.ELEMENT_NODE;
 
-export const setIframeStyles = (block: HTMLIFrameElement, styles: Record<string, string>) => {
-    Object.keys(styles).forEach((property) => {
-        block.contentWindow?.document.body.style.setProperty(property, styles[property]);
-    });
-};
-
 export interface QueueManager<T = any> {
     start: () => void;
     push: (callback: QueueManagerCallback<T>) => void;

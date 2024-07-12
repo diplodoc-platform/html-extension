@@ -15,8 +15,10 @@ export interface IHtmlController {
 }
 
 export interface IHTMLIFrameElementConfig {
+    classNames?: string[];
     resizeDelay?: number;
     resizePadding?: number;
+    styles?: Record<string, string>;
 }
 
 export interface IHtmlIFrameController {
@@ -24,6 +26,7 @@ export interface IHtmlIFrameController {
     execute(callback: ControllerCallback<IHtmlIFrameController>): void;
     readonly block: HTMLIFrameElement;
     resize(): void;
+    setClassNames(classNames: string[]): void;
     setConfig(config: IHTMLIFrameElementConfig): void;
     setStyles(styles: Record<string, string>): void;
 }

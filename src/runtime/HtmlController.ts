@@ -12,20 +12,23 @@ import {
     createQueueWithWait,
     isHTMLElement,
     isIFrameLoaded,
-    setIframeStyles,
 } from './utils';
 import {DEFAULT_PADDING, resizeIframeToFitContent} from '../utils';
 
 const DEFAULT_CONFIG = {
+    classNames: [],
     resizeDelay: 150,
     resizePadding: DEFAULT_PADDING,
+    styles: {},
 };
 
 export class HtmlIFrameController implements IHtmlIFrameController {
     private _block: HTMLIFrameElement;
+    private _classNames: string[] = [];
     private _config: IHTMLIFrameElementConfig;
     private _queueManager: QueueManager<IHtmlIFrameController>;
     private _resizeObserver: ResizeObserver;
+    private _styles: Record<string, string> = {};
 
     constructor(iframe: HTMLIFrameElement, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
         this._block = iframe;
@@ -37,6 +40,9 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         this._resizeToFitContent = this._resizeToFitContent.bind(this);
 
         this._queueManager.push(this._resizeToFitContent);
+        this._queueManager.push(() => this.setClassNames(config.classNames));
+        this._queueManager.push(() => this.setStyles(config.styles));
+
         this._resizeObserver = new window.ResizeObserver(
             debounce(this._onResizeHandler, this._config.resizeDelay),
         );
@@ -62,16 +68,59 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         this._queueManager.push(callback);
     }
 
-    setStyles(styles: Record<string, string>): void {
-        setIframeStyles(this._block, styles);
-    }
-
     resize() {
         this._resizeToFitContent();
     }
 
     setConfig(config: IHTMLIFrameElementConfig) {
         this._config = config;
+    }
+
+    setClassNames(classNames: string[] | undefined) {
+        const body = this._block.contentWindow?.document.body;
+
+        if (classNames && body) {
+            const previousClassNames = this._classNames || [];
+
+            // remove all classes that were in previousClassNames but are not in classNames
+            previousClassNames.forEach(className => {
+                if (!classNames.includes(className)) {
+                    body.classList.remove(className);
+                }
+            });
+
+            // add classes that are in classNames
+            classNames.forEach(className => {
+                if (!body.classList.contains(className)) {
+                    body.classList.add(className);
+                }
+            });
+
+            // update this._classNames to the new classNames
+            this._classNames = classNames;
+        }
+    }
+
+    setStyles(styles: Record<string, string> | undefined) {
+        const body = this._block.contentWindow?.document.body;
+        if (styles && body) {
+            const previousStyles = this._styles;
+
+            // remove all styles that are in previousStyles but not in styles
+            Object.keys(previousStyles).forEach(property => {
+                if (!Object.prototype.hasOwnProperty.call(styles, property)) {
+                    body.style.removeProperty(property);
+                }
+            });
+
+            // sdd or update styles that are in styles
+            Object.keys(styles).forEach(property => {
+                body.style.setProperty(property, styles[property]);
+            });
+
+            // update this._styles to the new styles
+            this._styles = styles;
+        }
     }
 
     private _resizeToFitContent() {
