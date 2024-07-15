@@ -1,4 +1,3 @@
-import {useMemo} from 'react';
 import {IHtmlController} from '../types';
 
 import {getScriptStore, useController} from '../common';
@@ -8,5 +7,5 @@ export function useDiplodocHtml(): IHtmlController | null {
     const store = getScriptStore<IHtmlController>(GLOBAL_SYMBOL);
     const controller = useController<IHtmlController>(store);
 
-    return useMemo(() => controller ?? null, [controller]);
+    return controller;
 }
