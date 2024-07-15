@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/diplodoc-platform/html-extension/compare/v1.2.6...v1.2.7) (2024-07-15)
+
+
+### Bug Fixes
+
+* **runtime, react:** added IHTMLIFrameElementConfig export, deleted useMemo ([5d1b913](https://github.com/diplodoc-platform/html-extension/commit/5d1b9132157696d1c7e9ef27e8d04b934d9312d1))
+
 ## [1.2.6](https://github.com/diplodoc-platform/html-extension/compare/v1.2.5...v1.2.6) (2024-07-12)
 
 
