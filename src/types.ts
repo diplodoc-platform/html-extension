@@ -4,7 +4,7 @@ import {ScriptStore} from './common';
 export type ControllerCallback<T> = (controller: T) => void;
 
 export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
-export type SetConfigArgs = IHTMLIFrameElementConfig;
+export type SetConfigArgs = IHTMLIFrameControllerConfig;
 
 export interface IHtmlController {
     destroy(): void;
@@ -14,23 +14,19 @@ export interface IHtmlController {
     setConfig(config: SetConfigArgs): void;
 }
 
-export interface IHTMLIFrameElementConfig {
+export interface IHTMLIFrameControllerConfig {
     classNames?: string[];
-    resizeDelay?: number;
-    resizePadding?: number;
     styles?: Record<string, string>;
 }
 
-export type IHtmlControllerConfig = IHTMLIFrameElementConfig;
+export type ContentResizeCallback = (newHeight: number) => void;
+export type Unsubscribe = () => void;
 
 export interface IHtmlIFrameController {
-    destroy(): void;
-    execute(callback: ControllerCallback<IHtmlIFrameController>): void;
-    readonly block: HTMLIFrameElement;
-    resize(): void;
     setClassNames(classNames: string[]): void;
-    setConfig(config: IHTMLIFrameElementConfig): void;
     setStyles(styles: Record<string, string>): void;
+    onContentResize: (callback: ContentResizeCallback) => Unsubscribe;
+    destroy(): void;
 }
 
 export type CSSProperties = {

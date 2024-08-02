@@ -3,29 +3,22 @@ import debounce from 'lodash.debounce';
 import {BLOCK_NAME} from '../constants';
 import {
     ControllerCallback,
-    IHTMLIFrameElementConfig,
+    IHTMLIFrameControllerConfig,
     IHtmlController,
     IHtmlIFrameController,
 } from '../types';
 import {QueueManager, createQueueWithWait, isHTMLElement, isIFrameLoaded} from './utils';
 import {DEFAULT_PADDING, resizeIframeToFitContent} from '../utils';
 
-const DEFAULT_CONFIG = {
-    classNames: [],
-    resizeDelay: 150,
-    resizePadding: DEFAULT_PADDING,
-    styles: {},
-};
-
 export class HtmlIFrameController implements IHtmlIFrameController {
     private _block: HTMLIFrameElement;
     private _classNames: string[] = [];
-    private _config: IHTMLIFrameElementConfig;
+    private _config: IHTMLIFrameControllerConfig;
     private _queueManager: QueueManager<IHtmlIFrameController>;
     private _resizeObserver: ResizeObserver;
     private _styles: Record<string, string> = {};
 
-    constructor(iframe: HTMLIFrameElement, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
+    constructor(iframe: HTMLIFrameElement, config: IHTMLIFrameControllerConfig = DEFAULT_CONFIG) {
         this._block = iframe;
         this._config = config;
         this._queueManager = createQueueWithWait(this);
@@ -67,7 +60,7 @@ export class HtmlIFrameController implements IHtmlIFrameController {
         this._resizeToFitContent();
     }
 
-    setConfig(config: IHTMLIFrameElementConfig) {
+    setConfig(config: IHTMLIFrameControllerConfig) {
         this._config = config;
     }
 
@@ -134,10 +127,10 @@ export class HtmlIFrameController implements IHtmlIFrameController {
 // Finds all iframes and creates controllers for each iframe
 export class HtmlController implements IHtmlController {
     private _blocks: Map<string, HtmlIFrameController> = new Map();
-    private _config: IHTMLIFrameElementConfig;
+    private _config: IHTMLIFrameControllerConfig;
     private _document: Document;
 
-    constructor(document: Document, config: IHTMLIFrameElementConfig = DEFAULT_CONFIG) {
+    constructor(document: Document, config: IHTMLIFrameControllerConfig = DEFAULT_CONFIG) {
         this._config = config;
         this._document = document;
 
@@ -160,7 +153,7 @@ export class HtmlController implements IHtmlController {
         this._initialize();
     }
 
-    setConfig(config: IHTMLIFrameElementConfig) {
+    setConfig(config: IHTMLIFrameControllerConfig) {
         this._config = config;
     }
 
