@@ -24,6 +24,6 @@ export type {
     IHtmlController,
     IHtmlControllerConfig,
     IHtmlIFrameController,
-    IHTMLIFrameElementConfig,
+    IHTMLIFrameControllerConfig as IHTMLIFrameElementConfig,
     SetConfigArgs,
 } from '../types';

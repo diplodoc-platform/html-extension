@@ -1,6 +1,6 @@
 export const DEFAULT_PADDING = 34;
 export const resizeIframeToFitContent = (
-    iframe: HTMLIFrameElement,
+    body,
     padding = DEFAULT_PADDING,
 ): void => {
     if (iframe.contentWindow) {
