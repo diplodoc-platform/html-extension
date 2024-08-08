@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/diplodoc-platform/html-extension/compare/v1.3.0...v1.3.1) (2024-08-08)
+
+
+### Bug Fixes
+
+* **plugin:** Added types re-export ([7b117e0](https://github.com/diplodoc-platform/html-extension/commit/7b117e09b889814a82f1e383bb1584adc61a9d30))
+
 ## [1.3.0](https://github.com/diplodoc-platform/html-extension/compare/v1.2.7...v1.3.0) (2024-08-08)
 
 
