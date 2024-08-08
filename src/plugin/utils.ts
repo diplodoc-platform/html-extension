@@ -1,3 +1,5 @@
+import {StylesObject} from '../types';
+
 export function addHiddenProperty<
     B extends Record<string | symbol, unknown>,
     F extends string | symbol,
@@ -12,3 +14,27 @@ export function addHiddenProperty<
 
     return box as B & {[P in F]: V};
 }
+
+const hasOwnProperty = (obj: Object, prop: string) =>
+    Object.prototype.hasOwnProperty.call(obj, prop);
+
+export const getStyles = (styles: StylesObject): string => {
+    let result = '';
+
+    for (const selector in styles) {
+        if (hasOwnProperty(styles, selector)) {
+            const properties = styles[selector];
+            let propertiesString = '';
+
+            for (const property in properties) {
+                if (hasOwnProperty(properties, property)) {
+                    const value = properties[property];
+                    propertiesString += `${property}: ${value};`;
+                }
+            }
+            result += `${selector} { ${propertiesString} }`;
+        }
+    }
+
+    return result;
+};

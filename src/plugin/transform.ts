@@ -3,8 +3,9 @@ import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-
 import type {PluginWithOptions} from 'markdown-it';
 
 import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../constants';
-import {addHiddenProperty} from './utils';
+import {addHiddenProperty, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
+import {BaseTarget, StylesObject} from '../types';
 
 const generateHtmlBlockId = () => `${BLOCK_NAME}-${Math.random().toString(36).substr(2, 8)}`;
 
@@ -18,12 +19,14 @@ export const TokenAttr = {
     style: 'style',
 } as const;
 
-export type PluginOptions = {
+export interface PluginOptions {
     runtimeJsPath: string;
     containerClasses: string;
     bundle: boolean;
     sanitize?: (dirtyHtml: string) => string;
-};
+    styles?: string | StylesObject;
+    baseTarget?: BaseTarget;
+}
 
 type TransformOptions = {
     output?: string;
@@ -37,6 +40,8 @@ export function transform({
     containerClasses = '',
     bundle = true,
     sanitize,
+    styles,
+    baseTarget = '_parent',
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
@@ -87,12 +92,19 @@ export function transform({
         mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
 
-            if (sanitize) {
-                const content = token.attrGet(TokenAttr.srcdoc);
-                if (content) {
-                    token.attrSet(TokenAttr.srcdoc, sanitize(content));
-                }
+            const base = `<base target="${baseTarget}">`;
+            let content = base + token.attrGet(TokenAttr.srcdoc) ?? '';
+
+            if (styles) {
+                const stylesContent =
+                    typeof styles === 'string'
+                        ? `<link rel="stylesheet" href="${styles}" />`
+                        : `<style>${getStyles(styles)}</style>`;
+                content = stylesContent + content;
             }
+
+            const resultContent = sanitize ? sanitize(content) : content;
+            token.attrSet(TokenAttr.srcdoc, resultContent);
 
             return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
         };

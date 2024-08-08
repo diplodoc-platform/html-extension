@@ -33,6 +33,16 @@ export interface IHtmlIFrameController {
     setStyles(styles: Record<string, string>): void;
 }
 
+export type CSSProperties = {
+    [property: string]: string | number;
+};
+
+export type BaseTarget = '_self' | '_blank' | '_parent' | '_top';
+
+export type StylesObject = {
+    [selector: string]: CSSProperties;
+};
+
 declare global {
     interface Window {
         [GLOBAL_SYMBOL]: ScriptStore<IHtmlController>;
