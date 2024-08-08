@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/diplodoc-platform/html-extension/compare/v1.2.7...v1.3.0) (2024-08-08)
+
+
+### Features
+
+* **plugin:** added baseTarget and styles options ([5c62e61](https://github.com/diplodoc-platform/html-extension/commit/5c62e61732374719894506f3d4b8d072f0361716))
+
 ## [1.2.7](https://github.com/diplodoc-platform/html-extension/compare/v1.2.6...v1.2.7) (2024-07-15)
 
 
