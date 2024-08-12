@@ -9,13 +9,12 @@ import {
 } from '../commonDefs';
 import {makeBuilderInternal} from './builder';
 import {APIPublisherBlueprint, OptionalUnsubscribe} from './defs';
-import {BuilderConfig, PublishableDescriptor} from './internalDefs';
+import {BuilderConfig} from './internalDefs';
 
 export class APIPublisher {
-    static fromBlueprint<PublishablesUnion extends PublishableDescriptor>(
+    static fromBlueprint(
         messageChannel: IMessageChannel,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        blueprint: APIPublisherBlueprint<any, PublishablesUnion>,
+        blueprint: APIPublisherBlueprint<never, never>,
     ) {
         const builder = makeBuilderInternal<never, never>({
             messageChannel,
@@ -49,6 +48,10 @@ export class APIPublisher {
             ({eventName, subscriptionGetter}) =>
                 subscriptionGetter((event) => this.eventNotify(eventName, event)),
         );
+    }
+
+    start() {
+        this.messageChannel.open();
     }
 
     destroy() {

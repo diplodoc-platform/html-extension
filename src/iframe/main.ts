@@ -9,11 +9,15 @@ const onDOMReady = () => {
     const iframeController = new HtmlIFrameController(globalThis.document.body);
     const apiBlueprint = apiBlueprintFromController(iframeController);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (globalThis as any)[$$PublisherInstanceSymbol] = APIPublisher.fromBlueprint(
+    const publisher = APIPublisher.fromBlueprint(
         new PostMessageChannel(globalThis.parent),
         apiBlueprint,
     );
+
+    publisher.start();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any)[$$PublisherInstanceSymbol] = publisher;
 };
 
 if (['complete', 'interactive'].includes(document.readyState)) {

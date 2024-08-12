@@ -25,12 +25,18 @@ export type PublicationMessage = TypedMessage & {
     content: unknown;
 };
 
+export type HandshakeServiceMessage = {
+    handshake: 'initiator' | 'ack';
+};
+
 type Unsub = () => void;
 
 export type IMessageChannel = {
+    open: () => Promise<void>;
+    close: () => Promise<void>;
+    isUpstreamHealthy: boolean;
     onIncomingMessage: (handler: (message: unknown) => void) => Unsub;
     sendMessage: (message: unknown) => Promise<void>;
-    close: () => void;
 };
 
 export const isMessage = (maybeMessage: unknown): maybeMessage is TypedMessage =>
@@ -38,3 +44,11 @@ export const isMessage = (maybeMessage: unknown): maybeMessage is TypedMessage =
 
 export const isCallRequestMessage = (message: TypedMessage): message is CallRequestMessage =>
     'callId' in message && 'args' in message;
+
+export const isEventMessage = (message: TypedMessage): message is PublicationMessage =>
+    'content' in message;
+
+export const isHandshakeServiceMessage = (
+    maybeMessage: unknown,
+): maybeMessage is HandshakeServiceMessage =>
+    typeof maybeMessage === 'object' && maybeMessage !== null && 'handshake' in maybeMessage;

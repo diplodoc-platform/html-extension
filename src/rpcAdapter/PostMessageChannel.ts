@@ -1,19 +1,39 @@
-import {IMessageChannel} from './commonDefs';
+import {PromiseFuse, TaskQueue, queueFromFuse} from '../utils/PromiseQueue';
+import {HandshakeServiceMessage, IMessageChannel, isHandshakeServiceMessage} from './commonDefs';
 
 export class PostMessageChannel implements IMessageChannel {
     private readonly listeners = new Set<(data: unknown) => void>();
     private readonly target: MessageEventSource;
 
+    private readonly sendQueue: TaskQueue;
+    private readonly handshakeFuse: PromiseFuse;
+
     constructor(target: MessageEventSource) {
+        const [queue, handshakeFuse] = queueFromFuse();
+
         this.target = target;
+        this.sendQueue = queue;
+        this.handshakeFuse = handshakeFuse;
 
         this.target.addEventListener('message', this.handleIncomingMessage as EventListener);
     }
 
-    sendMessage(message: unknown) {
-        this.target.postMessage(message);
+    open() {
+        this.sendMessage({handshake: 'initiator'} satisfies HandshakeServiceMessage);
 
-        return Promise.resolve();
+        return this.handshakeFuse.promise;
+    }
+
+    sendMessage(message: unknown) {
+        return this.sendQueue.run(() => {
+            this.sendMessageRaw(message);
+
+            return Promise.resolve();
+        });
+    }
+
+    get isUpstreamHealthy() {
+        return this.handshakeFuse.isBlown;
     }
 
     onIncomingMessage(handler: (message: unknown) => void) {
@@ -24,9 +44,31 @@ export class PostMessageChannel implements IMessageChannel {
 
     close() {
         this.target.removeEventListener('message', this.handleIncomingMessage as EventListener);
+
+        return Promise.resolve();
     }
 
     private handleIncomingMessage = (e: MessageEvent) => {
-        this.listeners.forEach((listener) => listener(e));
+        const incomingData = e.data;
+
+        if (isHandshakeServiceMessage(incomingData)) {
+            this.handleHandshake(incomingData);
+
+            return;
+        }
+
+        this.listeners.forEach((listener) => listener(e.data));
     };
+
+    private sendMessageRaw(message: unknown) {
+        this.target.postMessage(message);
+    }
+
+    private handleHandshake(serviceMessage: HandshakeServiceMessage) {
+        this.handshakeFuse.blowIfNotBlown();
+
+        if (serviceMessage.handshake === 'initiator') {
+            this.sendMessageRaw({handshake: 'ack'} satisfies HandshakeServiceMessage);
+        }
+    }
 }
