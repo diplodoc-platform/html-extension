@@ -45,8 +45,9 @@
   "license": "MIT",
   "files": [
     "plugin",
-    "runtime",
     "react",
+    "runtime",
+    "types.d.ts",
     "utils"
   ],
   "peerDependencies": {
