@@ -39,9 +39,12 @@ export type APIPublisherBlueprint<
     builder: APIPublisherBuilder<never, never>,
 ) => APIPublisherBuilder<ResultingExposedCallDescriptorsUnion, ResultingPublishablesUnion>;
 
-export type ExposedAPISchema<C, E> = {
-    __calls: C;
-    __events: E;
+export type ExposedAPISchema<
+    ResultingExposedCallDescriptorsUnion extends ExposedCallDescriptor,
+    ResultingPublishablesUnion extends PublishableDescriptor,
+> = {
+    __calls: ResultingExposedCallDescriptorsUnion;
+    __events: ResultingPublishablesUnion;
 };
 
 export type InferExposedAPIFromBlueprint<Blueprint> =

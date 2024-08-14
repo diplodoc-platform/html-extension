@@ -12,6 +12,7 @@ import {
 } from '../commonDefs';
 import {nanoid} from 'nanoid';
 import {ExposedAPISchema} from '../publisher';
+import {ExposedCallDescriptor, PublishableDescriptor} from '../publisher/internalDefs';
 
 type EventListener<T = unknown> = (eventData: T) => void;
 
@@ -39,47 +40,50 @@ type RPCConsumerOptions = {
 
 const DEFAULT_CALL_TIMEOUT = 1000;
 
-type GuardSchema<Schema, ResolvedType, Fallback> = Schema extends never ? Fallback : ResolvedType;
+type GuardNever<T, ResolvedType, Fallback> = [T] extends [never] ? Fallback : ResolvedType;
 
-type ExtractEventTypes<Schema extends ExposedAPISchema<never, never>> = GuardSchema<
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ExtractEventTypes<Schema extends ExposedAPISchema<any, any>> = GuardNever<
     Schema,
     Schema['__events'][0],
     string
 >;
 type ExtractEventPayload<
-    Schema extends ExposedAPISchema<never, never>,
+    EventDescUnion extends PublishableDescriptor,
     EventType extends string,
-> = GuardSchema<
-    Schema,
-    Schema['__events'] extends [EventType, infer Payload] ? Payload : never,
+> = GuardNever<
+    EventDescUnion,
+    EventDescUnion extends [EventType, infer Payload] ? Payload : never,
     unknown
 >;
 
-type ExtractCallTypes<Schema extends ExposedAPISchema<never, never>> = GuardSchema<
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ExtractCallTypes<Schema extends ExposedAPISchema<any, any>> = GuardNever<
     Schema,
     Schema['__calls'][0],
     string
 >;
 type ExtractCallArgs<
-    Schema extends ExposedAPISchema<never, never>,
+    CallDescUnion extends ExposedCallDescriptor,
     CallType extends string,
-> = GuardSchema<
-    Schema,
+> = GuardNever<
+    CallDescUnion,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Schema['__calls'] extends [CallType, infer Args, any] ? Args : never,
+    CallDescUnion extends [CallType, infer Args, any] ? Args : never,
     unknown
 >;
 type ExtractCallResponse<
-    Schema extends ExposedAPISchema<never, never>,
+    CallDescUnion extends ExposedCallDescriptor,
     CallType extends string,
-> = GuardSchema<
-    Schema,
+> = GuardNever<
+    CallDescUnion,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Schema['__calls'] extends [CallType, any, infer Response] ? Response : never,
+    CallDescUnion extends [CallType, any, infer Response] ? Response : never,
     unknown
 >;
 
-export class RPCConsumer<Schema extends ExposedAPISchema<never, never> = never> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class RPCConsumer<Schema extends ExposedAPISchema<any, any> = never> {
     private readonly messageChannel: IMessageChannel;
     private readonly eventListenerRouting = new Map<string, Set<EventListener>>();
     private readonly callsInProgress = new Map<string, Deferred<unknown>>();
@@ -106,7 +110,7 @@ export class RPCConsumer<Schema extends ExposedAPISchema<never, never> = never> 
 
     on<T extends ExtractEventTypes<Schema>>(
         eventName: T,
-        listener: NoInfer<EventListener<ExtractEventPayload<Schema, T>>>,
+        listener: NoInfer<EventListener<ExtractEventPayload<Schema['__events'], T>>>,
     ) {
         const routesForThisEvent = getOrIninitialize(
             this.eventListenerRouting,
@@ -121,8 +125,8 @@ export class RPCConsumer<Schema extends ExposedAPISchema<never, never> = never> 
 
     async dispatchCall<T extends ExtractCallTypes<Schema>>(
         type: T,
-        args: NoInfer<ExtractCallArgs<Schema, T>>,
-    ): Promise<ExtractCallResponse<Schema, T>> {
+        args: NoInfer<ExtractCallArgs<Schema['__calls'], T>>,
+    ): Promise<ExtractCallResponse<Schema['__calls'], T>> {
         const callId = nanoid();
         const message: CallRequestMessage = {
             type,
@@ -138,7 +142,7 @@ export class RPCConsumer<Schema extends ExposedAPISchema<never, never> = never> 
                 ),
             this.callTimeout,
         ).finally(() => this.callsInProgress.delete(callId)) as Promise<
-            ExtractCallResponse<Schema, T>
+            ExtractCallResponse<Schema['__calls'], T>
         >;
     }
 
