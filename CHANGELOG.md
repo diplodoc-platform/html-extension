@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/diplodoc-platform/html-extension/compare/v1.3.1...v1.3.2) (2024-08-14)
+
+
+### Bug Fixes
+
+* added types.d.ts to package ([992c7b9](https://github.com/diplodoc-platform/html-extension/commit/992c7b90918ed5ed1c29192a4b2aec169319d8fc))
+
 ## [1.3.1](https://github.com/diplodoc-platform/html-extension/compare/v1.3.0...v1.3.1) (2024-08-08)
 
 
