@@ -1,12 +1,12 @@
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
 import {APIPublisher} from '../rpcAdapter/publisher';
-import {HtmlIFrameController} from './HtmlIFrameController';
+import {IFrameController} from './IFrameController';
 import {apiBlueprintFromController} from './rpcApiPublisherBlueprint';
 
 const $$PublisherInstanceSymbol = Symbol('$$RPCAPIPublisher');
 
 const onDOMReady = () => {
-    const iframeController = new HtmlIFrameController(globalThis.document.body);
+    const iframeController = new IFrameController(globalThis.document.body);
     const apiBlueprint = apiBlueprintFromController(iframeController);
 
     const publisher = APIPublisher.fromBlueprint(

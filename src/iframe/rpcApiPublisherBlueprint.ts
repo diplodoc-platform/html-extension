@@ -1,11 +1,12 @@
 import {APIPublisherBlueprint, InferExposedAPIFromBlueprint} from '../rpcAdapter/publisher';
-import {HtmlIFrameController} from './HtmlIFrameController';
+import {IFrameController} from './IFrameController';
 
-export const apiBlueprintFromController = (controller: HtmlIFrameController) =>
+export const apiBlueprintFromController = (controller: IFrameController) =>
     ((builder) =>
         builder
             .call('setStyles', controller.setStyles.bind(controller))
             .call('setClassNames', controller.setClassNames.bind(controller))
+            .call('replaceHTML', controller.replaceHTML.bind(controller))
             .eventSource(
                 'resizedToNewHeight',
                 controller.onContentResize.bind(controller),

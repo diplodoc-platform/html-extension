@@ -101,7 +101,7 @@ export class RPCConsumer<Schema extends ExposedAPISchema<any, any> = never> {
     }
 
     start() {
-        this.messageChannel.open();
+        return this.messageChannel.open();
     }
 
     destroy() {

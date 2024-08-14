@@ -1,29 +1,25 @@
 import {createLoadQueue, getScriptStore, isBrowser} from '../common';
 import {GLOBAL_SYMBOL} from '../constants';
-import {HtmlController} from './HtmlController';
-import {IHtmlController} from '../types';
+import {EmbeddedContentRootController} from './EmbeddedContentRootController';
 
 if (isBrowser()) {
-    const store = getScriptStore<IHtmlController>(GLOBAL_SYMBOL);
+    const store = getScriptStore<EmbeddedContentRootController>(GLOBAL_SYMBOL);
 
     if (store) {
-        const createController = () => new HtmlController(document);
+        const createController = () => new EmbeddedContentRootController(document);
 
-        createLoadQueue<HtmlController>({
+        createLoadQueue<EmbeddedContentRootController>({
             store,
             createController,
         });
     }
 }
 
-export {HtmlController};
+export {EmbeddedContentRootController as HtmlController};
 
 export type {
     ControllerCallback,
     ForEachCallbackArgs,
-    IHtmlController,
-    IHtmlControllerConfig,
-    IHtmlIFrameController,
     IHTMLIFrameControllerConfig as IHTMLIFrameElementConfig,
     SetConfigArgs,
 } from '../types';
