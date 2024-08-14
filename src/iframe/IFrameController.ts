@@ -16,7 +16,7 @@ export class IFrameController {
         this.domContainer = bodyElement;
 
         this.resizeObserver = new window.ResizeObserver(
-            debounce(this.notifyResizeListeners, DEFAULT_RESIZE_DELAY),
+            debounce(this.notifyResizeListeners.bind(this), DEFAULT_RESIZE_DELAY),
         );
 
         this.resizeObserver.observe(this.domContainer);
@@ -41,7 +41,15 @@ export class IFrameController {
     }
 
     replaceHTML(htmlString: string) {
-        this.domContainer.innerHTML = htmlString;
+        const fragment = globalThis.document.createRange().createContextualFragment(htmlString);
+
+        this.domContainer.replaceChildren(fragment);
+    }
+
+    setBaseTarget(value: string) {
+        const baseElement = this.getBaseElement();
+
+        baseElement.setAttribute('target', value);
     }
 
     onContentResize(callback: ContentResizeCallback): Unsubscribe {
@@ -54,5 +62,21 @@ export class IFrameController {
         const heightToNotifyOf = this.domContainer.getBoundingClientRect().height;
 
         this.resizeListeners.forEach((listener) => listener(heightToNotifyOf));
+    }
+
+    private getBaseElement() {
+        const head = globalThis.document.head;
+
+        const maybeExistingBase = head.querySelector('base');
+
+        if (!maybeExistingBase) {
+            const newBase = globalThis.document.createElement('base');
+
+            head.appendChild(newBase);
+
+            return newBase;
+        }
+
+        return maybeExistingBase;
     }
 }

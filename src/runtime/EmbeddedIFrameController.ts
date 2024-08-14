@@ -10,6 +10,7 @@ const DEFAULT_PADDING = 34;
 type DatasetShape = {
     yfmSandboxMode: 'isolated';
     yfmSandboxContent: string;
+    yfmSandboxBaseTarget?: string;
 };
 
 const assertIFrame: (element: HTMLElement) => asserts element is HTMLIFrameElement = (element) => {
@@ -62,12 +63,18 @@ export class EmbeddedIFrameController implements IEmbeddedContentController {
     }
 
     async initialize() {
+        const {yfmSandboxContent, yfmSandboxBaseTarget} = this.initParameters;
+
         await this.rpcConsumer.start();
 
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
 
-        return this.replaceIFrameHTML(this.initParameters.yfmSandboxContent);
+        if (yfmSandboxBaseTarget) {
+            await this.rpcConsumer.dispatchCall('setBaseTarget', yfmSandboxBaseTarget);
+        }
+
+        return this.replaceIFrameHTML(yfmSandboxContent);
     }
 
     destroy() {

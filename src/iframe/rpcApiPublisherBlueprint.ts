@@ -7,6 +7,7 @@ export const apiBlueprintFromController = (controller: IFrameController) =>
             .call('setStyles', controller.setStyles.bind(controller))
             .call('setClassNames', controller.setClassNames.bind(controller))
             .call('replaceHTML', controller.replaceHTML.bind(controller))
+            .call('setBaseTarget', controller.setBaseTarget.bind(controller))
             .eventSource(
                 'resizedToNewHeight',
                 controller.onContentResize.bind(controller),

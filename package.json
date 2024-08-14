@@ -39,7 +39,8 @@
     "precommit": "npm run lint && npm run test",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "exit 0",
-    "init": "husky install && npm run build"
+    "init": "husky install && npm run build",
+    "typecheck": "tsc -p . --noEmit"
   },
   "author": "",
   "license": "MIT",
@@ -68,6 +69,7 @@
     "markdown-it-directive": "^2.0.2"
   },
   "devDependencies": {
+    "@craftamap/esbuild-plugin-html": "^0.7.0",
     "@diplodoc/eslint-config": "^2.0.0",
     "@diplodoc/prettier-config": "^2.0.0",
     "@diplodoc/tsconfig": "^1.0.2",

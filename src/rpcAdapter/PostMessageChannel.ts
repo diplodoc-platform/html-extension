@@ -15,13 +15,13 @@ export class PostMessageChannel implements IMessageChannel {
         this.sendQueue = queue;
         this.handshakeFuse = handshakeFuse;
 
-        this.target.addEventListener('message', this.handleIncomingMessage as EventListener);
+        globalThis.addEventListener('message', this.handleIncomingMessage as EventListener);
     }
 
     open() {
-        this.sendMessage({handshake: 'initiator'} satisfies HandshakeServiceMessage);
+        this.sendMessageRaw({handshake: 'initiator'} satisfies HandshakeServiceMessage);
 
-        return this.handshakeFuse;
+        return this.handshakeFuse.promise;
     }
 
     sendMessage(message: unknown) {
@@ -43,12 +43,16 @@ export class PostMessageChannel implements IMessageChannel {
     }
 
     close() {
-        this.target.removeEventListener('message', this.handleIncomingMessage as EventListener);
+        globalThis.removeEventListener('message', this.handleIncomingMessage as EventListener);
 
         return Promise.resolve();
     }
 
     private handleIncomingMessage = (e: MessageEvent) => {
+        if (e.source !== this.target) {
+            return;
+        }
+
         const incomingData = e.data;
 
         if (isHandshakeServiceMessage(incomingData)) {
@@ -61,7 +65,9 @@ export class PostMessageChannel implements IMessageChannel {
     };
 
     private sendMessageRaw(message: unknown) {
-        this.target.postMessage(message);
+        this.target.postMessage(message, {
+            targetOrigin: '*',
+        });
     }
 
     private handleHandshake(serviceMessage: HandshakeServiceMessage) {

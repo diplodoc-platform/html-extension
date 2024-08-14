@@ -137,8 +137,13 @@ export class RPCConsumer<Schema extends ExposedAPISchema<any, any> = never> {
         return timeout(
             this.messageChannel
                 .sendMessage(message)
-                .then(() =>
-                    getOrIninitialize(this.callsInProgress, callId, () => new Deferred<unknown>()),
+                .then(
+                    () =>
+                        getOrIninitialize(
+                            this.callsInProgress,
+                            callId,
+                            () => new Deferred<unknown>(),
+                        ).promise,
                 ),
             this.callTimeout,
         ).finally(() => this.callsInProgress.delete(callId)) as Promise<

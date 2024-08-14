@@ -1,9 +1,9 @@
 import {GLOBAL_SYMBOL} from './constants';
 import {ScriptStore} from './common';
+import {EmbeddedContentRootController} from './runtime/EmbeddedContentRootController';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
-export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
 export type SetConfigArgs = IHTMLIFrameControllerConfig;
 
 export interface IHTMLIFrameControllerConfig {
@@ -26,6 +26,6 @@ export type StylesObject = {
 
 declare global {
     interface Window {
-        [GLOBAL_SYMBOL]: ScriptStore<IHtmlController>;
+        [GLOBAL_SYMBOL]: ScriptStore<EmbeddedContentRootController>;
     }
 }

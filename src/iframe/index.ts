@@ -1,1 +1,1 @@
-export type { IFrameControllerRPCAPI } from './rpcApiPublisherBlueprint';
+export type {IFrameControllerRPCAPI} from './rpcApiPublisherBlueprint';

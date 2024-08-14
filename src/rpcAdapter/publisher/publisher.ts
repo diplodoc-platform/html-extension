@@ -39,9 +39,6 @@ export class APIPublisher {
             if (isMessage(message) && isCallRequestMessage(message)) {
                 this.processCall(message);
             }
-
-            // eslint-disable-next-line no-console
-            console.warn(`Message failed validity check: ${message}`);
         });
 
         this.eventSourceSubscriptionDisposers = eventSources.map(
@@ -51,7 +48,7 @@ export class APIPublisher {
     }
 
     start() {
-        this.messageChannel.open();
+        return this.messageChannel.open();
     }
 
     destroy() {

@@ -19,7 +19,6 @@ export {EmbeddedContentRootController as HtmlController};
 
 export type {
     ControllerCallback,
-    ForEachCallbackArgs,
     IHTMLIFrameControllerConfig as IHTMLIFrameElementConfig,
     SetConfigArgs,
 } from '../types';

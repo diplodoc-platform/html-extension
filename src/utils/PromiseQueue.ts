@@ -23,7 +23,9 @@ type PromiseCallbackPair<T> = {
     reject: (thrown: Error) => void;
 };
 
-export class Deferred<T> extends Promise<T> {
+export class Deferred<T> {
+    promise: Promise<T>;
+
     private didSettle = false;
     private callbacks: PromiseCallbackPair<T> = {
         resolve: () => {},
@@ -31,7 +33,7 @@ export class Deferred<T> extends Promise<T> {
     };
 
     constructor() {
-        super((resolve, reject) => {
+        this.promise = new Promise((resolve, reject) => {
             this.callbacks = {resolve, reject};
         });
     }
@@ -61,7 +63,7 @@ export class Deferred<T> extends Promise<T> {
 
 export const queueFromFuse = () => {
     const fuse = new Deferred<void>();
-    const queue = new TaskQueue(fuse);
+    const queue = new TaskQueue(fuse.promise);
 
     return [queue, fuse] as const;
 };

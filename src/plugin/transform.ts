@@ -2,27 +2,22 @@ import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
 import type {PluginWithOptions} from 'markdown-it';
 
-import {BLOCK_NAME, HTML_DATA_ID, HTML_DATA_KEY, TOKEN_TYPE} from '../constants';
+import {
+    DATAATTR_ISOLATED_SANDBOX_BASE_TARGET,
+    DATAATTR_ISOLATED_SANDBOX_CONTENT,
+    DATAATTR_SANDBOX_MODE,
+    ISOLATED_TOKEN_TYPE,
+    SHADOW_TOKEN_TYPE,
+} from '../constants';
 import {addHiddenProperty, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {BaseTarget, StylesObject} from '../types';
-
-const generateHtmlBlockId = () => `${BLOCK_NAME}-${Math.random().toString(36).substr(2, 8)}`;
-
-export const TokenAttr = {
-    class: 'class',
-    dataId: HTML_DATA_ID,
-    dataKey: HTML_DATA_KEY,
-    frameborder: 'frameborder',
-    id: 'id',
-    srcdoc: 'srcdoc',
-    style: 'style',
-} as const;
 
 export interface PluginOptions {
     runtimeJsPath: string;
     containerClasses: string;
     bundle: boolean;
+    isolatedSandboxHost?: string;
     sanitize?: (dirtyHtml: string) => string;
     /**
      * @deprecated Use the 'head' method instead.
@@ -46,15 +41,15 @@ export function transform({
     runtimeJsPath = '_assets/html-extension.js',
     containerClasses = '',
     bundle = true,
+    isolatedSandboxHost,
     sanitize,
     styles,
     baseTarget = '_parent',
-    head: headContent = '',
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
 
-        const plugin: DirectiveBlockHandler = ({state, content}) => {
+        const plugin: DirectiveBlockHandler = ({state, content, inlineContent}) => {
             if (!content || !state) {
                 return false;
             }
@@ -63,19 +58,13 @@ export function transform({
 
             addHiddenProperty(env, 'bundled', new Set<string>());
 
-            const token = state.push(TOKEN_TYPE, TAG, 0);
-            const htmlBlockId = generateHtmlBlockId();
-            const className = [BLOCK_NAME, containerClasses].filter(Boolean).join(' ');
+            const tokenType =
+                inlineContent === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
+
+            const token = state.push(tokenType, TAG, 0);
 
             token.block = true;
-
-            token.attrSet(TokenAttr.class, className);
-            token.attrPush([TokenAttr.dataId, htmlBlockId]);
-            token.attrPush([TokenAttr.dataKey, BLOCK_NAME]);
-            token.attrPush([TokenAttr.frameborder, '0']);
-            token.attrPush([TokenAttr.id, htmlBlockId]);
-            token.attrPush([TokenAttr.style, 'width:100%']);
-            token.attrPush([TokenAttr.srcdoc, content]);
+            token.content = content;
 
             // TODO: use collect
             env.meta = env.meta || {};
@@ -97,26 +86,59 @@ export function transform({
 
         const mdDir = md as MarkdownItWithDirectives;
         mdDir.blockDirectives['html'] = plugin;
-        mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
+
+        mdDir.renderer.rules[ISOLATED_TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
 
-            let additional = baseTarget ? `<base target="${baseTarget}">` : '';
+            if (typeof isolatedSandboxHost !== 'string') {
+                throw new Error(
+                    'Please provide `isolatedSandboxHost` plugin option to use the `isolated` HTML sandboxing mode.',
+                );
+            }
+
+            let content = token.content;
+
             if (styles) {
                 const stylesContent =
                     typeof styles === 'string'
                         ? `<link rel="stylesheet" href="${styles}" />`
                         : `<style>${getStyles(styles)}</style>`;
-                additional += stylesContent;
+                content += stylesContent;
             }
 
-            const head = `<head>${headContent || additional}</head>`;
-            const body = `<body>${token.attrGet(TokenAttr.srcdoc) ?? ''}</body>`;
-            const html = `<!DOCTYPE html><html>${head}${body}</html>`;
+            const resultContent = sanitize ? sanitize(content) : content;
 
-            const resultHtml = sanitize ? sanitize(html) : html;
-            token.attrSet(TokenAttr.srcdoc, resultHtml);
+            token.attrSet('src', isolatedSandboxHost);
+            token.attrSet('class', containerClasses);
+            token.attrSet('frameborder', '0');
+            token.attrSet('style', 'width:100%');
+            token.attrSet(DATAATTR_SANDBOX_MODE, 'isolated');
+            token.attrSet(DATAATTR_ISOLATED_SANDBOX_CONTENT, resultContent);
+            token.attrSet(DATAATTR_ISOLATED_SANDBOX_BASE_TARGET, baseTarget);
 
-            return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
+            return `<iframe ${self.renderAttrs(token)}></iframe>`;
+        };
+
+        mdDir.renderer.rules[SHADOW_TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
+            const token = tokens[idx];
+
+            let content = token.content;
+
+            if (styles) {
+                const stylesContent =
+                    typeof styles === 'string'
+                        ? `<link rel="stylesheet" href="${styles}" />`
+                        : `<style>${getStyles(styles)}</style>`;
+                content = stylesContent + content;
+            }
+
+            const resultContent = sanitize ? sanitize(content) : content;
+
+            token.attrSet('class', containerClasses);
+            token.attrSet('style', 'width:100%;all:initial;');
+            token.attrSet(DATAATTR_SANDBOX_MODE, 'shadow');
+
+            return `<div ${self.renderAttrs(token)}><template shadowrootmode="open">${resultContent}</template></div>`;
         };
     };
 }

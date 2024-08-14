@@ -18,4 +18,3 @@ export const runTimeout = async <R>(ms: number) => {
 
 export const timeout = <R>(promise: Promise<R>, ms: number) =>
     Promise.race([promise, runTimeout<R>(ms)]);
-
