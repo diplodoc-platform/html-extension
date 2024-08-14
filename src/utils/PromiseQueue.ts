@@ -18,37 +18,50 @@ export class TaskQueue {
     }
 }
 
-export class PromiseFuse {
-    readonly promise: Promise<void>;
+type PromiseCallbackPair<T> = {
+    resolve: (value: T | PromiseLike<T>) => void;
+    reject: (thrown: Error) => void;
+};
 
-    private _isBlown = false;
-    private readonly resolutionCb: () => void;
+export class Deferred<T> extends Promise<T> {
+    private didSettle = false;
+    private callbacks: PromiseCallbackPair<T> = {
+        resolve: () => {},
+        reject: () => {},
+    };
 
     constructor() {
-        let resolutionCb = () => {};
-
-        this.promise = new Promise((resolve) => {
-            resolutionCb = resolve;
+        super((resolve, reject) => {
+            this.callbacks = {resolve, reject};
         });
-
-        this.resolutionCb = resolutionCb;
     }
 
-    blowIfNotBlown() {
-        if (!this._isBlown) {
-            this.resolutionCb();
-            this._isBlown = true;
+    resolve(value: T | PromiseLike<T>) {
+        this.trySettle();
+        this.callbacks.resolve(value);
+    }
+
+    reject(thrown: Error) {
+        this.trySettle();
+        this.callbacks.reject(thrown);
+    }
+
+    get isSettled() {
+        return this.didSettle;
+    }
+
+    private trySettle() {
+        if (this.didSettle) {
+            throw new Error('Deferred has already been settled.');
         }
-    }
 
-    get isBlown() {
-        return this._isBlown;
+        this.didSettle = true;
     }
 }
 
 export const queueFromFuse = () => {
-    const fuse = new PromiseFuse();
-    const queue = new TaskQueue(fuse.promise);
+    const fuse = new Deferred<void>();
+    const queue = new TaskQueue(fuse);
 
     return [queue, fuse] as const;
 };

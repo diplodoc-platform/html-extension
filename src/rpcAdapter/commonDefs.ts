@@ -45,6 +45,12 @@ export const isMessage = (maybeMessage: unknown): maybeMessage is TypedMessage =
 export const isCallRequestMessage = (message: TypedMessage): message is CallRequestMessage =>
     'callId' in message && 'args' in message;
 
+export const isCallResponseMessage = (message: TypedMessage): message is CallResponseMessage =>
+    'response' in message || 'reason' in message;
+
+export const isCallSuccessMessage = (message: CallResponseMessage): message is CallSuccessMessage =>
+    'response' in message;
+
 export const isEventMessage = (message: TypedMessage): message is PublicationMessage =>
     'content' in message;
 

@@ -39,10 +39,10 @@ export type APIPublisherBlueprint<
     builder: APIPublisherBuilder<never, never>,
 ) => APIPublisherBuilder<ResultingExposedCallDescriptorsUnion, ResultingPublishablesUnion>;
 
+export type ExposedAPISchema<C, E> = {
+    __calls: C;
+    __events: E;
+};
+
 export type InferExposedAPIFromBlueprint<Blueprint> =
-    Blueprint extends APIPublisherBlueprint<infer C, infer P>
-        ? {
-              __calls: C;
-              __pubs: P;
-          }
-        : never;
+    Blueprint extends APIPublisherBlueprint<infer C, infer E> ? ExposedAPISchema<C, E> : never;

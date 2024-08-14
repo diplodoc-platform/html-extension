@@ -1,4 +1,4 @@
-import {PromiseFuse, TaskQueue, queueFromFuse} from '../utils/PromiseQueue';
+import {Deferred, TaskQueue, queueFromFuse} from '../utils/PromiseQueue';
 import {HandshakeServiceMessage, IMessageChannel, isHandshakeServiceMessage} from './commonDefs';
 
 export class PostMessageChannel implements IMessageChannel {
@@ -6,7 +6,7 @@ export class PostMessageChannel implements IMessageChannel {
     private readonly target: MessageEventSource;
 
     private readonly sendQueue: TaskQueue;
-    private readonly handshakeFuse: PromiseFuse;
+    private readonly handshakeFuse: Deferred<void>;
 
     constructor(target: MessageEventSource) {
         const [queue, handshakeFuse] = queueFromFuse();
@@ -21,7 +21,7 @@ export class PostMessageChannel implements IMessageChannel {
     open() {
         this.sendMessage({handshake: 'initiator'} satisfies HandshakeServiceMessage);
 
-        return this.handshakeFuse.promise;
+        return this.handshakeFuse;
     }
 
     sendMessage(message: unknown) {
@@ -33,7 +33,7 @@ export class PostMessageChannel implements IMessageChannel {
     }
 
     get isUpstreamHealthy() {
-        return this.handshakeFuse.isBlown;
+        return this.handshakeFuse.isSettled;
     }
 
     onIncomingMessage(handler: (message: unknown) => void) {
@@ -65,7 +65,7 @@ export class PostMessageChannel implements IMessageChannel {
     }
 
     private handleHandshake(serviceMessage: HandshakeServiceMessage) {
-        this.handshakeFuse.blowIfNotBlown();
+        this.handshakeFuse.resolve(undefined);
 
         if (serviceMessage.handshake === 'initiator') {
             this.sendMessageRaw({handshake: 'ack'} satisfies HandshakeServiceMessage);
