@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/diplodoc-platform/html-extension/compare/v1.3.3...v1.4.0) (2024-08-15)
+
+
+### Features
+
+* implement a workflow to publish prerelease versions from a branch ([460e900](https://github.com/diplodoc-platform/html-extension/commit/460e90032a9e70768846969ea1196025273e1610))
+
 ## [1.3.3](https://github.com/diplodoc-platform/html-extension/compare/v1.3.2...v1.3.3) (2024-08-15)
 
 
