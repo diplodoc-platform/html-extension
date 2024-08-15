@@ -1,5 +1,10 @@
-import {Deferred, TaskQueue, queueFromFuse} from '../utils/PromiseQueue';
-import {HandshakeServiceMessage, IMessageChannel, isHandshakeServiceMessage} from './commonDefs';
+import {Deferred, TaskQueue, queueFromFuse} from '../utils';
+import {HandshakeServiceMessage, IMessageChannel, isMessage} from './commonDefs';
+
+const isHandshakeServiceMessage = (
+    maybeMessage: unknown,
+): maybeMessage is HandshakeServiceMessage =>
+    isMessage(maybeMessage) && 'handshake' in maybeMessage;
 
 export class PostMessageChannel implements IMessageChannel {
     private readonly listeners = new Set<(data: unknown) => void>();

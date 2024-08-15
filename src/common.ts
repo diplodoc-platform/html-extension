@@ -1,5 +1,3 @@
-import {useEffect, useState} from 'react';
-
 type Callback<T> = (controller: T) => void;
 
 export const QUEUE_SYMBOL: unique symbol = Symbol.for('queue');
@@ -83,26 +81,3 @@ export const createLoadQueue = <T = any>({
 
     unqueue();
 };
-
-const noop = () => {};
-
-export function useController<T>(store: ScriptStore<T>) {
-    const [controller, setController] = useState<T | null>(null);
-
-    useEffect(() => {
-        if (store) {
-            store.push(setController);
-
-            return () => {
-                const index = store.indexOf(setController);
-                if (index > -1) {
-                    store.splice(index, 1);
-                }
-            };
-        }
-
-        return noop;
-    }, []);
-
-    return controller;
-}

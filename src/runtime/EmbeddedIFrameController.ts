@@ -1,9 +1,8 @@
-import {DEFAULT_CONTAINER_CONFIG} from '../constants';
-import {IFrameControllerRPCAPI} from '../iframe';
-import {RPCConsumer} from '../rpcAdapter/consumer';
+import {RPCConsumer} from '../rpcAdapter/RPCConsumer';
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
 import {IHTMLIFrameControllerConfig} from '../types';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
+import {Disposable} from './Disposable';
 
 const DEFAULT_PADDING = 34;
 
@@ -13,41 +12,40 @@ type DatasetShape = {
     yfmSandboxBaseTarget?: string;
 };
 
-const assertIFrame: (element: HTMLElement) => asserts element is HTMLIFrameElement = (element) => {
-    if (element instanceof HTMLIFrameElement) {
-        return;
+type ValidIFrameElement = HTMLIFrameElement & {
+    dataset: DatasetShape;
+};
+
+const validateHostElement: (el: HTMLElement) => asserts el is ValidIFrameElement = (el) => {
+    if (!(el instanceof HTMLIFrameElement)) {
+        throw new Error('Provided element is not an IFrame');
     }
 
-    throw new Error('Provided element is not an IFrame');
+    if (!isHTMLSandboxContainer(el.dataset)) {
+        throw new Error(
+            'Tried to initialize a sandbox controller on an iframe that is not properly set up',
+        );
+    }
+
+    return true;
 };
 
 const isHTMLSandboxContainer = (dataset: DOMStringMap): dataset is DatasetShape =>
     dataset.yfmSandboxMode === 'isolated' && typeof dataset.yfmSandboxContent === 'string';
 
-export class EmbeddedIFrameController implements IEmbeddedContentController {
-    private readonly iframeElement: HTMLIFrameElement;
-    private readonly rpcConsumer: RPCConsumer<IFrameControllerRPCAPI>;
+export class EmbeddedIFrameController extends Disposable implements IEmbeddedContentController {
+    private readonly iframeElement: ValidIFrameElement;
+    private readonly rpcConsumer: RPCConsumer;
     private readonly initParameters: DatasetShape;
     private readonly config: IHTMLIFrameControllerConfig;
 
-    private readonly disposeResizeEventListener: () => void;
+    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig) {
+        validateHostElement(host);
 
-    constructor(
-        iframeElement: HTMLElement,
-        config: IHTMLIFrameControllerConfig = DEFAULT_CONTAINER_CONFIG,
-    ) {
-        const dataset = iframeElement.dataset;
+        super();
 
-        assertIFrame(iframeElement);
-
-        if (!isHTMLSandboxContainer(dataset)) {
-            throw new Error(
-                'Tried to initialize a sandbox controller on an iframe that is not properly set up',
-            );
-        }
-
-        this.iframeElement = iframeElement;
-        this.initParameters = dataset;
+        this.iframeElement = host;
+        this.initParameters = host.dataset;
         this.config = config;
 
         this.rpcConsumer = new RPCConsumer(
@@ -57,9 +55,11 @@ export class EmbeddedIFrameController implements IEmbeddedContentController {
             new PostMessageChannel(this.iframeElement.contentWindow!),
         );
 
-        this.disposeResizeEventListener = this.rpcConsumer.on('resizedToNewHeight', (value) =>
-            this.updateIFrameHeight(value),
+        this.dispose.add(
+            this.rpcConsumer.on('resize', (value) => this.updateIFrameHeight(value.height)),
         );
+
+        this.dispose.add(this.rpcConsumer.dispose);
     }
 
     async initialize() {
@@ -75,11 +75,6 @@ export class EmbeddedIFrameController implements IEmbeddedContentController {
         }
 
         return this.replaceIFrameHTML(yfmSandboxContent);
-    }
-
-    destroy() {
-        this.disposeResizeEventListener();
-        this.rpcConsumer.destroy();
     }
 
     setRootClassNames(classNames: string[] | undefined) {

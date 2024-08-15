@@ -1,10 +1,10 @@
 import {nanoid} from 'nanoid';
-import {DEFAULT_CONTAINER_CONFIG} from '../constants';
-import {ControllerCallback, IHTMLIFrameControllerConfig} from '../types';
+import {IHTMLIFrameControllerConfig} from '../types';
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {ShadowRootController} from './ShadowRootController';
 import {IHTMLIFrameElementConfig} from '.';
+import {Disposable} from './Disposable';
 
 type SandboxMode = 'shadow' | 'isolated';
 
@@ -22,25 +22,33 @@ const modeToController: Record<
 };
 
 // Finds all iframes and creates controllers for each iframe
-export class EmbeddedContentRootController {
+export class EmbeddedContentRootController extends Disposable {
     private children: Map<string, IEmbeddedContentController> = new Map();
     private config: IHTMLIFrameControllerConfig;
     private document: Document;
 
     constructor(
         document: Document,
-        config: IHTMLIFrameControllerConfig = DEFAULT_CONTAINER_CONFIG,
+        config: IHTMLIFrameControllerConfig = {
+            classNames: [],
+            styles: {},
+        },
     ) {
+        super();
+
         this.config = config;
         this.document = document;
 
-        this.onDOMContentLoaded = this.onDOMContentLoaded.bind(this);
-
         // initialize on DOM ready
-        this.document.addEventListener('DOMContentLoaded', this.onDOMContentLoaded);
+        this.document.addEventListener('DOMContentLoaded', this.initialize);
+        this.dispose.add(() => {
+            this.document.removeEventListener('DOMContentLoaded', this.initialize);
+        });
+
+        this.dispose.add(this.disposeChildren);
     }
 
-    async initialize() {
+    initialize = async () => {
         const dirtyEmbeds = [
             ...findAllShadowContainers(this.document),
             ...findAllIFrameEmbeds(this.document),
@@ -65,17 +73,12 @@ export class EmbeddedContentRootController {
         });
 
         return Promise.all(instantiatedControllers.map((ctrller) => ctrller.initialize()));
-    }
+    };
 
-    destroyChildren() {
-        this.children.forEach((controller) => controller.destroy());
+    private disposeChildren = () => {
+        this.children.forEach((controller) => controller.dispose());
         this.children.clear();
-    }
-
-    destroy() {
-        this.document.removeEventListener('DOMContentLoaded', this.onDOMContentLoaded);
-        this.destroyChildren();
-    }
+    };
 
     get blocks(): IEmbeddedContentController[] {
         return Array.from(this.children.values());
@@ -85,11 +88,7 @@ export class EmbeddedContentRootController {
         this.config = config;
     }
 
-    forEach(callback: ControllerCallback<IEmbeddedContentController>) {
+    forEach(callback: (controller: IEmbeddedContentController) => void) {
         return this.children.forEach((controller) => callback(controller));
-    }
-
-    private onDOMContentLoaded() {
-        this.initialize();
     }
 }

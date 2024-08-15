@@ -1,39 +1,32 @@
+import type {Commands, Events} from '../iframe';
+import {Disposable} from '../runtime/Disposable';
 import {
     CallRejectionMessage,
     CallRequestMessage,
     CallSuccessMessage,
     IMessageChannel,
     PublicationMessage,
-    isCallRequestMessage,
+    TypedMessage,
     isMessage,
-} from '../commonDefs';
-import {makeBuilderInternal} from './builder';
-import {APIPublisherBlueprint, OptionalUnsubscribe} from './defs';
-import {BuilderConfig} from './internalDefs';
+} from './commonDefs';
 
-export class APIPublisher {
-    static fromBlueprint(
-        messageChannel: IMessageChannel,
-        blueprint: APIPublisherBlueprint<never, never>,
-    ) {
-        const builder = makeBuilderInternal<never, never>({
-            messageChannel,
-            registeredCalls: {},
-            eventSources: [],
-        });
+type Handler<T extends Commands[keyof Commands] = Commands[keyof Commands]> = {
+    (args: T['Args']): Promise<T['Result']> | T['Result'];
+};
 
-        const config = blueprint(builder).build();
+type WeakHandler = (args: any) => any;
 
-        return new APIPublisher(config);
-    }
+const isCallRequestMessage = (message: TypedMessage): message is CallRequestMessage =>
+    'callId' in message && 'args' in message;
 
+export class APIPublisher extends Disposable {
     private readonly messageChannel: IMessageChannel;
-    private readonly routingMap: BuilderConfig['registeredCalls'];
-    private readonly eventSourceSubscriptionDisposers: OptionalUnsubscribe[] = [];
+    private readonly commands = new Map<keyof Commands, WeakHandler>();
 
-    private constructor({messageChannel, registeredCalls, eventSources}: BuilderConfig) {
+    constructor(messageChannel: IMessageChannel) {
+        super();
+
         this.messageChannel = messageChannel;
-        this.routingMap = registeredCalls;
 
         this.messageChannel.onIncomingMessage((message) => {
             if (isMessage(message) && isCallRequestMessage(message)) {
@@ -41,22 +34,20 @@ export class APIPublisher {
             }
         });
 
-        this.eventSourceSubscriptionDisposers = eventSources.map(
-            ({eventName, subscriptionGetter}) =>
-                subscriptionGetter((event) => this.eventNotify(eventName, event)),
-        );
+        this.dispose.add(this.messageChannel.close);
     }
 
     start() {
         return this.messageChannel.open();
     }
 
-    destroy() {
-        this.messageChannel.close();
-        this.eventSourceSubscriptionDisposers.forEach((maybeUnsub) => maybeUnsub?.());
+    onCommand<C extends keyof Commands>(commandName: C, handler: Handler<Commands[C]>) {
+        this.commands.set(commandName, handler);
+
+        return this;
     }
 
-    private async eventNotify(type: string, content: unknown): Promise<void> {
+    async dispatchEvent(type: keyof Events, content: unknown): Promise<void> {
         const publicationMessage: PublicationMessage = {
             type,
             content,
@@ -67,7 +58,8 @@ export class APIPublisher {
 
     private async doCall({type, callId, args}: CallRequestMessage) {
         try {
-            const response = await this.routingMap[type](args);
+            const handler = this.commands.get(type as keyof Commands) as WeakHandler;
+            const response = await handler(args);
 
             const message: CallSuccessMessage = {
                 type,

@@ -11,7 +11,6 @@ export interface IHTMLIFrameControllerConfig {
     styles?: Record<string, string>;
 }
 
-export type ContentResizeCallback = (newHeight: number) => void;
 export type Unsubscribe = () => void;
 
 export type CSSProperties = {

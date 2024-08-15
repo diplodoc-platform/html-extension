@@ -62,7 +62,7 @@ build({
 
 build({
     ...common,
-    entryPoints: ['src/iframe/main.ts'],
+    entryPoints: ['src/iframe/index.ts'],
     sourcemap: false,
     minify: true,
     platform: 'browser',

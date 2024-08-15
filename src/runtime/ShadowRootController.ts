@@ -1,7 +1,7 @@
-import {DEFAULT_CONTAINER_CONFIG} from '../constants';
 import {IHTMLIFrameControllerConfig} from '../types';
 import {updateClassNames, updateStyles} from '../utils/reconcile';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
+import {Disposable} from './Disposable';
 
 const validateHostElement = (el: HTMLElement) => {
     const dataset = el.dataset;
@@ -11,12 +11,14 @@ const validateHostElement = (el: HTMLElement) => {
     }
 };
 
-export class ShadowRootController implements IEmbeddedContentController {
+export class ShadowRootController extends Disposable implements IEmbeddedContentController {
     private readonly host: HTMLElement;
     private classNames: string[] = [];
     private styles: Record<string, string> = {};
 
-    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig = DEFAULT_CONTAINER_CONFIG) {
+    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig) {
+        super();
+
         const {classNames: initialClassNames, styles: initialStyles} = config;
 
         validateHostElement(host);
@@ -27,25 +29,17 @@ export class ShadowRootController implements IEmbeddedContentController {
         this.setRootStyles(initialStyles);
     }
 
-    initialize() {
-        return Promise.resolve();
-    }
+    async initialize() {}
 
-    destroy() {}
-
-    setRootClassNames(classNames: string[] | undefined = []) {
+    async setRootClassNames(classNames: string[] | undefined = []) {
         updateClassNames(this.host, classNames, this.classNames);
 
         this.classNames = classNames;
-
-        return Promise.resolve();
     }
 
-    setRootStyles(styles: Record<string, string> | undefined = {}) {
+    async setRootStyles(styles: Record<string, string> | undefined = {}) {
         updateStyles(this.host, styles, this.styles);
 
         this.styles = styles;
-
-        return Promise.resolve();
     }
 }
