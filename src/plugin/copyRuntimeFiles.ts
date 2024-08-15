@@ -1,3 +1,5 @@
+import {dynrequire} from './utils';
+
 const PATH_TO_RUNTIME = '../runtime';
 
 interface CopyRuntimeFilesPaths {
@@ -27,13 +29,4 @@ function copyFile(from: string, to: string) {
     const {dirname} = dynrequire('node:path');
     mkdirSync(dirname(to), {recursive: true});
     copyFileSync(from, to);
-}
-
-/*
- * Runtime require hidden for builders.
- * Used for nodejs api
- */
-function dynrequire(module: string) {
-    // eslint-disable-next-line no-eval
-    return eval(`require('${module}')`);
 }

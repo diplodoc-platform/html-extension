@@ -2,16 +2,13 @@ import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
 import type {PluginWithOptions} from 'markdown-it';
 
-import {
-    DATAATTR_ISOLATED_SANDBOX_BASE_TARGET,
-    DATAATTR_ISOLATED_SANDBOX_CONTENT,
-    DATAATTR_SANDBOX_MODE,
-    ISOLATED_TOKEN_TYPE,
-    SHADOW_TOKEN_TYPE,
-} from '../constants';
-import {addHiddenProperty, getStyles} from './utils';
+import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE} from '../constants';
+import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {BaseTarget, StylesObject} from '../types';
+import {makeIsolatedModeEmbedRenderRule} from './renderers/isolated';
+import {makeShadowModeEmbedRenderRule} from './renderers/shadow';
+import MarkdownIt from 'markdown-it';
 
 export interface PluginOptions {
     runtimeJsPath: string;
@@ -37,6 +34,67 @@ type TransformOptions = {
 const emptyOptions = {};
 const TAG = 'iframe';
 
+const concatStylesIncludeDirectives = (content: string, styles?: string | StylesObject) => {
+    if (styles) {
+        const stylesContent =
+            typeof styles === 'string'
+                ? `<link rel="stylesheet" href="${styles}" />`
+                : `<style>${getStyles(styles)}</style>`;
+
+        return stylesContent + content;
+    }
+
+    return content;
+};
+
+type RegisterTransformOptions = Pick<PluginOptions, 'runtimeJsPath' | 'bundle'> & {
+    output: string;
+    updateTokens: boolean;
+};
+
+const registerTransform = (
+    md: MarkdownIt,
+    {runtimeJsPath, output, bundle, updateTokens}: RegisterTransformOptions,
+) => {
+    const directiveHandler: DirectiveBlockHandler = ({state, content, inlineContent}) => {
+        if (!content || !state) {
+            return false;
+        }
+
+        const {env} = state;
+
+        addHiddenProperty(env, 'bundled', new Set<string>());
+
+        if (updateTokens) {
+            const tokenType =
+                inlineContent === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
+
+            const token = state.push(tokenType, TAG, 0);
+
+            token.block = true;
+            token.content = content;
+        }
+
+        env.meta = env.meta || {};
+        env.meta.script = env.meta.script || [];
+        env.meta.style = env.meta.style || [];
+        if (!env.meta.script.includes(runtimeJsPath)) {
+            env.meta.script.push(runtimeJsPath);
+        }
+
+        if (bundle) {
+            copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
+        }
+
+        return true;
+    };
+
+    // the directives plugin must be enabled
+    md.use(directivePlugin);
+
+    (md as MarkdownItWithDirectives).blockDirectives['html'] = directiveHandler;
+};
+
 export function transform({
     runtimeJsPath = '_assets/html-extension.js',
     containerClasses = '',
@@ -46,99 +104,48 @@ export function transform({
     styles,
     baseTarget = '_parent',
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
-    return function html(md, options) {
+    const plugin: PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
-        const plugin: DirectiveBlockHandler = ({state, content, inlineContent}) => {
-            if (!content || !state) {
-                return false;
-            }
+        registerTransform(md, {runtimeJsPath, bundle, output, updateTokens: true});
 
-            const {env} = state;
+        (md as MarkdownItWithDirectives).renderer.rules[ISOLATED_TOKEN_TYPE] =
+            makeIsolatedModeEmbedRenderRule({
+                containerClassNames: containerClasses,
+                baseTarget,
+                isolatedSandboxHost,
+                embedContentTransformFn: (raw) => concatStylesIncludeDirectives(raw, styles),
+            });
 
-            addHiddenProperty(env, 'bundled', new Set<string>());
+        (md as MarkdownItWithDirectives).renderer.rules[SHADOW_TOKEN_TYPE] =
+            makeShadowModeEmbedRenderRule({
+                containerClassNames: containerClasses,
+                embedContentTransformFn: (raw) => {
+                    const withStyles = concatStylesIncludeDirectives(raw, styles);
 
-            const tokenType =
-                inlineContent === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
-
-            const token = state.push(tokenType, TAG, 0);
-
-            token.block = true;
-            token.content = content;
-
-            // TODO: use collect
-            env.meta = env.meta || {};
-            env.meta.script = env.meta.script || [];
-            env.meta.style = env.meta.style || [];
-            if (!env.meta.script.includes(runtimeJsPath)) {
-                env.meta.script.push(runtimeJsPath);
-            }
-
-            if (bundle) {
-                copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
-            }
-
-            return true;
-        };
-
-        // the directives plugin must be enabled
-        md.use(directivePlugin);
-
-        const mdDir = md as MarkdownItWithDirectives;
-        mdDir.blockDirectives['html'] = plugin;
-
-        mdDir.renderer.rules[ISOLATED_TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
-            const token = tokens[idx];
-
-            if (typeof isolatedSandboxHost !== 'string') {
-                throw new Error(
-                    'Please provide `isolatedSandboxHost` plugin option to use the `isolated` HTML sandboxing mode.',
-                );
-            }
-
-            let content = token.content;
-
-            if (styles) {
-                const stylesContent =
-                    typeof styles === 'string'
-                        ? `<link rel="stylesheet" href="${styles}" />`
-                        : `<style>${getStyles(styles)}</style>`;
-                content += stylesContent;
-            }
-
-            const resultContent = sanitize ? sanitize(content) : content;
-
-            token.attrSet('src', isolatedSandboxHost);
-            token.attrSet('class', containerClasses);
-            token.attrSet('frameborder', '0');
-            token.attrSet('style', 'width:100%');
-            token.attrSet(DATAATTR_SANDBOX_MODE, 'isolated');
-            token.attrSet(DATAATTR_ISOLATED_SANDBOX_CONTENT, resultContent);
-            token.attrSet(DATAATTR_ISOLATED_SANDBOX_BASE_TARGET, baseTarget);
-
-            return `<iframe ${self.renderAttrs(token)}></iframe>`;
-        };
-
-        mdDir.renderer.rules[SHADOW_TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
-            const token = tokens[idx];
-
-            let content = token.content;
-
-            if (styles) {
-                const stylesContent =
-                    typeof styles === 'string'
-                        ? `<link rel="stylesheet" href="${styles}" />`
-                        : `<style>${getStyles(styles)}</style>`;
-                content = stylesContent + content;
-            }
-
-            const resultContent = sanitize ? sanitize(content) : content;
-
-            token.attrSet('class', containerClasses);
-            token.attrSet('style', 'width:100%;all:initial;');
-            token.attrSet(DATAATTR_SANDBOX_MODE, 'shadow');
-
-            return `<div ${self.renderAttrs(token)}><template shadowrootmode="open">${resultContent}</template></div>`;
-        };
+                    // Note that sanitization is only enabled for `shadow` embedding mode,
+                    // `isolated` mode applies no restrictions — beware of vulnerabilities galore!
+                    // That's why it's really important to host the iframe runtime on an unrelated `dummy` origin.
+                    return sanitize?.(withStyles) ?? withStyles;
+                },
+            });
     };
+
+    Object.assign(plugin, {
+        collect(input: string, {destRoot}: {destRoot: string}) {
+            const MdIt = dynrequire('markdown-it');
+            const md = new MdIt().use((md: MarkdownIt) => {
+                registerTransform(md, {
+                    runtimeJsPath,
+                    bundle,
+                    output: destRoot,
+                    updateTokens: false,
+                });
+            });
+
+            md.parse(input, {});
+        },
+    });
+
+    return plugin;
 }
