@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/diplodoc-platform/html-extension/compare/v1.3.2...v1.3.3) (2024-08-15)
+
+
+### Bug Fixes
+
+* **plugin:** added export getStyles ([0b8bc97](https://github.com/diplodoc-platform/html-extension/commit/0b8bc97a7951f37f21c11ff61f6ef70d23da17f1))
+
 ## [1.3.2](https://github.com/diplodoc-platform/html-extension/compare/v1.3.1...v1.3.2) (2024-08-14)
 
 
