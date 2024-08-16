@@ -68,9 +68,19 @@ After html text
 
 ## Isolated IFrame (with script execution capabilities)
 
-Please note that you have to provide the `isolatedSandboxHost` plugin option, which should specify a **cross-origin** URL where the `iframe-runtime.html` is hosted.
+Make sure to set the `embeddingMode` plugin option to `isolated`.
 
-::: html [isolated]
+Please note that you also have to provide the `isolatedSandboxHost` plugin option, which should specify a **cross-origin** URL where the `iframe-runtime.html` is hosted.
+
+To test this locally, run the following:
+
+```bash
+npx http-server ./iframe -p 5005 -c-1
+```
+
+Set the `isolatedSandboxHost` plugin option to `http://localhost:5005/iframe-runtime.html`. You could then run this example as you would normally do (again, make sure to set `embeddingMode` to `isolated`!)
+
+::: html
 We're counting. <span id="counter">0</span>
 
 <script>
