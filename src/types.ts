@@ -22,6 +22,8 @@ export type StylesObject = {
     [selector: string]: CSSProperties;
 };
 
+export type EmbeddingMode = 'shadow' | 'isolated';
+
 declare global {
     interface Window {
         [GLOBAL_SYMBOL]: ScriptStore;

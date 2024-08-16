@@ -5,12 +5,13 @@ import type {PluginWithOptions} from 'markdown-it';
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE} from '../constants';
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
-import {BaseTarget, StylesObject} from '../types';
+import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
 import {makeIsolatedModeEmbedRenderRule} from './renderers/isolated';
 import {makeShadowModeEmbedRenderRule} from './renderers/shadow';
 import MarkdownIt from 'markdown-it';
 
 export interface PluginOptions {
+    embeddingMode: EmbeddingMode;
     runtimeJsPath: string;
     containerClasses: string;
     bundle: boolean;
@@ -47,16 +48,19 @@ const concatStylesIncludeDirectives = (content: string, styles?: string | Styles
     return content;
 };
 
-type RegisterTransformOptions = Pick<PluginOptions, 'runtimeJsPath' | 'bundle'> & {
+type RegisterTransformOptions = Pick<
+    PluginOptions,
+    'runtimeJsPath' | 'bundle' | 'embeddingMode'
+> & {
     output: string;
     updateTokens: boolean;
 };
 
 const registerTransform = (
     md: MarkdownIt,
-    {runtimeJsPath, output, bundle, updateTokens}: RegisterTransformOptions,
+    {embeddingMode, runtimeJsPath, output, bundle, updateTokens}: RegisterTransformOptions,
 ) => {
-    const directiveHandler: DirectiveBlockHandler = ({state, content, inlineContent}) => {
+    const directiveHandler: DirectiveBlockHandler = ({state, content}) => {
         if (!content || !state) {
             return false;
         }
@@ -67,7 +71,7 @@ const registerTransform = (
 
         if (updateTokens) {
             const tokenType =
-                inlineContent === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
+                embeddingMode === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
 
             const token = state.push(tokenType, TAG, 0);
 
@@ -96,6 +100,7 @@ const registerTransform = (
 };
 
 export function transform({
+    embeddingMode = 'shadow',
     runtimeJsPath = '_assets/html-extension.js',
     containerClasses = '',
     bundle = true,
@@ -107,7 +112,7 @@ export function transform({
     const plugin: PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
-        registerTransform(md, {runtimeJsPath, bundle, output, updateTokens: true});
+        registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output, updateTokens: true});
 
         (md as MarkdownItWithDirectives).renderer.rules[ISOLATED_TOKEN_TYPE] =
             makeIsolatedModeEmbedRenderRule({
@@ -136,6 +141,7 @@ export function transform({
             const MdIt = dynrequire('markdown-it');
             const md = new MdIt().use((md: MarkdownIt) => {
                 registerTransform(md, {
+                    embeddingMode,
                     runtimeJsPath,
                     bundle,
                     output: destRoot,

@@ -1,12 +1,10 @@
 import {nanoid} from 'nanoid';
-import {IHTMLIFrameControllerConfig} from '../types';
+import {EmbeddingMode, IHTMLIFrameControllerConfig} from '../types';
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {ShadowRootController} from './ShadowRootController';
 import {IHTMLIFrameElementConfig} from '.';
 import {Disposable} from './Disposable';
-
-type SandboxMode = 'shadow' | 'isolated';
 
 const findAllShadowContainers = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLDivElement>('div[data-yfm-sandbox-mode=shadow]');
@@ -14,7 +12,7 @@ const findAllIFrameEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=isolated]');
 
 const modeToController: Record<
-    SandboxMode,
+    EmbeddingMode,
     new (node: HTMLElement, config: IHTMLIFrameElementConfig) => IEmbeddedContentController
 > = {
     shadow: ShadowRootController,
@@ -61,7 +59,7 @@ export class EmbeddedContentRootController extends Disposable {
         const instantiatedControllers = dirtyEmbeds.map((embed) => {
             const embedId = nanoid();
 
-            const mode = embed.dataset.yfmSandboxMode as SandboxMode; // this cast is safe at this point
+            const mode = embed.dataset.yfmSandboxMode as EmbeddingMode; // this cast is safe at this point
             const ControllerCtor = modeToController[mode];
 
             const instance = new ControllerCtor(embed, this.config);
