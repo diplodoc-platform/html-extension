@@ -72,7 +72,7 @@ build({
         htmlPlugin({
             files: [
                 {
-                    filename: 'iframe-runtime.html',
+                    filename: 'runtime.html',
                     entryPoints: ['src/iframe/main.ts'],
                     inline: true,
                 },

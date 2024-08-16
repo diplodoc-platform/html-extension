@@ -20,6 +20,9 @@
     "./utils": {
       "types": "./utils/index.d.ts",
       "default": "./utils/index.js"
+    },
+    "./iframe": {
+      "default": "./iframe/runtime.html"
     }
   },
   "homepage": "https://diplodoc.com/",
@@ -49,7 +52,8 @@
     "react",
     "runtime",
     "types.d.ts",
-    "utils"
+    "utils",
+    "iframe"
   ],
   "peerDependencies": {
     "@diplodoc/transform": "^4.0.0",
