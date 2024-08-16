@@ -16,6 +16,9 @@ type ValidIFrameElement = HTMLIFrameElement & {
     dataset: DatasetShape;
 };
 
+const isHTMLSandboxContainer = (dataset: DOMStringMap): dataset is DatasetShape =>
+    dataset.yfmSandboxMode === 'isolated' && typeof dataset.yfmSandboxContent === 'string';
+
 const validateHostElement: (el: HTMLElement) => asserts el is ValidIFrameElement = (el) => {
     if (!(el instanceof HTMLIFrameElement)) {
         throw new Error('Provided element is not an IFrame');
@@ -29,9 +32,6 @@ const validateHostElement: (el: HTMLElement) => asserts el is ValidIFrameElement
 
     return true;
 };
-
-const isHTMLSandboxContainer = (dataset: DOMStringMap): dataset is DatasetShape =>
-    dataset.yfmSandboxMode === 'isolated' && typeof dataset.yfmSandboxContent === 'string';
 
 export class EmbeddedIFrameController extends Disposable implements IEmbeddedContentController {
     private readonly iframeElement: ValidIFrameElement;

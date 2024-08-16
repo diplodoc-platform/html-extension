@@ -65,7 +65,7 @@ export class RPCConsumer extends Disposable {
 
     async dispatchCall<C extends keyof Commands>(
         commandName: C,
-        args: Commands[C]['Args'],
+        ...args: Commands[C]['Args']
     ): Promise<Commands[C]['Result']> {
         const callId = nanoid();
         const message: CallRequestMessage = {

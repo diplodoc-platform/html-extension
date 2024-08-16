@@ -75,11 +75,6 @@ export class EmbeddedContentRootController extends Disposable {
         return Promise.all(instantiatedControllers.map((ctrller) => ctrller.initialize()));
     };
 
-    private disposeChildren = () => {
-        this.children.forEach((controller) => controller.dispose());
-        this.children.clear();
-    };
-
     get blocks(): IEmbeddedContentController[] {
         return Array.from(this.children.values());
     }
@@ -91,4 +86,9 @@ export class EmbeddedContentRootController extends Disposable {
     forEach(callback: (controller: IEmbeddedContentController) => void) {
         return this.children.forEach((controller) => callback(controller));
     }
+
+    disposeChildren = () => {
+        this.children.forEach((controller) => controller.dispose());
+        this.children.clear();
+    };
 }

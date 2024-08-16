@@ -1,6 +1,5 @@
-import {GLOBAL_SYMBOL} from './constants';
+import {GLOBAL_SYMBOL, QUEUE_SYMBOL} from './constants';
 import {ScriptStore} from './common';
-import {EmbeddedContentRootController} from './runtime/EmbeddedContentRootController';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
@@ -25,6 +24,7 @@ export type StylesObject = {
 
 declare global {
     interface Window {
-        [GLOBAL_SYMBOL]: ScriptStore<EmbeddedContentRootController>;
+        [GLOBAL_SYMBOL]: ScriptStore;
+        [QUEUE_SYMBOL]: boolean;
     }
 }

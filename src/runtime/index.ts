@@ -1,14 +1,13 @@
 import {createLoadQueue, getScriptStore, isBrowser} from '../common';
-import {GLOBAL_SYMBOL} from '../constants';
 import {EmbeddedContentRootController} from './EmbeddedContentRootController';
 
 if (isBrowser()) {
-    const store = getScriptStore<EmbeddedContentRootController>(GLOBAL_SYMBOL);
+    const store = getScriptStore();
 
     if (store) {
         const createController = () => new EmbeddedContentRootController(document);
 
-        createLoadQueue<EmbeddedContentRootController>({
+        createLoadQueue({
             store,
             createController,
         });

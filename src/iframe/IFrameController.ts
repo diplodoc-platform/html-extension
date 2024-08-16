@@ -3,10 +3,12 @@ import {updateClassNames, updateStyles} from '../utils';
 
 const DEFAULT_RESIZE_DELAY = 150;
 
-type Command<T extends (...args: any[]) => any> = {
-    Args: Parameters<T>[0];
-    Result: ReturnType<T>;
-};
+type Command<T> = T extends (...args: infer A) => infer R
+    ? {
+          Args: A;
+          Result: R;
+      }
+    : never;
 
 export type Events = {
     resize: (rect: DOMRect) => void;
@@ -16,12 +18,16 @@ export type Commands = {
     [K in keyof Omit<IFrameController, 'on'>]: Command<IFrameController[K]>;
 };
 
+type EventHandlers = {
+    [K in keyof Events]: Set<Events[K]>;
+};
+
 export class IFrameController {
     private readonly domContainer: HTMLElement;
     private classNames: string[] = [];
     private resizeObserver: ResizeObserver;
     private styles: Record<string, string> = {};
-    private events: Record<keyof Events, Set<Events[keyof Events]>> = {
+    private eventHandlers: EventHandlers = {
         resize: new Set(),
     };
 
@@ -64,16 +70,14 @@ export class IFrameController {
     };
 
     on<E extends keyof Events>(eventName: E, eventHandler: Events[E]) {
-        this.events[eventName].add(eventHandler);
+        this.eventHandlers[eventName].add(eventHandler);
 
-        return () => this.events[eventName].delete(eventHandler);
+        return () => this.eventHandlers[eventName].delete(eventHandler);
     }
 
     private dispatchResize: ResizeObserverCallback = (entries) => {
         for (const entry of entries) {
-            for (const handler of this.events?.resize) {
-                handler(entry.contentRect);
-            }
+            this.eventHandlers.resize.forEach((handler) => handler(entry.contentRect));
         }
     };
 

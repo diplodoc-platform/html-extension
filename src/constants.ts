@@ -1,4 +1,5 @@
 export const GLOBAL_SYMBOL = Symbol('diplodocHtml');
+export const QUEUE_SYMBOL = Symbol('queue');
 
 export const SHADOW_TOKEN_TYPE = 'yfm_html_block';
 export const ISOLATED_TOKEN_TYPE = 'yfm_html_block_isolated';

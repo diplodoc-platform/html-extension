@@ -10,18 +10,18 @@ import {
     isMessage,
 } from './commonDefs';
 
-type Handler<T extends Commands[keyof Commands] = Commands[keyof Commands]> = {
-    (args: T['Args']): Promise<T['Result']> | T['Result'];
-};
+type Handler<T extends Commands[keyof Commands] = Commands[keyof Commands]> = (
+    ...args: T['Args']
+) => Promise<T['Result']> | T['Result'];
 
-type WeakHandler = (args: any) => any;
+type UntypedHandler = (args: unknown) => unknown;
 
 const isCallRequestMessage = (message: TypedMessage): message is CallRequestMessage =>
     'callId' in message && 'args' in message;
 
 export class APIPublisher extends Disposable {
     private readonly messageChannel: IMessageChannel;
-    private readonly commands = new Map<keyof Commands, WeakHandler>();
+    private readonly commands = new Map<keyof Commands, UntypedHandler>();
 
     constructor(messageChannel: IMessageChannel) {
         super();
@@ -42,7 +42,7 @@ export class APIPublisher extends Disposable {
     }
 
     onCommand<C extends keyof Commands>(commandName: C, handler: Handler<Commands[C]>) {
-        this.commands.set(commandName, handler);
+        this.commands.set(commandName, handler as UntypedHandler);
 
         return this;
     }
@@ -58,7 +58,7 @@ export class APIPublisher extends Disposable {
 
     private async doCall({type, callId, args}: CallRequestMessage) {
         try {
-            const handler = this.commands.get(type as keyof Commands) as WeakHandler;
+            const handler = this.commands.get(type as keyof Commands) as UntypedHandler;
             const response = await handler(args);
 
             const message: CallSuccessMessage = {

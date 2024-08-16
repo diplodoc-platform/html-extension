@@ -1,1 +1,1 @@
-export {useDiplodocHtml} from './useDiplodocHtml';
+export {useDiplodocEmbeddedContentController as useDiplodocHtml} from './useDiplodocHtml';

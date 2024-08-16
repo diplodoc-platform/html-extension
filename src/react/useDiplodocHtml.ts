@@ -1,12 +1,11 @@
 import {useEffect, useState} from 'react';
 import {EmbeddedContentRootController} from '../runtime/EmbeddedContentRootController';
 import {ScriptStore, getScriptStore} from '../common';
-import {GLOBAL_SYMBOL} from '../constants';
 
 const noop = () => {};
 
-function useController<T>(store: ScriptStore<T>) {
-    const [controller, setController] = useState<T | null>(null);
+function useController(store: ScriptStore) {
+    const [controller, setController] = useState<EmbeddedContentRootController | null>(null);
 
     useEffect(() => {
         if (store) {
@@ -26,9 +25,19 @@ function useController<T>(store: ScriptStore<T>) {
     return controller;
 }
 
-export function useDiplodocHtml(): EmbeddedContentRootController | null {
-    const store = getScriptStore<EmbeddedContentRootController>(GLOBAL_SYMBOL);
-    const controller = useController<EmbeddedContentRootController>(store);
+export function useDiplodocEmbeddedContentController(): EmbeddedContentRootController | null {
+    const store = getScriptStore();
+    const controller = useController(store);
 
     return controller;
+}
+
+export function useDiplodocEmbeddedContent() {
+    const controller = useDiplodocEmbeddedContentController();
+
+    useEffect(() => {
+        controller?.initialize();
+
+        return controller?.disposeChildren();
+    }, [controller]);
 }
