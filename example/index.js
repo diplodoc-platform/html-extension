@@ -21,6 +21,7 @@ import {promisify} from 'node:util';
                         }
                     </style>
                 `,
+                embeddingMode: 'shadow',
                 isolatedSandboxHost: 'http://localhost:5005/iframe-runtime.html',
             }),
         ],

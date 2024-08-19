@@ -2,7 +2,7 @@ import {RenderRule} from 'markdown-it/lib/renderer';
 import {RenderRuleFactoryOptions} from './defs';
 import {
     DATAATTR_ISOLATED_SANDBOX_BASE_TARGET,
-    DATAATTR_ISOLATED_SANDBOX_CONTENT,
+    DATAATTR_SANDBOX_CONTENT,
     DATAATTR_SANDBOX_MODE,
 } from '../../constants';
 
@@ -37,7 +37,7 @@ export const makeIsolatedModeEmbedRenderRule =
         token.attrSet('frameborder', '0');
         token.attrSet('style', 'width:100%');
         token.attrSet(DATAATTR_SANDBOX_MODE, 'isolated');
-        token.attrSet(DATAATTR_ISOLATED_SANDBOX_CONTENT, processedContent);
+        token.attrSet(DATAATTR_SANDBOX_CONTENT, processedContent);
         token.attrSet(DATAATTR_ISOLATED_SANDBOX_BASE_TARGET, baseTarget);
 
         return `<iframe ${self.renderAttrs(token)}></iframe>`;

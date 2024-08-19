@@ -1,5 +1,5 @@
 import {RenderRule} from 'markdown-it/lib/renderer';
-import {DATAATTR_SANDBOX_MODE} from '../../constants';
+import {DATAATTR_SANDBOX_CONTENT, DATAATTR_SANDBOX_MODE} from '../../constants';
 import {RenderRuleFactoryOptions} from './defs';
 
 export const makeShadowModeEmbedRenderRule =
@@ -15,6 +15,7 @@ export const makeShadowModeEmbedRenderRule =
 
         token.attrSet('style', 'width:100%;all:initial;');
         token.attrSet(DATAATTR_SANDBOX_MODE, 'shadow');
+        token.attrSet(DATAATTR_SANDBOX_CONTENT, processedContent);
 
-        return `<div ${self.renderAttrs(token)}><template shadowrootmode="open">${processedContent}</template></div>`;
+        return `<div ${self.renderAttrs(token)}></div>`;
     };

@@ -3,16 +3,35 @@ import {updateClassNames, updateStyles} from '../utils/reconcile';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Disposable} from './Disposable';
 
-const validateHostElement = (el: HTMLElement) => {
-    const dataset = el.dataset;
+type DatasetShape = {
+    yfmSandboxMode: 'shadow';
+    yfmSandboxContent: string;
+};
 
-    if (el.shadowRoot === null || dataset.yfmSandboxMode !== 'shadow') {
-        throw new Error('The host is not a valid element');
+type ValidShadowContainer = HTMLDivElement & {
+    dataset: DatasetShape;
+};
+
+const hasValidDataAttrs = (dataset: DOMStringMap): dataset is DatasetShape =>
+    dataset.yfmSandboxMode === 'shadow' && typeof dataset.yfmSandboxContent === 'string';
+
+const validateHostElement: (el: HTMLElement) => asserts el is ValidShadowContainer = (el) => {
+    if (!(el instanceof HTMLDivElement)) {
+        throw new Error('Provided shadow container is not a plain div');
     }
+
+    if (!hasValidDataAttrs(el.dataset)) {
+        throw new Error(
+            'Tried to initialize a shadow embed controller on a container that is not properly set up',
+        );
+    }
+
+    return true;
 };
 
 export class ShadowRootController extends Disposable implements IEmbeddedContentController {
     private readonly host: HTMLElement;
+    private readonly initParameters: DatasetShape;
     private classNames: string[] = [];
     private styles: Record<string, string> = {};
 
@@ -24,12 +43,17 @@ export class ShadowRootController extends Disposable implements IEmbeddedContent
         validateHostElement(host);
 
         this.host = host;
+        this.initParameters = host.dataset;
 
         this.setRootClassNames(initialClassNames);
         this.setRootStyles(initialStyles);
     }
 
-    async initialize() {}
+    async initialize() {
+        const shadow = this.host.attachShadow({mode: 'open'});
+
+        shadow.innerHTML = this.initParameters.yfmSandboxContent;
+    }
 
     async setRootClassNames(classNames: string[] | undefined = []) {
         updateClassNames(this.host, classNames, this.classNames);
