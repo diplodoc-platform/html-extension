@@ -24,8 +24,15 @@ export interface PluginOptions {
     containerClasses: string;
     bundle: boolean;
     sanitize?: (dirtyHtml: string) => string;
+    /**
+     * @deprecated Use the 'head' method instead.
+     */
     styles?: string | StylesObject;
+    /**
+     * @deprecated Use the 'head' method instead.
+     */
     baseTarget?: BaseTarget;
+    head?: string;
 }
 
 type TransformOptions = {
@@ -42,6 +49,7 @@ export function transform({
     sanitize,
     styles,
     baseTarget = '_parent',
+    head: headContent = '',
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
@@ -92,19 +100,21 @@ export function transform({
         mdDir.renderer.rules[TOKEN_TYPE] = (tokens, idx, _opts, _env, self) => {
             const token = tokens[idx];
 
-            const base = `<base target="${baseTarget}">`;
-            let content = base + token.attrGet(TokenAttr.srcdoc) ?? '';
-
+            let additional = baseTarget ? `<base target="${baseTarget}">` : '';
             if (styles) {
                 const stylesContent =
                     typeof styles === 'string'
                         ? `<link rel="stylesheet" href="${styles}" />`
                         : `<style>${getStyles(styles)}</style>`;
-                content = stylesContent + content;
+                additional += stylesContent;
             }
 
-            const resultContent = sanitize ? sanitize(content) : content;
-            token.attrSet(TokenAttr.srcdoc, resultContent);
+            const head = `<head>${headContent || additional}</head>`;
+            const body = `<body>${token.attrGet(TokenAttr.srcdoc) ?? ''}</body>`;
+            const html = `<!DOCTYPE html><html>${head}${body}</html>`;
+
+            const resultHtml = sanitize ? sanitize(html) : html;
+            token.attrSet(TokenAttr.srcdoc, resultHtml);
 
             return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
         };
