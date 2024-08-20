@@ -22,7 +22,7 @@ export type StylesObject = {
     [selector: string]: CSSProperties;
 };
 
-export type EmbeddingMode = 'shadow' | 'isolated';
+export type EmbeddingMode = 'shadow' | 'srcdoc' | 'isolated';
 
 declare global {
     interface Window {

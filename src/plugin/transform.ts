@@ -2,13 +2,14 @@ import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
 import type {PluginWithOptions} from 'markdown-it';
 
-import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE} from '../constants';
+import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
 import {makeIsolatedModeEmbedRenderRule} from './renderers/isolated';
 import {makeShadowModeEmbedRenderRule} from './renderers/shadow';
 import MarkdownIt from 'markdown-it';
+import {makeSrcdocModeEmbedRenderRule} from './renderers/srcdoc';
 
 export interface PluginOptions {
     embeddingMode: EmbeddingMode;
@@ -34,6 +35,12 @@ type TransformOptions = {
 
 const emptyOptions = {};
 const TAG = 'iframe';
+
+const embeddingModeToTokenType: Record<EmbeddingMode, string> = {
+    srcdoc: SRCDOC_TOKEN_TYPE,
+    shadow: SHADOW_TOKEN_TYPE,
+    isolated: ISOLATED_TOKEN_TYPE,
+};
 
 const concatStylesIncludeDirectives = (content: string, styles?: string | StylesObject) => {
     if (styles) {
@@ -70,8 +77,7 @@ const registerTransform = (
         addHiddenProperty(env, 'bundled', new Set<string>());
 
         if (updateTokens) {
-            const tokenType =
-                embeddingMode === 'isolated' ? ISOLATED_TOKEN_TYPE : SHADOW_TOKEN_TYPE;
+            const tokenType = embeddingModeToTokenType[embeddingMode];
 
             const token = state.push(tokenType, TAG, 0);
 
@@ -100,7 +106,7 @@ const registerTransform = (
 };
 
 export function transform({
-    embeddingMode = 'shadow',
+    embeddingMode = 'srcdoc',
     runtimeJsPath = '_assets/html-extension.js',
     containerClasses = '',
     bundle = true,
@@ -108,11 +114,29 @@ export function transform({
     sanitize,
     styles,
     baseTarget = '_parent',
+    head: headContent,
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     const plugin: PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
         registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output, updateTokens: true});
+
+        (md as MarkdownItWithDirectives).renderer.rules[SRCDOC_TOKEN_TYPE] =
+            makeSrcdocModeEmbedRenderRule({
+                containerClassNames: containerClasses,
+                embedContentTransformFn: (raw) => {
+                    const deprecatedHeadContent = concatStylesIncludeDirectives(
+                        `<base target="${baseTarget}">`,
+                        styles,
+                    );
+
+                    const head = `<head>${headContent ?? deprecatedHeadContent}</head>`;
+                    const body = `<body>${raw}</body>`;
+                    const html = `<!DOCTYPE html><html>${head}${body}</html>`;
+
+                    return sanitize?.(html) ?? html;
+                },
+            });
 
         (md as MarkdownItWithDirectives).renderer.rules[ISOLATED_TOKEN_TYPE] =
             makeIsolatedModeEmbedRenderRule({

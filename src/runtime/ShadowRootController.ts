@@ -1,7 +1,7 @@
 import {IHTMLIFrameControllerConfig} from '../types';
 import {updateClassNames, updateStyles} from '../utils/reconcile';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
-import {Disposable} from './Disposable';
+import {Disposable} from '../utils';
 
 type DatasetShape = {
     yfmSandboxMode: 'shadow';

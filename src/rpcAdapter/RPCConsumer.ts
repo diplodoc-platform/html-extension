@@ -1,6 +1,5 @@
 import type {Commands, Events} from '../iframe';
-import {Deferred, timeout} from '../utils';
-import {Disposable} from '../runtime/Disposable';
+import {Deferred, Disposable, timeout} from '../utils';
 import {
     CallRequestMessage,
     CallResponseMessage,

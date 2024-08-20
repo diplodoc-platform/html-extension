@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import {updateClassNames, updateStyles} from '../utils';
+import {Disposable, updateClassNames, updateStyles} from '../utils';
 
 const DEFAULT_RESIZE_DELAY = 150;
 
@@ -22,7 +22,7 @@ type EventHandlers = {
     [K in keyof Events]: Set<Events[K]>;
 };
 
-export class IFrameController {
+export class IFrameController extends Disposable {
     private readonly domContainer: HTMLElement;
     private classNames: string[] = [];
     private resizeObserver: ResizeObserver;
@@ -32,6 +32,8 @@ export class IFrameController {
     };
 
     constructor(bodyElement: HTMLElement) {
+        super();
+
         this.domContainer = bodyElement;
 
         this.resizeObserver = new ResizeObserver(
@@ -39,6 +41,8 @@ export class IFrameController {
         );
 
         this.resizeObserver.observe(this.domContainer);
+
+        this.dispose.add(() => this.resizeObserver.disconnect());
     }
 
     setClassNames = (classNames: string[] | undefined = []) => {

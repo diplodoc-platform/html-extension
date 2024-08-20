@@ -2,9 +2,8 @@ import {RPCConsumer} from '../rpcAdapter/RPCConsumer';
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
 import {IHTMLIFrameControllerConfig} from '../types';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
-import {Disposable} from './Disposable';
-
-const DEFAULT_PADDING = 34;
+import {Disposable} from '../utils';
+import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
 
 type DatasetShape = {
     yfmSandboxMode: 'isolated';
@@ -90,6 +89,6 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
     }
 
     private updateIFrameHeight(value: number) {
-        this.iframeElement.style.height = `${value + DEFAULT_PADDING}px`;
+        this.iframeElement.style.height = `${value + DEFAULT_IFRAME_HEIGHT_PADDING}px`;
     }
 }

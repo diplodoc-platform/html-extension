@@ -1,7 +1,10 @@
 export const GLOBAL_SYMBOL = Symbol('diplodocHtml');
 export const QUEUE_SYMBOL = Symbol('queue');
 
-export const SHADOW_TOKEN_TYPE = 'yfm_html_block';
+export const DEFAULT_IFRAME_HEIGHT_PADDING = 34;
+
+export const SRCDOC_TOKEN_TYPE = 'yfm_html_block';
+export const SHADOW_TOKEN_TYPE = 'yfm_html_block_shadow';
 export const ISOLATED_TOKEN_TYPE = 'yfm_html_block_isolated';
 
 export const DATAATTR_SANDBOX_MODE = 'data-yfm-sandbox-mode';

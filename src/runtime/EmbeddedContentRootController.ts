@@ -4,8 +4,11 @@ import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {ShadowRootController} from './ShadowRootController';
 import {IHTMLIFrameElementConfig} from '.';
-import {Disposable} from './Disposable';
+import {Disposable} from '../utils';
+import {SrcDocIFrameController} from './SrcDocIFrameController';
 
+const findAllSrcDocEmbeds = (scope: ParentNode) =>
+    scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=srcdoc]');
 const findAllShadowContainers = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLDivElement>('div[data-yfm-sandbox-mode=shadow]');
 const findAllIFrameEmbeds = (scope: ParentNode) =>
@@ -15,6 +18,7 @@ const modeToController: Record<
     EmbeddingMode,
     new (node: HTMLElement, config: IHTMLIFrameElementConfig) => IEmbeddedContentController
 > = {
+    srcdoc: SrcDocIFrameController,
     shadow: ShadowRootController,
     isolated: EmbeddedIFrameController,
 };
@@ -48,6 +52,7 @@ export class EmbeddedContentRootController extends Disposable {
 
     initialize = async () => {
         const dirtyEmbeds = [
+            ...findAllSrcDocEmbeds(this.document),
             ...findAllShadowContainers(this.document),
             ...findAllIFrameEmbeds(this.document),
         ].filter(

@@ -1,5 +1,5 @@
 import type {Commands, Events} from '../iframe';
-import {Disposable} from '../runtime/Disposable';
+import {Disposable} from '../utils';
 import {
     CallRejectionMessage,
     CallRequestMessage,

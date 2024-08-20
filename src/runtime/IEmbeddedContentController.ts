@@ -1,4 +1,4 @@
-import {IDisposable} from './Disposable';
+import {IDisposable} from '../utils';
 
 export interface IEmbeddedContentController extends IDisposable {
     initialize: () => Promise<void>;
