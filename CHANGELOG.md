@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0](https://github.com/diplodoc-platform/html-extension/compare/v1.4.0...v1.5.0) (2024-08-20)
+
+
+### Features
+
+* **plugin:** added head option ([33d4712](https://github.com/diplodoc-platform/html-extension/commit/33d4712c7e64532d187403b73190c2f3f0ebb31c))
+* **plugin:** fixed lint error ([f578423](https://github.com/diplodoc-platform/html-extension/commit/f578423592e7cbba3ce0c7ff876b0fdbf6332eba))
+* **plugin:** updated created iframe (without quirks mode) ([296c13e](https://github.com/diplodoc-platform/html-extension/commit/296c13ea5daa23fc1d8526e09b0d3350fc531ba0))
+
 ## [1.4.0](https://github.com/diplodoc-platform/html-extension/compare/v1.3.3...v1.4.0) (2024-08-15)
 
 
