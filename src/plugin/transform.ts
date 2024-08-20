@@ -49,7 +49,7 @@ export function transform({
     sanitize,
     styles,
     baseTarget = '_parent',
-    head = '',
+    head: headContent = '',
 }: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
     return function html(md, options) {
         const {output = '.'} = options || {};
@@ -109,11 +109,12 @@ export function transform({
                 additional += stylesContent;
             }
 
-            const headContent = head ? `<head>${head}</head>` : additional;
-            const contentWithHead = `${headContent}${token.attrGet(TokenAttr.srcdoc) ?? ''}`;
-            const resultContent = sanitize ? sanitize(contentWithHead) : contentWithHead;
+            const head = `<head>${headContent || additional}</head>`;
+            const body = `<body>${token.attrGet(TokenAttr.srcdoc) ?? ''}</body>`;
+            const html = `<!DOCTYPE html><html>${head}${body}</html>`;
 
-            token.attrSet(TokenAttr.srcdoc, resultContent);
+            const resultHtml = sanitize ? sanitize(html) : html;
+            token.attrSet(TokenAttr.srcdoc, resultHtml);
 
             return `<${token.tag}${self.renderAttrs(token)}></${token.tag}>`;
         };
