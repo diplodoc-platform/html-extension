@@ -36,6 +36,7 @@ Markdown text
 
 </style>
 
+<h2>Table example</h2>
 <!----------------->
 <!--   header   --->
 <!----------------->

@@ -13,6 +13,14 @@ import {promisify} from 'node:util';
         plugins: [
             htmlPlugin.transform({
                 bundle: true,
+                head: `
+                    <base target="_blank" />
+                    <style>
+                        h2 {
+                            color: gray;
+                        }
+                    </style>
+                `
             }),
         ],
     });
