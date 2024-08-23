@@ -14,7 +14,7 @@ type Handler<T extends Commands[keyof Commands] = Commands[keyof Commands]> = (
     ...args: T['Args']
 ) => Promise<T['Result']> | T['Result'];
 
-type UntypedHandler = (args: unknown) => unknown;
+type UntypedHandler = (...args: unknown[]) => unknown;
 
 const isCallRequestMessage = (message: TypedMessage): message is CallRequestMessage =>
     'callId' in message && 'args' in message;
@@ -59,7 +59,7 @@ export class APIPublisher extends Disposable {
     private async doCall({type, callId, args}: CallRequestMessage) {
         try {
             const handler = this.commands.get(type as keyof Commands) as UntypedHandler;
-            const response = await handler(args);
+            const response = await handler(...args);
 
             const message: CallSuccessMessage = {
                 type,

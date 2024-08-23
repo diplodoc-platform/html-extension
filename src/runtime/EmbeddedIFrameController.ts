@@ -1,6 +1,6 @@
 import {RPCConsumer} from '../rpcAdapter/RPCConsumer';
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
-import {IHTMLIFrameControllerConfig} from '../types';
+import {EmbedsConfig} from '../types';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Disposable} from '../utils';
 import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
@@ -9,6 +9,7 @@ type DatasetShape = {
     yfmSandboxMode: 'isolated';
     yfmSandboxContent: string;
     yfmSandboxBaseTarget?: string;
+    yfmSandboxPreferredIsolatedHostUri?: string;
 };
 
 type ValidIFrameElement = HTMLIFrameElement & {
@@ -36,9 +37,9 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
     private readonly iframeElement: ValidIFrameElement;
     private readonly rpcConsumer: RPCConsumer;
     private readonly initParameters: DatasetShape;
-    private readonly config: IHTMLIFrameControllerConfig;
+    private readonly config: EmbedsConfig;
 
-    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig) {
+    constructor(host: HTMLElement, config: EmbedsConfig) {
         validateHostElement(host);
 
         super();
@@ -62,12 +63,23 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
     }
 
     async initialize() {
-        const {yfmSandboxContent, yfmSandboxBaseTarget} = this.initParameters;
+        const {classNames, styles, isolatedSandboxHostURIOverride} = this.config;
+        const {yfmSandboxContent, yfmSandboxBaseTarget, yfmSandboxPreferredIsolatedHostUri} =
+            this.initParameters;
+
+        const authoritativeSandboxHost =
+            isolatedSandboxHostURIOverride ?? yfmSandboxPreferredIsolatedHostUri;
+
+        if (typeof authoritativeSandboxHost !== 'string') {
+            throw new Error('Could not resolve IsolatedSandboxHostURI.');
+        }
+
+        this.iframeElement.src = authoritativeSandboxHost;
 
         await this.rpcConsumer.start();
 
-        await this.setRootClassNames(this.config.classNames);
-        await this.setRootStyles(this.config.styles);
+        await this.setRootClassNames(classNames);
+        await this.setRootStyles(styles);
 
         if (yfmSandboxBaseTarget) {
             await this.rpcConsumer.dispatchCall('setBaseTarget', yfmSandboxBaseTarget);

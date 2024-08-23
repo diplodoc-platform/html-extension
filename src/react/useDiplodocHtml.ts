@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {EmbeddedContentRootController} from '../runtime/EmbeddedContentRootController';
 import {ScriptStore, getScriptStore} from '../common';
+import {EmbedsConfig} from '../types';
 
 const noop = () => {};
 
@@ -32,12 +33,12 @@ export function useDiplodocEmbeddedContentController(): EmbeddedContentRootContr
     return controller;
 }
 
-export function useDiplodocEmbeddedContent() {
+export function useDiplodocEmbeddedContent(embedsConfig?: EmbedsConfig) {
     const controller = useDiplodocEmbeddedContentController();
 
     useEffect(() => {
-        controller?.initialize();
+        controller?.initialize(embedsConfig);
 
         return controller?.disposeChildren();
-    }, [controller]);
+    }, [controller, embedsConfig]);
 }

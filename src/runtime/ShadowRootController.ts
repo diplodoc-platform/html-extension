@@ -1,4 +1,4 @@
-import {IHTMLIFrameControllerConfig} from '../types';
+import {EmbedsConfig} from '../types';
 import {updateClassNames, updateStyles} from '../utils/reconcile';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Disposable} from '../utils';
@@ -35,7 +35,7 @@ export class ShadowRootController extends Disposable implements IEmbeddedContent
     private classNames: string[] = [];
     private styles: Record<string, string> = {};
 
-    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig) {
+    constructor(host: HTMLElement, config: EmbedsConfig) {
         super();
 
         const {classNames: initialClassNames, styles: initialStyles} = config;

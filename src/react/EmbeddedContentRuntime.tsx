@@ -1,8 +1,19 @@
-import {FC} from 'react';
+import {FC, useMemo} from 'react';
 import {useDiplodocEmbeddedContent} from './useDiplodocHtml';
 
-export const EmbeddedContentRuntime: FC = () => {
-    useDiplodocEmbeddedContent();
+type EmbeddedContentRuntimeProps = {
+    isolatedSandboxHostURIOverride?: string;
+};
+
+export const EmbeddedContentRuntime: FC<EmbeddedContentRuntimeProps> = ({
+    isolatedSandboxHostURIOverride,
+}) => {
+    const config = useMemo(
+        () => ({isolatedSandboxHostURIOverride}),
+        [isolatedSandboxHostURIOverride],
+    );
+
+    useDiplodocEmbeddedContent(config);
 
     return null;
 };

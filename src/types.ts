@@ -3,11 +3,12 @@ import {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
-export type SetConfigArgs = IHTMLIFrameControllerConfig;
+export type SetConfigArgs = EmbedsConfig;
 
-export interface IHTMLIFrameControllerConfig {
+export interface EmbedsConfig {
     classNames?: string[];
     styles?: Record<string, string>;
+    isolatedSandboxHostURIOverride?: string;
 }
 
 export type Unsubscribe = () => void;

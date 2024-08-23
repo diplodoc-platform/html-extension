@@ -10,7 +10,7 @@ export type RPCMessageContract = {
 
 export type CallRequestMessage = TypedMessage &
     RPCMessageContract & {
-        args: unknown;
+        args: unknown[];
     };
 
 export type CallSuccessMessage = TypedMessage &

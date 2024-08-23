@@ -1,7 +1,7 @@
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Deferred, Disposable, TaskQueue} from '../utils';
 import {IFrameController} from '../iframe/IFrameController';
-import {IHTMLIFrameControllerConfig} from '../types';
+import {EmbedsConfig} from '../types';
 import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
 
 const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement = (el) => {
@@ -32,13 +32,13 @@ const ensureIframeLoaded = (host: HTMLIFrameElement) => {
 
 export class SrcDocIFrameController extends Disposable implements IEmbeddedContentController {
     private readonly host: HTMLIFrameElement;
-    private readonly config: IHTMLIFrameControllerConfig;
+    private readonly config: EmbedsConfig;
     private readonly taskQueue: TaskQueue;
     private readonly controllerInitialiazedFuse = new Deferred<void>();
 
     private iframeController: IFrameController | null = null;
 
-    constructor(host: HTMLElement, config: IHTMLIFrameControllerConfig) {
+    constructor(host: HTMLElement, config: EmbedsConfig) {
         validateHostElement(host);
 
         super();
