@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.0.0](https://github.com/diplodoc-platform/html-extension/compare/v1.5.0...v2.0.0) (2024-08-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* move `embeddingMode` resolution into plugin options
+* implement new api for root controller
+
+### Features
+
+* add React runtime component ([ff96911](https://github.com/diplodoc-platform/html-extension/commit/ff969115f8efde431c3d3a4426bfd5d983575cd0))
+* allow supplying the runtime an override for iframes' src attribute ([82ee85e](https://github.com/diplodoc-platform/html-extension/commit/82ee85e7770c2f388a10d2e285f531fe306e8c2a))
+* change transform function to support the isolated mode ([36bc0b8](https://github.com/diplodoc-platform/html-extension/commit/36bc0b8306f85a6d8065a57934099b66397d8859))
+* implement `collect` plugin extension ([ece5ec6](https://github.com/diplodoc-platform/html-extension/commit/ece5ec6fe7dfb75b34914781b9f99963e1cb8b4d))
+* implement new api for root controller ([48c03cb](https://github.com/diplodoc-platform/html-extension/commit/48c03cbaaef9ec1fe8317f3672b6b82cfb6b1559))
+* implement upstream healthchecks in PostMessageChannel ([ea190dc](https://github.com/diplodoc-platform/html-extension/commit/ea190dc8c022cd57582f3b5def2dc20cf48193f4))
+* move `embeddingMode` resolution into plugin options ([4719361](https://github.com/diplodoc-platform/html-extension/commit/4719361b484bdd7adb23e0d47a4c882e81da6961))
+* proper DX and demo ([03eae43](https://github.com/diplodoc-platform/html-extension/commit/03eae43154ef431176e50a227e9bbdf61a1714f5))
+* restore functionality to embed via `srcdoc` iframe ([6f9e200](https://github.com/diplodoc-platform/html-extension/commit/6f9e200c75e0e643dbe883aeb0100f01f79fe72c))
+* rpc consumer implementation ([88d00ef](https://github.com/diplodoc-platform/html-extension/commit/88d00ef21c27496a28310a4d87907e48636a2331))
+* use iframe runtime instead of direct DOM manipulations ([a2341a0](https://github.com/diplodoc-platform/html-extension/commit/a2341a08fbfd96f75008c716872ffd0dde38dc90))
+* use non-declarative shadow root ([6d0e3cf](https://github.com/diplodoc-platform/html-extension/commit/6d0e3cfb58c42a284c4353c67c1a11d5ddb53b52))
+
+
+### Bug Fixes
+
+* disable generation of git tags upon running `npm version` ([186ca51](https://github.com/diplodoc-platform/html-extension/commit/186ca514b07c439473c3e691672591ebbbcece40))
+* force srcdoc resize to work as intended ([7f58293](https://github.com/diplodoc-platform/html-extension/commit/7f58293e0fa687e885a8aa3fb60c435c4fd7d50f))
+* make symbols consistent across different runtime components ([db338fa](https://github.com/diplodoc-platform/html-extension/commit/db338fa7f1bdae1d535c15559cdaea3718d8c9aa))
+
 ## [1.5.0](https://github.com/diplodoc-platform/html-extension/compare/v1.4.0...v1.5.0) (2024-08-20)
 
 
