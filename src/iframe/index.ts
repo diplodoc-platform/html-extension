@@ -4,7 +4,7 @@ import {IFrameController} from './IFrameController';
 
 export type {Commands, Events} from './IFrameController';
 
-const $$PublisherInstanceSymbol = Symbol('$$RPCAPIPublisher');
+const $$PublisherInstanceSymbol = Symbol.for('$$RPCAPIPublisher');
 
 const onDOMReady = () => {
     const controller = new IFrameController(globalThis.document.body);
