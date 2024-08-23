@@ -1,2 +1,2 @@
-export {useDiplodocHtml} from './useDiplodocHtml';
-export type {IHtmlController} from '../types';
+export {useDiplodocEmbeddedContentController, useDiplodocEmbeddedContent} from './useDiplodocHtml';
+export {EmbeddedContentRuntime} from './EmbeddedContentRuntime';

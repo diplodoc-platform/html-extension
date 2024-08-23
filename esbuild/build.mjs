@@ -6,6 +6,8 @@ import {dirname} from 'path';
 
 import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
+import {htmlPlugin} from '@craftamap/esbuild-plugin-html';
+
 const tsconfigJson = readJSON('../tsconfig.json');
 const packageJson = readJSON('../package.json');
 
@@ -34,9 +36,7 @@ build({
     outfile: 'runtime/index.js',
     minify: true,
     platform: 'browser',
-    plugins: [
-        sassPlugin()
-    ],
+    plugins: [sassPlugin()],
 });
 
 build({
@@ -58,6 +58,27 @@ build({
     define: {
         PACKAGE: JSON.stringify(packageJson.name),
     },
+});
+
+build({
+    ...common,
+    entryPoints: ['src/iframe/index.ts'],
+    sourcemap: false,
+    minify: true,
+    platform: 'browser',
+    metafile: true,
+    outdir: 'iframe/',
+    plugins: [
+        htmlPlugin({
+            files: [
+                {
+                    filename: 'runtime.html',
+                    entryPoints: ['src/iframe/index.ts'],
+                    inline: true,
+                },
+            ],
+        }),
+    ],
 });
 
 function readJSON(path) {

@@ -1,24 +1,23 @@
-import {useEffect, useState} from 'react';
+import {GLOBAL_SYMBOL, QUEUE_SYMBOL} from './constants';
+import {EmbeddedContentRootController} from './runtime/EmbeddedContentRootController';
 
-type Callback<T> = (controller: T) => void;
+type ControllerLoadedCallback = (controller: EmbeddedContentRootController) => void;
+export type ScriptStore = ControllerLoadedCallback[] | null;
 
-export const QUEUE_SYMBOL: unique symbol = Symbol.for('queue');
-
-export type ScriptStore<T> = Callback<T>[] | null;
-
-export interface CreateLoadQueueArgs<T> {
-    store: ScriptStore<T>;
-    createController: () => T;
+export interface CreateLoadQueueArgs {
+    store: ScriptStore;
+    createController: () => EmbeddedContentRootController;
     isQueueCreated?: boolean;
     onQueueCreated?: (created: boolean) => void;
 }
 
 export const isBrowser = () => typeof window !== 'undefined' && typeof document !== 'undefined';
 
-export const getScriptStore = <T = any>(key: symbol): ScriptStore<T> => {
+export const getScriptStore = (): ScriptStore => {
     if (isBrowser()) {
-        (window as any)[key] = (window as any)[key] || [];
-        return (window as any)[key];
+        window[GLOBAL_SYMBOL] = window[GLOBAL_SYMBOL] ?? [];
+
+        return window[GLOBAL_SYMBOL];
     }
 
     return null;
@@ -26,23 +25,24 @@ export const getScriptStore = <T = any>(key: symbol): ScriptStore<T> => {
 
 export const getQueueStore = () => {
     if (isBrowser()) {
-        (window as any)[QUEUE_SYMBOL] = (window as any)[QUEUE_SYMBOL] || false;
-        return (window as any)[QUEUE_SYMBOL];
+        window[QUEUE_SYMBOL] = window[QUEUE_SYMBOL] || false;
+
+        return window[QUEUE_SYMBOL];
     }
 
-    return null;
+    return false;
 };
 
 export const handleQueueCreated = (created: boolean) => {
-    (window as any)[QUEUE_SYMBOL] = created;
+    window[QUEUE_SYMBOL] = created;
 };
 
-export const createLoadQueue = <T = any>({
+export const createLoadQueue = ({
     store,
     createController,
     isQueueCreated = getQueueStore(),
     onQueueCreated = handleQueueCreated,
-}: CreateLoadQueueArgs<T>) => {
+}: CreateLoadQueueArgs) => {
     if (!store || isQueueCreated) {
         return;
     }
@@ -63,10 +63,12 @@ export const createLoadQueue = <T = any>({
 
     let processing = false;
 
-    function unqueue() {
+    async function unqueue() {
         if (!processing) {
-            next();
+            return next();
         }
+
+        return undefined;
     }
 
     async function next(): Promise<void> {
@@ -74,35 +76,15 @@ export const createLoadQueue = <T = any>({
 
         const callback = queue.shift();
         if (callback) {
-            await callback(controller);
+            callback(controller);
+
             return next();
         }
 
         processing = false;
+
+        return undefined;
     }
 
     unqueue();
 };
-
-const noop = () => {};
-
-export function useController<T>(store: ScriptStore<T>) {
-    const [controller, setController] = useState<T | null>(null);
-
-    useEffect(() => {
-        if (store) {
-            store.push(setController);
-
-            return () => {
-                const index = store.indexOf(setController);
-                if (index > -1) {
-                    store.splice(index, 1);
-                }
-            };
-        }
-
-        return noop;
-    }, []);
-
-    return controller;
-}

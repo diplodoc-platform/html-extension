@@ -15,6 +15,15 @@ export function addHiddenProperty<
     return box as B & {[P in F]: V};
 }
 
+/*
+ * Runtime require hidden for builders.
+ * Used for nodejs api
+ */
+export function dynrequire(module: string) {
+    // eslint-disable-next-line no-eval
+    return eval(`require('${module}')`);
+}
+
 const hasOwnProperty = (obj: Object, prop: string) =>
     Object.prototype.hasOwnProperty.call(obj, prop);
 

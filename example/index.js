@@ -21,6 +21,8 @@ import {promisify} from 'node:util';
                         }
                     </style>
                 `,
+                embeddingMode: 'srcdoc',
+                isolatedSandboxHost: 'http://localhost:5005/runtime.html',
             }),
         ],
     });

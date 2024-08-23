@@ -65,3 +65,27 @@ After html text
     <p>Phasellus vitae posuere erat. Sed blandit nunc eget sapien ultrices fermentum. Aenean vestibulum facilisis elit sed aliquet. Phasellus posuere et leo id commodo. Praesent tincidunt egestas est a fermentum. Quisque maximus eros dolor, at condimentum eros faucibus in. In commodo augue id purus semper, non semper orci interdum. Phasellus luctus augue id ornare bibendum. Praesent dignissim nisi nec nisi imperdiet, vel pretium dui vestibulum. In condimentum magna odio, ac suscipit lectus accumsan non.</p>
     <p>Donec imperdiet tortor vitae ipsum gravida euismod. Donec lobortis orci erat, rutrum consequat orci aliquet non. Curabitur non dui eget orci maximus dapibus id vitae orci. Praesent sed venenatis ipsum. Suspendisse bibendum tincidunt arcu, id tempor felis consectetur non. Sed sit amet purus ultrices, tristique enim eu, efficitur mauris. Curabitur sed efficitur ligula, et varius lectus. Morbi libero purus, eleifend in vehicula eu, sagittis eu lacus. Nulla nisi ligula, mollis eu neque ornare, scelerisque rutrum enim. Duis ut volutpat neque. Vivamus gravida, felis a laoreet auctor, leo lacus mattis lacus, non auctor elit tellus ut odio. Phasellus facilisis efficitur dolor, ut fermentum mi mattis in. Suspendisse potenti. Donec tincidunt nunc eu lacus ultricies, a imperdiet est congue. Maecenas non metus non purus lobortis dignissim. Nulla libero dolor, mattis sit amet massa sed, porttitor fringilla tellus.</p>
 :::
+
+## Isolated IFrame (with script execution capabilities)
+
+Make sure to set the `embeddingMode` plugin option to `isolated`.
+
+Please note that you also have to provide the `isolatedSandboxHost` plugin option, which should specify a **cross-origin** URL where the `iframe-runtime.html` is hosted.
+
+To test this locally, run the following:
+
+```bash
+npx http-server ./iframe -p 5005 -c-1
+```
+
+Set the `isolatedSandboxHost` plugin option to `http://localhost:5005/iframe-runtime.html`. You could then run this example as you would normally do (again, make sure to set `embeddingMode` to `isolated`!)
+
+::: html
+We're counting. <span id="counter">0</span>
+
+<script>
+    const el = document.querySelector('#counter');
+
+    window.setInterval(() => el.textContent = Number(el.textContent) + 1, 1000);
+</script>
+:::

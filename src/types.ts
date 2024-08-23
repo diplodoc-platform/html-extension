@@ -1,37 +1,17 @@
-import {GLOBAL_SYMBOL} from './constants';
+import {GLOBAL_SYMBOL, QUEUE_SYMBOL} from './constants';
 import {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
 
-export type ForEachCallbackArgs = ControllerCallback<IHtmlIFrameController>;
-export type SetConfigArgs = IHTMLIFrameElementConfig;
+export type SetConfigArgs = EmbedsConfig;
 
-export interface IHtmlController {
-    destroy(): void;
-    forEach(callback: ForEachCallbackArgs): void;
-    readonly blocks: IHtmlIFrameController[];
-    reinitialize(): void;
-    setConfig(config: SetConfigArgs): void;
-}
-
-export interface IHTMLIFrameElementConfig {
+export interface EmbedsConfig {
     classNames?: string[];
-    resizeDelay?: number;
-    resizePadding?: number;
     styles?: Record<string, string>;
+    isolatedSandboxHostURIOverride?: string;
 }
 
-export type IHtmlControllerConfig = IHTMLIFrameElementConfig;
-
-export interface IHtmlIFrameController {
-    destroy(): void;
-    execute(callback: ControllerCallback<IHtmlIFrameController>): void;
-    readonly block: HTMLIFrameElement;
-    resize(): void;
-    setClassNames(classNames: string[]): void;
-    setConfig(config: IHTMLIFrameElementConfig): void;
-    setStyles(styles: Record<string, string>): void;
-}
+export type Unsubscribe = () => void;
 
 export type CSSProperties = {
     [property: string]: string | number;
@@ -43,8 +23,11 @@ export type StylesObject = {
     [selector: string]: CSSProperties;
 };
 
+export type EmbeddingMode = 'shadow' | 'srcdoc' | 'isolated';
+
 declare global {
     interface Window {
-        [GLOBAL_SYMBOL]: ScriptStore<IHtmlController>;
+        [GLOBAL_SYMBOL]: ScriptStore;
+        [QUEUE_SYMBOL]: boolean;
     }
 }
