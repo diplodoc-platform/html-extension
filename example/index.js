@@ -21,7 +21,7 @@ import {promisify} from 'node:util';
                         }
                     </style>
                 `,
-                embeddingMode: 'srcdoc',
+                embeddingMode: 'isolated',
                 isolatedSandboxHost: 'http://localhost:5005/runtime.html',
             }),
         ],

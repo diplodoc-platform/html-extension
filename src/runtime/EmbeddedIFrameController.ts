@@ -59,7 +59,7 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
             this.rpcConsumer.on('resize', (value) => this.updateIFrameHeight(value.height)),
         );
 
-        this.dispose.add(this.rpcConsumer.dispose);
+        this.dispose.add(() => this.rpcConsumer.dispose());
     }
 
     async initialize() {

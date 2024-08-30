@@ -46,7 +46,7 @@ export class RPCConsumer extends Disposable {
 
         this.messageChannel.onIncomingMessage((message) => this.processIncomingMessage(message));
 
-        this.dispose.add(this.messageChannel.close);
+        this.dispose.add(() => this.messageChannel.close());
     }
 
     start() {
