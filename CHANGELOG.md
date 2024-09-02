@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/diplodoc-platform/html-extension/compare/v2.0.0...v2.0.1) (2024-09-02)
+
+
+### Bug Fixes
+
+* make dispose function correctly ([f14a50b](https://github.com/diplodoc-platform/html-extension/commit/f14a50bf38f49418b4d07abc1c10467f9d0edc6f))
+
 ## [2.0.0](https://github.com/diplodoc-platform/html-extension/compare/v1.5.0...v2.0.0) (2024-08-23)
 
 
