@@ -47,7 +47,7 @@ export class EmbeddedContentRootController extends Disposable {
             this.document.removeEventListener('DOMContentLoaded', () => this.initialize());
         });
 
-        this.dispose.add(this.disposeChildren);
+        this.dispose.add(() => this.disposeChildren());
     }
 
     initialize = async (configOverrideForThisInitCycle?: EmbedsConfig) => {

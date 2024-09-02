@@ -34,7 +34,7 @@ export class APIPublisher extends Disposable {
             }
         });
 
-        this.dispose.add(this.messageChannel.close);
+        this.dispose.add(() => this.messageChannel.close());
     }
 
     start() {
