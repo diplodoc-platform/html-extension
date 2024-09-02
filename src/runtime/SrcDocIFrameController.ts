@@ -10,6 +10,11 @@ const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement 
     }
 };
 
+const isBodyContentLoaded = (document: Document) => {
+    const innerHTML = document.body ? document.body.innerHTML : '';
+    return ['complete', 'interactive'].includes(document.readyState) && Boolean(innerHTML);
+}
+
 const ensureIframeLoaded = (host: HTMLIFrameElement) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/contentWindow
     // says nothing about `contentWindow` being nullable
@@ -22,13 +27,26 @@ const ensureIframeLoaded = (host: HTMLIFrameElement) => {
             this.removeEventListener('load', listener);
         };
 
-        if (['complete', 'interactive'].includes(document.readyState)) {
+        if (isBodyContentLoaded(document)) {
             resolve();
         } else {
             host.addEventListener('load', listener);
         }
     });
 };
+
+const createLinkCLickHandler = (value: Element, document: Document) => (event: Event) => {
+    event.preventDefault();
+    const targetId = value.getAttribute('href');
+
+    if (targetId) {
+        const targetElement = document.querySelector(targetId);
+        console.log('targetElement', targetElement);
+        if (targetElement) {
+            targetElement.scrollIntoView({behavior: 'smooth'});
+        }
+    }
+}
 
 export class SrcDocIFrameController extends Disposable implements IEmbeddedContentController {
     private readonly host: HTMLIFrameElement;
@@ -53,11 +71,28 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
+        await this.addAnchorLinkHandlers();
 
         this.updateIFrameHeight(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.host.contentWindow!.document.body.getBoundingClientRect().height,
         );
+    }
+
+    // finds all relative links (href^="#") and changes their click behavior
+    addAnchorLinkHandlers() {
+        const document = this.host.contentWindow?.document;
+
+        if (document) {
+            document.querySelectorAll('a[href^="#"]').forEach((value: Element) => {
+                const handler = createLinkCLickHandler(value, document);
+                value.addEventListener('click', handler);
+
+                this.dispose.add(() => {
+                    value.removeEventListener('click', handler);
+                });
+            });
+        }
     }
 
     setRootClassNames(classNames: string[] | undefined) {
@@ -76,6 +111,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         this.iframeController = controller;
 
+        // TODO: is dispose in this line works correct?
         this.dispose.add(controller.on('resize', (value) => this.updateIFrameHeight(value.height)));
         this.dispose.add(() => controller.dispose());
 
@@ -95,6 +131,9 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
     }
 
     private updateIFrameHeight(value: number) {
+        // DEFAULT_IFRAME_HEIGHT_PADDING is used to account for the height
+        // difference resulting from the calculation of height by the script,
+        // due to margin collapsing.
         this.host.style.height = `${value + DEFAULT_IFRAME_HEIGHT_PADDING}px`;
     }
 }

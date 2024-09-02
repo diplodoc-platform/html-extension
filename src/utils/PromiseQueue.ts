@@ -43,9 +43,9 @@ export class Deferred<T> {
         this.callbacks.resolve(value);
     }
 
-    reject(thrown: Error) {
+    reject(error: Error) {
         this.trySettle();
-        this.callbacks.reject(thrown);
+        this.callbacks.reject(error);
     }
 
     get isSettled() {
