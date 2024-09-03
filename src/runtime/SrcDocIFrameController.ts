@@ -70,7 +70,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
-        await this.addAnchorLinkHandlers();
+        this.addAnchorLinkHandlers();
 
         this.updateIFrameHeight(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -80,7 +80,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
     // finds all relative links (href^="#") and changes their click behavior
     addAnchorLinkHandlers() {
-        const document = this.host.contentWindow?.document;
+        const document = this.host.contentWindow!.document;
 
         if (document) {
             document.querySelectorAll('a[href^="#"]').forEach((value: Element) => {
