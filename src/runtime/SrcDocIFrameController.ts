@@ -13,7 +13,7 @@ const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement 
 const isBodyContentLoaded = (document: Document) => {
     const innerHTML = document.body ? document.body.innerHTML : '';
     return ['complete', 'interactive'].includes(document.readyState) && Boolean(innerHTML);
-}
+};
 
 const ensureIframeLoaded = (host: HTMLIFrameElement) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/contentWindow
@@ -41,12 +41,11 @@ const createLinkCLickHandler = (value: Element, document: Document) => (event: E
 
     if (targetId) {
         const targetElement = document.querySelector(targetId);
-        console.log('targetElement', targetElement);
         if (targetElement) {
             targetElement.scrollIntoView({behavior: 'smooth'});
         }
     }
-}
+};
 
 export class SrcDocIFrameController extends Disposable implements IEmbeddedContentController {
     private readonly host: HTMLIFrameElement;
