@@ -110,7 +110,6 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         this.iframeController = controller;
 
-        // TODO: is dispose in this line works correct?
         this.dispose.add(controller.on('resize', (value) => this.updateIFrameHeight(value.height)));
         this.dispose.add(() => controller.dispose());
 
