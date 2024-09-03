@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.0](https://github.com/diplodoc-platform/html-extension/compare/v2.0.1...v2.1.0) (2024-09-03)
+
+
+### Features
+
+* **srcDoc:** added code for anchor links ([221f9a4](https://github.com/diplodoc-platform/html-extension/commit/221f9a4d2e092d94d7847fcecdfb4965a9b399f7))
+* **srcDoc:** added code for anchor links ([0b9ba32](https://github.com/diplodoc-platform/html-extension/commit/0b9ba32d296dd2f522621778952b8ed9847cc8a3))
+* **srcDoc:** deleted TODO ([2cf9b87](https://github.com/diplodoc-platform/html-extension/commit/2cf9b874dfd496c922de6074e3e346b917202549))
+* **srcDoc:** fixed type null ([c8628e0](https://github.com/diplodoc-platform/html-extension/commit/c8628e04ac2dbb76a3de94367979026342b86730))
+
 ## [2.0.1](https://github.com/diplodoc-platform/html-extension/compare/v2.0.0...v2.0.1) (2024-09-02)
 
 
