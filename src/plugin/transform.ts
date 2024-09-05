@@ -1,14 +1,16 @@
-import directivePlugin from 'markdown-it-directive';
 import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
 import type {PluginWithOptions} from 'markdown-it';
 
+import directivePlugin from 'markdown-it-directive';
+import MarkdownIt from 'markdown-it';
+
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
+import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
+
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
-import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
 import {makeIsolatedModeEmbedRenderRule} from './renderers/isolated';
 import {makeShadowModeEmbedRenderRule} from './renderers/shadow';
-import MarkdownIt from 'markdown-it';
 import {makeSrcdocModeEmbedRenderRule} from './renderers/srcdoc';
 
 export interface PluginOptions {

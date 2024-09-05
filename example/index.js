@@ -1,6 +1,5 @@
 import transform from '@diplodoc/transform';
 import htmlPlugin from '@diplodoc/html-extension';
-
 import {readFile, writeFile} from 'node:fs/promises';
 import {exec} from 'node:child_process';
 import {promisify} from 'node:util';

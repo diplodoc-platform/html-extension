@@ -24,6 +24,7 @@ export function dynrequire(module: string) {
     return eval(`require('${module}')`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 const hasOwnProperty = (obj: Object, prop: string) =>
     Object.prototype.hasOwnProperty.call(obj, prop);
 

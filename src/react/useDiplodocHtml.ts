@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+
 import {EmbeddedContentRootController} from '../runtime/EmbeddedContentRootController';
 import {ScriptStore, getScriptStore} from '../common';
 import {EmbedsConfig} from '../types';

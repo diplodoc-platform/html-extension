@@ -1,4 +1,5 @@
 import {FC, useMemo} from 'react';
+
 import {useDiplodocEmbeddedContent} from './useDiplodocHtml';
 
 type EmbeddedContentRuntimeProps = {

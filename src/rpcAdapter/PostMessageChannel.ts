@@ -1,4 +1,5 @@
 import {Deferred, TaskQueue, queueFromFuse} from '../utils';
+
 import {HandshakeServiceMessage, IMessageChannel} from './commonDefs';
 
 const isHandshakeServiceMessage = (

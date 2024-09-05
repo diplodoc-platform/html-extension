@@ -3,7 +3,6 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-
 import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 import {htmlPlugin} from '@craftamap/esbuild-plugin-html';
@@ -25,7 +24,7 @@ const common = {
 build({
     ...common,
     entryPoints: ['src/utils/index.ts'],
-    outfile: 'utils/index.js',
+    outfile: 'build/utils/index.js',
     minify: true,
     platform: 'browser',
 });
@@ -33,7 +32,7 @@ build({
 build({
     ...common,
     entryPoints: ['src/runtime/index.ts'],
-    outfile: 'runtime/index.js',
+    outfile: 'build/runtime/index.js',
     minify: true,
     platform: 'browser',
     plugins: [sassPlugin()],
@@ -42,7 +41,7 @@ build({
 build({
     ...common,
     entryPoints: ['src/react/index.ts'],
-    outfile: 'react/index.js',
+    outfile: 'build/react/index.js',
     platform: 'neutral',
     external: ['react'],
     target: 'es6',
@@ -52,7 +51,7 @@ build({
 build({
     ...common,
     entryPoints: ['src/plugin/index.ts'],
-    outfile: 'plugin/index.js',
+    outfile: 'build/plugin/index.js',
     platform: 'node',
     packages: 'external',
     define: {
@@ -67,7 +66,7 @@ build({
     minify: true,
     platform: 'browser',
     metafile: true,
-    outdir: 'iframe/',
+    outdir: 'build/iframe/',
     plugins: [
         htmlPlugin({
             files: [

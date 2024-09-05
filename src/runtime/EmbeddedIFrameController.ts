@@ -1,9 +1,10 @@
 import {RPCConsumer} from '../rpcAdapter/RPCConsumer';
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
 import {EmbedsConfig} from '../types';
-import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Disposable} from '../utils';
 import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
+
+import {IEmbeddedContentController} from './IEmbeddedContentController';
 
 type DatasetShape = {
     yfmSandboxMode: 'isolated';

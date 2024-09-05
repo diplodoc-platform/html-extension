@@ -1,8 +1,9 @@
-import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {Deferred, Disposable, TaskQueue} from '../utils';
 import {IFrameController} from '../iframe/IFrameController';
 import {EmbedsConfig} from '../types';
 import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
+
+import {IEmbeddedContentController} from './IEmbeddedContentController';
 
 const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement = (el) => {
     if (!(el instanceof HTMLIFrameElement && el.dataset.yfmSandboxMode === 'srcdoc')) {
@@ -80,6 +81,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
     // finds all relative links (href^="#") and changes their click behavior
     addAnchorLinkHandlers() {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const document = this.host.contentWindow!.document;
 
         if (document) {

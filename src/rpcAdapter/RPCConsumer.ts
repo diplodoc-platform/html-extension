@@ -1,5 +1,9 @@
 import type {Commands, Events} from '../iframe';
+
+import {nanoid} from 'nanoid';
+
 import {Deferred, Disposable, timeout} from '../utils';
+
 import {
     CallRequestMessage,
     CallResponseMessage,
@@ -9,8 +13,8 @@ import {
     TypedMessage,
     isMessage,
 } from './commonDefs';
-import {nanoid} from 'nanoid';
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 type EventListener<T = unknown> = (eventData: T) => void;
 
 type RPCConsumerOptions = {

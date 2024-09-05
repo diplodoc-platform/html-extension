@@ -2,27 +2,27 @@
   "name": "@diplodoc/html-extension",
   "version": "2.1.0",
   "description": "HTML plugin for Diplodoc transformer and builder",
-  "main": "plugin/index.js",
-  "types": "plugin/index.d.ts",
+  "main": "build/plugin/index.js",
+  "types": "build/plugin/index.d.ts",
   "exports": {
     ".": {
-      "types": "./plugin/index.d.ts",
-      "default": "./plugin/index.js"
+      "types": "./build/plugin/index.d.ts",
+      "default": "./build/plugin/index.js"
     },
     "./runtime": {
-      "types": "./runtime/index.d.ts",
-      "default": "./runtime/index.js"
+      "types": "./build/runtime/index.d.ts",
+      "default": "./build/runtime/index.js"
     },
     "./react": {
-      "types": "./react/index.d.ts",
-      "default": "./react/index.js"
+      "types": "./build/react/index.d.ts",
+      "default": "./build/react/index.js"
     },
     "./utils": {
-      "types": "./utils/index.d.ts",
-      "default": "./utils/index.js"
+      "types": "./build/utils/index.d.ts",
+      "default": "./build/utils/index.js"
     },
     "./iframe": {
-      "default": "./iframe/runtime.html"
+      "default": "./build/iframe/runtime.html"
     }
   },
   "homepage": "https://diplodoc.com/",
@@ -36,7 +36,7 @@
   "scripts": {
     "build": "run-p build:*",
     "build:js": "./esbuild/build.mjs",
-    "build:declarations": "tsc --emitDeclarationOnly --outDir .",
+    "build:declarations": "tsc --emitDeclarationOnly --outDir ./build",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "exit 0",
     "typecheck": "tsc -p . --noEmit",

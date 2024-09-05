@@ -1,4 +1,5 @@
 import debounce from 'lodash.debounce';
+
 import {Disposable, updateClassNames, updateStyles} from '../utils';
 
 const DEFAULT_RESIZE_DELAY = 150;

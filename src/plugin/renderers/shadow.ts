@@ -1,5 +1,7 @@
 import {RenderRule} from 'markdown-it/lib/renderer';
+
 import {DATAATTR_SANDBOX_CONTENT, DATAATTR_SANDBOX_MODE} from '../../constants';
+
 import {RenderRuleFactoryOptions} from './defs';
 
 export const makeShadowModeEmbedRenderRule =

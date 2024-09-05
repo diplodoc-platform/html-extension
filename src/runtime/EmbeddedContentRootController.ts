@@ -1,11 +1,14 @@
 import {nanoid} from 'nanoid';
+
 import {EmbeddingMode, EmbedsConfig} from '../types';
+import {Disposable} from '../utils';
+
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 import {ShadowRootController} from './ShadowRootController';
-import {IHTMLIFrameElementConfig} from '.';
-import {Disposable} from '../utils';
 import {SrcDocIFrameController} from './SrcDocIFrameController';
+
+import {IHTMLIFrameElementConfig} from '.';
 
 const findAllSrcDocEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=srcdoc]');
