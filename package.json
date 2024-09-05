@@ -48,12 +48,7 @@
   "author": "",
   "license": "MIT",
   "files": [
-    "plugin",
-    "react",
-    "runtime",
-    "types.d.ts",
-    "utils",
-    "iframe"
+    "build"
   ],
   "peerDependencies": {
     "@diplodoc/transform": "^4.0.0",
