@@ -104,6 +104,20 @@ const registerTransform = (
     // the directives plugin must be enabled
     md.use(directivePlugin);
 
+    /* 
+    Caught a bug that if there is something similar to an inline directive and a reference link,
+    it will be considered an inline directive and will fail during parsing
+    https://github.com/hilookas/markdown-it-directive/blob/master/index.js#L224
+
+    example to reproduce this bug before enable inline_directive
+
+    [aa:aa](aa.com)
+
+    [xx]: bb.com
+
+    */
+    md.inline.ruler.disable('inline_directive');
+
     (md as MarkdownItWithDirectives).blockDirectives['html'] = directiveHandler;
 };
 
