@@ -23,3 +23,9 @@ constants.d.ts
 example/package-lock.json
 example/build
 example/node_modules
+
+.history
+node_modules
+/lib
+/dist
+/cache
