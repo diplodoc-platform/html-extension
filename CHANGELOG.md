@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0](https://github.com/diplodoc-platform/html-extension/compare/v2.1.0...v2.2.0) (2024-09-06)
+
+
+### Features
+
+* disable inline directives ([2d0f24f](https://github.com/diplodoc-platform/html-extension/commit/2d0f24f4a9bb57700a53546f4f976a66ba74a4d1))
+
+
+### Bug Fixes
+
+* Fix prod dependencies ([005a30d](https://github.com/diplodoc-platform/html-extension/commit/005a30d6c208df68267555140efcc10a885d29a8))
+* **release:** use master as main branch ([673ff81](https://github.com/diplodoc-platform/html-extension/commit/673ff817879d712705e27fdd58822f0f4b1df147))
+
 ## [2.1.0](https://github.com/diplodoc-platform/html-extension/compare/v2.0.1...v2.1.0) (2024-09-03)
 
 
