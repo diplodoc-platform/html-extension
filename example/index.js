@@ -13,14 +13,14 @@ import {promisify} from 'node:util';
             htmlPlugin.transform({
                 bundle: true,
                 head: `
-                    <base target="_blank" />
+                    <base target="_parent" />
                     <style>
                         h2 {
                             color: gray;
                         }
                     </style>
                 `,
-                embeddingMode: 'isolated',
+                embeddingMode: 'srcdoc',
                 isolatedSandboxHost: 'http://localhost:5005/runtime.html',
             }),
         ],

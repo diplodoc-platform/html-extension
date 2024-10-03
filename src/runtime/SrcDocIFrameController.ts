@@ -68,15 +68,15 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
     async initialize() {
         await this.instantiateController();
-
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
-        this.addAnchorLinkHandlers();
-
         this.updateIFrameHeight(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.host.contentWindow!.document.body.getBoundingClientRect().height,
         );
+
+        this.addAnchorLinkHandlers();
+        this.handleHashChange();
     }
 
     // finds all relative links (href^="#") and changes their click behavior
@@ -94,6 +94,28 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
                 });
             });
         }
+    }
+
+    private scrollToHash() {
+        const hash = window.location.hash.substring(1);
+
+        if (hash) {
+            const document = this.host.contentWindow!.document;
+            const element = document.getElementById(hash);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }
+
+    private async handleHashChange() {
+        await ensureIframeLoaded(this.host);
+
+        this.scrollToHash();
+
+        const handleHashChange = () => this.scrollToHash();
+        window.addEventListener('hashchange', handleHashChange);
+        this.dispose.add(() => window.removeEventListener('hashchange', handleHashChange));
     }
 
     setRootClassNames(classNames: string[] | undefined) {
