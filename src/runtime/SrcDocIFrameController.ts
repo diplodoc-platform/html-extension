@@ -5,6 +5,8 @@ import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
 
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 
+const PARENT_LOADED_AND_RESIZED_TIMEOUT = 500;
+
 const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement = (el) => {
     if (!(el instanceof HTMLIFrameElement && el.dataset.yfmSandboxMode === 'srcdoc')) {
         throw new Error('Host element for `srcdoc` embedding mode was not configured properly');
@@ -96,34 +98,37 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         }
     }
 
-    private scrollToHash() {
-        const hash = window.location.hash.substring(1);
-
-        if (hash) {
-            const document = this.host.contentWindow!.document;
-            const element = document.getElementById(hash);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    }
-
-    private async handleHashChange() {
-        await ensureIframeLoaded(this.host);
-
-        this.scrollToHash();
-
-        const handleHashChange = () => this.scrollToHash();
-        window.addEventListener('hashchange', handleHashChange);
-        this.dispose.add(() => window.removeEventListener('hashchange', handleHashChange));
-    }
-
     setRootClassNames(classNames: string[] | undefined) {
         return this.executeOnController((controller) => controller.setClassNames(classNames));
     }
 
     setRootStyles(styles: Record<string, string> | undefined) {
         return this.executeOnController((controller) => controller.setStyles(styles));
+    }
+
+    private scrollToHash() {
+        const hash = window.location.hash.substring(1);
+
+        if (hash) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const document = this.host.contentWindow!.document;
+            const element = document.getElementById(hash);
+            if (element) {
+                element.scrollIntoView({behavior: 'smooth'});
+            }
+        }
+    }
+
+    private async handleHashChange() {
+        // цait until all iframes managed by the parent controller are fully loaded,
+        // and parent containers have heights properly adjusted.
+        setTimeout(() => {
+            this.scrollToHash();
+        }, PARENT_LOADED_AND_RESIZED_TIMEOUT);
+
+        const handleHashChange = () => this.scrollToHash();
+        window.addEventListener('hashchange', handleHashChange);
+        this.dispose.add(() => window.removeEventListener('hashchange', handleHashChange));
     }
 
     private async instantiateController() {
