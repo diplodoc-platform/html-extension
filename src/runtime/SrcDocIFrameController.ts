@@ -15,7 +15,7 @@ const validateHostElement: (el: HTMLElement) => asserts el is HTMLIFrameElement 
 
 const isBodyContentLoaded = (document: Document) => {
     const innerHTML = document.body ? document.body.innerHTML : '';
-    return ['complete', 'interactive'].includes(document.readyState) && Boolean(innerHTML);
+    return document.readyState === 'complete' && Boolean(innerHTML);
 };
 
 const ensureIframeLoaded = (host: HTMLIFrameElement) => {
@@ -79,6 +79,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         this.addAnchorLinkHandlers();
         this.handleHashChange();
+        this.config.onload?.(this.host);
     }
 
     // finds all relative links (href^="#") and changes their click behavior
@@ -120,7 +121,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
     }
 
     private async handleHashChange() {
-        // цait until all iframes managed by the parent controller are fully loaded,
+        // wait until all iframes managed by the parent controller are fully loaded,
         // and parent containers have heights properly adjusted.
         setTimeout(() => {
             this.scrollToHash();
