@@ -79,7 +79,9 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         this.addAnchorLinkHandlers();
         this.handleHashChange();
-        this.config.onload?.(this.host);
+        if (this.config.onload) {
+            this.dispose.add(() => this.config.onload?.(this.host));
+        }
     }
 
     // finds all relative links (href^="#") and changes their click behavior
