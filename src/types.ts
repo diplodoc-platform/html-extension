@@ -9,7 +9,7 @@ export interface EmbedsConfig {
     classNames?: string[];
     styles?: Record<string, string>;
     isolatedSandboxHostURIOverride?: string;
-    onload?: (host: HTMLIFrameElement) => void;
+    onload?: (host: HTMLIFrameElement) => (() => void) | void;
 }
 
 export type Unsubscribe = () => void;
