@@ -79,8 +79,9 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
         this.addAnchorLinkHandlers();
         this.handleHashChange();
-        if (this.config.onload) {
-            this.dispose.add(() => this.config.onload?.(this.host));
+        const unload = this.config.onload?.(this.host);
+        if (unload) {
+            this.dispose.add(unload);
         }
     }
 
