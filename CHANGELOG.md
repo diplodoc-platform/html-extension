@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/diplodoc-platform/html-extension/compare/v2.3.0...v2.3.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* added typesVersions ([d0cd2e8](https://github.com/diplodoc-platform/html-extension/commit/d0cd2e83f8471d5821f8e128607128aaaab7d537))
+
 ## [2.3.0](https://github.com/diplodoc-platform/html-extension/compare/v2.2.0...v2.3.0) (2024-10-07)
 
 
