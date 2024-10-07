@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.3.0](https://github.com/diplodoc-platform/html-extension/compare/v2.2.0...v2.3.0) (2024-10-07)
+
+
+### Features
+
+* **srcDoc:** added onload arg ([8fadb91](https://github.com/diplodoc-platform/html-extension/commit/8fadb91e68de8a6098ee4907f8b2f8aace5396fa))
+* **srcDoc:** added onload arg ([546251e](https://github.com/diplodoc-platform/html-extension/commit/546251ea684717b38d431f4e952be3b6432d3432))
+* **srcDoc:** added onload arg ([5913371](https://github.com/diplodoc-platform/html-extension/commit/5913371e2653217db827e24b94da5cb3a8125891))
+* **srcDoc:** added scroll to hash ([113f842](https://github.com/diplodoc-platform/html-extension/commit/113f84283a066e1d697c701074e6ef3a6c5e73d6))
+* **srcDoc:** updtaed handleHashChange logic ([0e76f51](https://github.com/diplodoc-platform/html-extension/commit/0e76f5189abdb5dd9f9dd548aec73d48aecaac5b))
+
 ## [2.2.0](https://github.com/diplodoc-platform/html-extension/compare/v2.1.0...v2.2.0) (2024-09-06)
 
 
