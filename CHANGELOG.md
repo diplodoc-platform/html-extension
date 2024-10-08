@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/diplodoc-platform/html-extension/compare/v2.3.1...v2.3.2) (2024-10-08)
+
+
+### Bug Fixes
+
+* PluginOptions type export ([dd514eb](https://github.com/diplodoc-platform/html-extension/commit/dd514ebaeb6fcd68ae8f0e4873cd2dffb5a5f4d1))
+
 ## [2.3.1](https://github.com/diplodoc-platform/html-extension/compare/v2.3.0...v2.3.1) (2024-10-07)
 
 
