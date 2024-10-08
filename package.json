@@ -12,32 +12,17 @@
       "iframe": [
         "./build/iframe/index.d.ts"
       ],
-      "iframe/*": [
-        "./build/iframe/*"
-      ],
       "plugin": [
         "./build/plugin/index.d.ts"
-      ],
-      "plugin/*": [
-        "./build/plugin/*"
       ],
       "react": [
         "./build/react/index.d.ts"
       ],
-      "react/*": [
-        "./build/react/*"
-      ],
       "runtime": [
         "./build/runtime/index.d.ts"
       ],
-      "runtime/*": [
-        "./build/runtime/*"
-      ],
       "utils": [
         "./build/utils/index.d.ts"
-      ],
-      "utils/*": [
-        "./build/utils/*"
       ]
     }
   },
