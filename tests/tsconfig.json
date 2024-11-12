@@ -1,0 +1,9 @@
+{
+  "extends": "@diplodoc/tsconfig",
+  "compilerOptions": {
+    "target": "es2019",
+    "declaration": true
+  },
+  "include": ["src"],
+  "exclude": []
+}
