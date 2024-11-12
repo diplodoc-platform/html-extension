@@ -1,24 +1,18 @@
 #!/usr/bin/env node
 
-import {readFileSync} from 'node:fs';
-import {fileURLToPath} from 'url';
-import {dirname} from 'path';
 import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 import {htmlPlugin} from '@craftamap/esbuild-plugin-html';
 
-const tsconfigJson = readJSON('../tsconfig.json');
-const packageJson = readJSON('../package.json');
+import pkg from '../package.json' assert {type: 'json'};
+import tsConfig from '../tsconfig.json' assert {type: 'json'};
 
-const {
-    compilerOptions: {target},
-} = tsconfigJson;
-
+/** @type {import('esbuild').BuildOptions} */
 const common = {
     bundle: true,
     sourcemap: true,
-    target,
-    tsconfig: './tsconfig.json',
+    target: tsConfig.compilerOptions.target,
+    tsconfig: './tsconfig.publish.json',
 };
 
 build({
@@ -55,7 +49,7 @@ build({
     platform: 'node',
     packages: 'external',
     define: {
-        PACKAGE: JSON.stringify(packageJson.name),
+        PACKAGE: JSON.stringify(pkg.name),
     },
 });
 
@@ -79,8 +73,3 @@ build({
         }),
     ],
 });
-
-function readJSON(path) {
-    const currentFilename = fileURLToPath(import.meta.url);
-    return JSON.parse(readFileSync(`${dirname(currentFilename)}/${path}`));
-}
