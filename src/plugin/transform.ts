@@ -1,8 +1,6 @@
-import type {DirectiveBlockHandler, MarkdownItWithDirectives} from 'markdown-it-directive';
-import type {PluginWithOptions} from 'markdown-it';
+import type MarkdownIt from 'markdown-it';
 
-import directivePlugin from 'markdown-it-directive';
-import MarkdownIt from 'markdown-it';
+import {directiveParser, registerContainerDirective} from '@diplodoc/directive';
 
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
 import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
@@ -38,11 +36,11 @@ type TransformOptions = {
 const emptyOptions = {};
 const TAG = 'iframe';
 
-const embeddingModeToTokenType: Record<EmbeddingMode, string> = {
+const embeddingModeToTokenType = {
     srcdoc: SRCDOC_TOKEN_TYPE,
     shadow: SHADOW_TOKEN_TYPE,
     isolated: ISOLATED_TOKEN_TYPE,
-};
+} as const satisfies Record<EmbeddingMode, string>;
 
 const concatStylesIncludeDirectives = (content: string, styles?: string | StylesObject) => {
     if (styles) {
@@ -69,56 +67,39 @@ const registerTransform = (
     md: MarkdownIt,
     {embeddingMode, runtimeJsPath, output, bundle, updateTokens}: RegisterTransformOptions,
 ) => {
-    const directiveHandler: DirectiveBlockHandler = ({state, content}) => {
-        if (!content || !state) {
+    md.use(directiveParser());
+
+    registerContainerDirective(md, 'html', (state, params) => {
+        if (!params.content) {
             return false;
         }
 
-        const {env} = state;
-
-        addHiddenProperty(env, 'bundled', new Set<string>());
-
         if (updateTokens) {
             const tokenType = embeddingModeToTokenType[embeddingMode];
-
             const token = state.push(tokenType, TAG, 0);
-
-            token.block = true;
-            token.content = content;
+            // set fields like in fence token
+            token.map = [params.startLine, params.endLine];
+            token.content = params.content.raw;
+            token.markup = ':::';
+            token.info = 'html';
         }
 
-        env.meta = env.meta || {};
-        env.meta.script = env.meta.script || [];
-        env.meta.style = env.meta.style || [];
+        const {env} = state;
+        env.meta ||= {};
+        env.meta.script ||= [];
+        env.meta.style ||= [];
         if (!env.meta.script.includes(runtimeJsPath)) {
             env.meta.script.push(runtimeJsPath);
         }
+
+        addHiddenProperty(env, 'bundled', new Set<string>());
 
         if (bundle) {
             copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
         }
 
         return true;
-    };
-
-    // the directives plugin must be enabled
-    md.use(directivePlugin);
-
-    /* 
-    Caught a bug that if there is something similar to an inline directive and a reference link,
-    it will be considered an inline directive and will fail during parsing
-    https://github.com/hilookas/markdown-it-directive/blob/master/index.js#L224
-
-    example to reproduce this bug before enable inline_directive
-
-    [aa:aa](aa.com)
-
-    [xx]: bb.com
-
-    */
-    md.inline.ruler.disable('inline_directive');
-
-    (md as MarkdownItWithDirectives).blockDirectives['html'] = directiveHandler;
+    });
 };
 
 export function transform({
@@ -131,49 +112,46 @@ export function transform({
     styles,
     baseTarget = '_parent',
     head: headContent,
-}: Partial<PluginOptions> = emptyOptions): PluginWithOptions<TransformOptions> {
-    const plugin: PluginWithOptions<TransformOptions> = (md, options) => {
+}: Partial<PluginOptions> = emptyOptions): MarkdownIt.PluginWithOptions<TransformOptions> {
+    const plugin: MarkdownIt.PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
         registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output, updateTokens: true});
 
-        (md as MarkdownItWithDirectives).renderer.rules[SRCDOC_TOKEN_TYPE] =
-            makeSrcdocModeEmbedRenderRule({
-                containerClassNames: containerClasses,
-                embedContentTransformFn: (raw) => {
-                    const deprecatedHeadContent = concatStylesIncludeDirectives(
-                        `<base target="${baseTarget}">`,
-                        styles,
-                    );
+        md.renderer.rules[SRCDOC_TOKEN_TYPE] = makeSrcdocModeEmbedRenderRule({
+            containerClassNames: containerClasses,
+            embedContentTransformFn: (raw) => {
+                const deprecatedHeadContent = concatStylesIncludeDirectives(
+                    `<base target="${baseTarget}">`,
+                    styles,
+                );
 
-                    const head = `<head>${headContent ?? deprecatedHeadContent}</head>`;
-                    const body = `<body>${raw}</body>`;
-                    const html = `<!DOCTYPE html><html>${head}${body}</html>`;
+                const head = `<head>${headContent ?? deprecatedHeadContent}</head>`;
+                const body = `<body>${raw}</body>`;
+                const html = `<!DOCTYPE html><html>${head}${body}</html>`;
 
-                    return sanitize?.(html) ?? html;
-                },
-            });
+                return sanitize?.(html) ?? html;
+            },
+        });
 
-        (md as MarkdownItWithDirectives).renderer.rules[ISOLATED_TOKEN_TYPE] =
-            makeIsolatedModeEmbedRenderRule({
-                containerClassNames: containerClasses,
-                baseTarget,
-                isolatedSandboxHost,
-                embedContentTransformFn: (raw) => concatStylesIncludeDirectives(raw, styles),
-            });
+        md.renderer.rules[ISOLATED_TOKEN_TYPE] = makeIsolatedModeEmbedRenderRule({
+            containerClassNames: containerClasses,
+            baseTarget,
+            isolatedSandboxHost,
+            embedContentTransformFn: (raw) => concatStylesIncludeDirectives(raw, styles),
+        });
 
-        (md as MarkdownItWithDirectives).renderer.rules[SHADOW_TOKEN_TYPE] =
-            makeShadowModeEmbedRenderRule({
-                containerClassNames: containerClasses,
-                embedContentTransformFn: (raw) => {
-                    const withStyles = concatStylesIncludeDirectives(raw, styles);
+        md.renderer.rules[SHADOW_TOKEN_TYPE] = makeShadowModeEmbedRenderRule({
+            containerClassNames: containerClasses,
+            embedContentTransformFn: (raw) => {
+                const withStyles = concatStylesIncludeDirectives(raw, styles);
 
-                    // Note that sanitization is only enabled for `shadow` embedding mode,
-                    // `isolated` mode applies no restrictions — beware of vulnerabilities galore!
-                    // That's why it's really important to host the iframe runtime on an unrelated `dummy` origin.
-                    return sanitize?.(withStyles) ?? withStyles;
-                },
-            });
+                // Note that sanitization is only enabled for `shadow` embedding mode,
+                // `isolated` mode applies no restrictions — beware of vulnerabilities galore!
+                // That's why it's really important to host the iframe runtime on an unrelated `dummy` origin.
+                return sanitize?.(withStyles) ?? withStyles;
+            },
+        });
     };
 
     Object.assign(plugin, {

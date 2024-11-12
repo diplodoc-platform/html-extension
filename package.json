@@ -104,6 +104,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "markdown-it-directive": "^2.0.2"
+    "@diplodoc/directive": "^0.1.0"
   }
 }
