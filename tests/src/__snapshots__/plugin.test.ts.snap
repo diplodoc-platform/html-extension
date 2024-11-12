@@ -10,10 +10,13 @@ exports[`HTML extension – plugin should generate html token 1`] = `
   content
 </div>,
     "hidden": false,
-    "info": "",
+    "info": "html",
     "level": 0,
-    "map": null,
-    "markup": "",
+    "map": [
+      2,
+      5,
+    ],
+    "markup": ":::",
     "meta": null,
     "nesting": 0,
     "tag": "iframe",
