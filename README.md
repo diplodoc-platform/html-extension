@@ -18,17 +18,11 @@ This file contains info on the following topics:
 
 ## Syntax
 
-This plugin uses the directive syntax [proposed](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444) in the CommonMark community, indicated by a block-level double colon at the beginning and end of a block. This HTML directives use `::: html` to open an HTML block, followed by your HTML content, and then `:::` to close the block. The number of empty lines before or after the opening or closing block is not significant.
-
-Please note:
-
-- Nested content within the block will not be parsed as Markdown.
-- Embedded directives within the block are not supported.
-- Inline directives are not yet supported.
+This plugin uses the container block directive syntax. For more information see here: [diplodoc-platform/directive](https://github.com/diplodoc-platform/directive/?tab=readme-ov-file#directive-syntax).
 
 Simple example:
 
-```
+```md
 ::: html
 
 <div>Your HTML code is here</div>
@@ -38,9 +32,8 @@ Simple example:
 
 Example with some styles:
 
-```
+```md
 ::: html
-<style>
 <style>
   :root {
     --dark-bg-color: #000;
