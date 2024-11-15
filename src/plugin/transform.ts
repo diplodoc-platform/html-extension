@@ -60,45 +60,38 @@ type RegisterTransformOptions = Pick<
     'runtimeJsPath' | 'bundle' | 'embeddingMode'
 > & {
     output: string;
-    updateTokens: boolean;
 };
 
 const registerTransform = (
     md: MarkdownIt,
-    {embeddingMode, runtimeJsPath, output, bundle, updateTokens}: RegisterTransformOptions,
+    {embeddingMode, runtimeJsPath, output, bundle}: RegisterTransformOptions,
 ) => {
     md.use(directiveParser());
 
-    registerContainerDirective(md, 'html', (state, params) => {
-        if (!params.content) {
-            return false;
-        }
+    registerContainerDirective(md, {
+        name: 'html',
+        type: 'code_block',
+        container: {
+            tag: TAG,
+            token: embeddingModeToTokenType[embeddingMode],
+        },
+        match: (_params, state) => {
+            const {env} = state;
+            env.meta ||= {};
+            env.meta.script ||= [];
+            env.meta.style ||= [];
+            if (!env.meta.script.includes(runtimeJsPath)) {
+                env.meta.script.push(runtimeJsPath);
+            }
 
-        if (updateTokens) {
-            const tokenType = embeddingModeToTokenType[embeddingMode];
-            const token = state.push(tokenType, TAG, 0);
-            // set fields like in fence token
-            token.map = [params.startLine, params.endLine];
-            token.content = params.content.raw;
-            token.markup = ':::';
-            token.info = 'html';
-        }
+            addHiddenProperty(env, 'bundled', new Set<string>());
 
-        const {env} = state;
-        env.meta ||= {};
-        env.meta.script ||= [];
-        env.meta.style ||= [];
-        if (!env.meta.script.includes(runtimeJsPath)) {
-            env.meta.script.push(runtimeJsPath);
-        }
+            if (bundle) {
+                copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
+            }
 
-        addHiddenProperty(env, 'bundled', new Set<string>());
-
-        if (bundle) {
-            copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
-        }
-
-        return true;
+            return true;
+        },
     });
 };
 
@@ -116,7 +109,7 @@ export function transform({
     const plugin: MarkdownIt.PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
-        registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output, updateTokens: true});
+        registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output});
 
         md.renderer.rules[SRCDOC_TOKEN_TYPE] = makeSrcdocModeEmbedRenderRule({
             containerClassNames: containerClasses,
@@ -163,7 +156,6 @@ export function transform({
                     runtimeJsPath,
                     bundle,
                     output: destRoot,
-                    updateTokens: false,
                 });
             });
 
