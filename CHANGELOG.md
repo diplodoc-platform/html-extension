@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/diplodoc-platform/html-extension/compare/v2.3.2...v2.4.0) (2024-11-15)
+
+
+### Features
+
+* **plugin:** use config-object to register directive ([d853d00](https://github.com/diplodoc-platform/html-extension/commit/d853d001c63e4decffa40e9cf57423bf8a1a12c4))
+* replace markdown-it-directive with @diplodoc/directive ([d040c13](https://github.com/diplodoc-platform/html-extension/commit/d040c13e321a0a2ab341e67db7a14ffcfab15625))
+
 ## [2.3.2](https://github.com/diplodoc-platform/html-extension/compare/v2.3.1...v2.3.2) (2024-10-08)
 
 
