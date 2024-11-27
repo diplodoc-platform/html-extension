@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/diplodoc-platform/html-extension/compare/v2.4.0...v2.5.0) (2024-11-27)
+
+
+### Features
+
+* update `@diplodoc/directive` to v0.3.0 ([#55](https://github.com/diplodoc-platform/html-extension/issues/55)) ([9793978](https://github.com/diplodoc-platform/html-extension/commit/9793978a26667147f5681273fa51a6a74e9534ed))
+
 ## [2.4.0](https://github.com/diplodoc-platform/html-extension/compare/v2.3.2...v2.4.0) (2024-11-15)
 
 
