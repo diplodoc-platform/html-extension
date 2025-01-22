@@ -27,6 +27,7 @@ export interface PluginOptions {
      */
     baseTarget?: BaseTarget;
     head?: string;
+    sandbox?: boolean | string;
 }
 
 type TransformOptions = {
@@ -105,6 +106,7 @@ export function transform({
     styles,
     baseTarget = '_parent',
     head: headContent,
+    sandbox,
 }: Partial<PluginOptions> = emptyOptions): MarkdownIt.PluginWithOptions<TransformOptions> {
     const plugin: MarkdownIt.PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
@@ -113,6 +115,7 @@ export function transform({
 
         md.renderer.rules[SRCDOC_TOKEN_TYPE] = makeSrcdocModeEmbedRenderRule({
             containerClassNames: containerClasses,
+            sandbox,
             embedContentTransformFn: (raw) => {
                 const deprecatedHeadContent = concatStylesIncludeDirectives(
                     `<base target="${baseTarget}">`,
@@ -131,6 +134,7 @@ export function transform({
             containerClassNames: containerClasses,
             baseTarget,
             isolatedSandboxHost,
+            sandbox,
             embedContentTransformFn: (raw) => concatStylesIncludeDirectives(raw, styles),
         });
 
