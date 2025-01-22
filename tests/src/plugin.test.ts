@@ -44,4 +44,21 @@ describe('HTML extension – plugin', () => {
             ),
         ).toMatchSnapshot();
     });
+
+    it('should render HTML in sandboxed iframe', () => {
+        expect(
+            html(
+                dd`
+            :::html
+            <div class="html-div">content</div>
+            :::
+            `,
+                {
+                    embeddingMode: 'srcdoc',
+                    sandbox:
+                        'allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-same-origin',
+                },
+            ),
+        ).toMatchSnapshot();
+    });
 });

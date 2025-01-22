@@ -1,5 +1,7 @@
 import {Deferred, Disposable, TaskQueue} from '../utils';
+import {isNoScriptIFrame} from '../utils/isNoScriptIFrame';
 import {IFrameController} from '../iframe/IFrameController';
+import {NoScriptIFrameController} from '../iframe/NoScriptIFrameController';
 import {EmbedsConfig} from '../types';
 import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
 
@@ -142,9 +144,22 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         const controller = new IFrameController(this.host.contentWindow!.document.body);
 
         this.iframeController = controller;
-
-        this.dispose.add(controller.on('resize', (value) => this.updateIFrameHeight(value.height)));
         this.dispose.add(() => controller.dispose());
+
+        if (isNoScriptIFrame(this.host)) {
+            const noScriptIFrameController = new NoScriptIFrameController(this.host);
+
+            this.dispose.add(() => noScriptIFrameController.dispose());
+            this.dispose.add(
+                noScriptIFrameController.setResizeListener((value) =>
+                    this.updateIFrameHeight(value),
+                ),
+            );
+        } else {
+            this.dispose.add(
+                controller.on('resize', (value) => this.updateIFrameHeight(value.height)),
+            );
+        }
 
         return this.controllerInitialiazedFuse.resolve();
     }

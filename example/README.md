@@ -75,6 +75,19 @@ After html text
     <a href="#top">to top</a>
 :::
 
+## Variable height example
+
+::: html
+<details>
+    <summary>Expand content</summary>
+    <ol>
+        <li>one</li>
+        <li>two</li>
+        <li>three</li>
+    </ol>
+</details>
+:::
+
 ## Isolated IFrame (with script execution capabilities)
 
 Make sure to set the `embeddingMode` plugin option to `isolated`.

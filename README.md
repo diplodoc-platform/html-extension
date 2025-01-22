@@ -100,7 +100,7 @@ const {result} = await transform(
 
 The extension supports three different embedding strategies:
 
-- `srcdoc` — Uses an IFrame with `srcdoc` attribute to embed specified HTML. As such, the IFrame inherits parent's origin _and_ `Content-Security-Policy`. However, all CSS is isolated by default and there can never be any style leakage. Depending on the CSP used, this mode introduces a potential attack vector, since arbitrary JS code could have been allowed to be run by host's CSP. As such, use of sanitization is strongly preferred when using this mode (see below in [plugin documentation](#markdownit-transform-plugin)).
+- `srcdoc` — Uses an IFrame with `srcdoc` attribute to embed specified HTML. As such, the IFrame inherits parent's origin _and_ `Content-Security-Policy`. However, all CSS is isolated by default and there can never be any style leakage. Depending on the CSP used, this mode introduces a potential attack vector, since arbitrary JS code could have been allowed to be run by host's CSP. As such, use of sanitization is strongly preferred when using this mode (see below in [plugin documentation](#markdownit-transform-plugin)). You can use the `sandbox` option to set additional restrictions on the IFrame, including script execution.
 - `shadow` — Currently an experimental strategy that uses a ShadowRoot to embed content into the host page. Very similar in application and effects to `srcdoc`, but uses less runtime logic in browser, providing a more smooth experience (eliminates height resize jitters, etc.). Content sanitization is still strongly recommended. Styles declared inside of the ShadowRoot are isolated from the rest of the page as per ShadowDOM rules, and potential _inheritable_ global styles are isolated via `all: initial` at Shadow DOM boundary.
 - `isolated` — A strategy that uses a special IFrame that should be hosted on a separate origin such that Same-Origin-Policy (SOP) would not apply for this IFrame. By opting-out of SOP, any scripts that are being run inside of the IFrame cannot get access to parent's execution context, as well as its storage, cookies and more. Crucially, this mode also provides an option to use a less restrictive CSP for content inside trhe IFrame. As such, this strategy is ideal for widget embedding (or other types of potentially unsafe content).
 
@@ -167,6 +167,8 @@ Options:
 
 - `isolatedSandboxHost` - fully-qualified URL of the [IFrame runtime](#a-note-on-isolated-strategy-usage) used specifically by `isolated` mode. Has no effect when other modes are used. This can still be overriden by [`EmbedsConfig.isolatedSandboxHostURIOverride`](./src/types.ts#L8) via [`EmbeddedContentRootController.initialize`](./src/runtime/EmbeddedContentRootController.ts#L53) and [`EmbeddedContentRootController.setConfig`](./src/runtime/EmbeddedContentRootController.ts#L94).
 - `sanitize` - optional function that will be used to sanitize content in `srcdoc` and `shadow` modes if supplied.
+
+- `sandbox` - sandbox-mode, used by `srcdoc` embedding strategy (see iframe sandbox attribute). Disabled by default.
 
 ## React hook for smart control
 

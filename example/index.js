@@ -21,12 +21,14 @@ import {promisify} from 'node:util';
                     </style>
                 `,
                 embeddingMode: 'srcdoc',
+                sandbox:
+                    'allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-same-origin',
                 isolatedSandboxHost: 'http://localhost:5005/runtime.html',
             }),
         ],
     });
 
-    const html = `
+    const html = `<!DOCTYPE html>
 <html>
     <head>
         ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`).join('\n')}
