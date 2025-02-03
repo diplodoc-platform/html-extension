@@ -3,7 +3,7 @@ import type MarkdownIt from 'markdown-it';
 import {directiveParser, registerContainerDirective} from '@diplodoc/directive';
 
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
-import {BaseTarget, EmbeddingMode, StylesObject} from '../types';
+import {BaseTarget, EmbeddingMode, Sanitize, SanitizeObject, StylesObject} from '../types';
 
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -17,7 +17,7 @@ export interface PluginOptions {
     containerClasses: string;
     bundle: boolean;
     isolatedSandboxHost?: string;
-    sanitize?: (dirtyHtml: string) => string;
+    sanitize?: Sanitize | SanitizeObject;
     /**
      * @deprecated Use the 'head' method instead.
      */
@@ -108,6 +108,9 @@ export function transform({
     head: headContent,
     sandbox,
 }: Partial<PluginOptions> = emptyOptions): MarkdownIt.PluginWithOptions<TransformOptions> {
+    const sanitizeHead = typeof sanitize === 'function' ? sanitize : sanitize?.head;
+    const sanitizeBody = typeof sanitize === 'function' ? sanitize : sanitize?.body;
+
     const plugin: MarkdownIt.PluginWithOptions<TransformOptions> = (md, options) => {
         const {output = '.'} = options || {};
 
@@ -124,11 +127,15 @@ export function transform({
                     styles,
                 );
 
-                const head = `<head>${headContent ?? deprecatedHeadContent}</head>`;
-                const body = `<body>${raw}</body>`;
+                const rawHeadContent = headContent ?? deprecatedHeadContent;
+                const headHtml = sanitizeHead?.(rawHeadContent) ?? rawHeadContent;
+                const bodyHtml = sanitizeBody?.(raw) ?? raw;
+
+                const head = `<head>${headHtml}</head>`;
+                const body = `<body>${bodyHtml}</body>`;
                 const html = `<!DOCTYPE html><html>${head}${body}</html>`;
 
-                return sanitize?.(html) ?? html;
+                return html;
             },
         });
 
@@ -148,7 +155,7 @@ export function transform({
                 // Note that sanitization is only enabled for `shadow` embedding mode,
                 // `isolated` mode applies no restrictions — beware of vulnerabilities galore!
                 // That's why it's really important to host the iframe runtime on an unrelated `dummy` origin.
-                return sanitize?.(withStyles) ?? withStyles;
+                return sanitizeBody?.(withStyles) ?? withStyles;
             },
         });
     };

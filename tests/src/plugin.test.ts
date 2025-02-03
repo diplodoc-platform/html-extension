@@ -61,4 +61,41 @@ describe('HTML extension – plugin', () => {
             ),
         ).toMatchSnapshot();
     });
+
+    it('should apply sanitize function', () => {
+        expect(
+            html(
+                dd`
+            :::html
+            <p>should-be-replaced</p>
+            :::
+            `,
+                {
+                    embeddingMode: 'srcdoc',
+                    sanitize: (html) => html.replace('should-be-replaced', 'sanitized'),
+                },
+            ),
+        ).toMatchSnapshot();
+    });
+
+    it('should apply sanitize head and body functions', () => {
+        expect(
+            html(
+                dd`
+            :::html
+            <p>replace-head</p>
+            <p>replace-body</p>
+            :::
+            `,
+                {
+                    embeddingMode: 'srcdoc',
+                    head: '<title>replace-head | replace-body</title>',
+                    sanitize: {
+                        head: (html) => html.replace('replace-head', 'sanitized'),
+                        body: (html) => html.replace('replace-body', 'sanitized'),
+                    },
+                },
+            ),
+        ).toMatchSnapshot();
+    });
 });
