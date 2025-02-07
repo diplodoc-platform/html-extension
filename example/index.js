@@ -14,6 +14,7 @@ import {promisify} from 'node:util';
                 bundle: true,
                 head: `
                     <base target="_parent" />
+                    <meta http-equiv="Content-Security-Policy" content="script-src 'none'" />
                     <style>
                         h2 {
                             color: gray;
