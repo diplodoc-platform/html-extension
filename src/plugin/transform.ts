@@ -3,7 +3,7 @@ import type MarkdownIt from 'markdown-it';
 import {directiveParser, registerContainerDirective} from '@diplodoc/directive';
 
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
-import {BaseTarget, EmbeddingMode, Sanitize, SanitizeObject, StylesObject} from '../types';
+import {BaseTarget, EmbeddingMode, Sanitize, SanitizeConfig, StylesObject} from '../types';
 
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -17,7 +17,7 @@ export interface PluginOptions {
     containerClasses: string;
     bundle: boolean;
     isolatedSandboxHost?: string;
-    sanitize?: Sanitize | SanitizeObject;
+    sanitize?: Sanitize | SanitizeConfig;
     /**
      * @deprecated Use the 'head' method instead.
      */

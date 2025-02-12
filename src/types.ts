@@ -28,7 +28,7 @@ export type EmbeddingMode = 'shadow' | 'srcdoc' | 'isolated';
 
 export type Sanitize = (dirtyHtml: string) => string;
 
-export type SanitizeObject = {
+export type SanitizeConfig = {
     head?: Sanitize;
     body?: Sanitize;
 };
