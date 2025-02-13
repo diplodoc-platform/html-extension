@@ -1,3 +1,5 @@
+import type {BaseIFrameController} from '../iframe/BaseIFrameController';
+
 import {Deferred, Disposable, TaskQueue} from '../utils';
 import {isNoScriptIFrame} from '../utils/isNoScriptIFrame';
 import {IFrameController} from '../iframe/IFrameController';
@@ -58,7 +60,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
     private readonly taskQueue: TaskQueue;
     private readonly controllerInitialiazedFuse = new Deferred<void>();
 
-    private iframeController: IFrameController | null = null;
+    private iframeController: BaseIFrameController | null = null;
 
     constructor(host: HTMLElement, config: EmbedsConfig) {
         validateHostElement(host);
@@ -140,22 +142,23 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
     private async instantiateController() {
         await ensureIframeLoaded(this.host);
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const controller = new IFrameController(this.host.contentWindow!.document.body);
-
-        this.iframeController = controller;
-        this.dispose.add(() => controller.dispose());
-
         if (isNoScriptIFrame(this.host)) {
-            const noScriptIFrameController = new NoScriptIFrameController(this.host);
+            const controller = new NoScriptIFrameController(this.host);
 
-            this.dispose.add(() => noScriptIFrameController.dispose());
+            this.iframeController = controller;
+
+            this.dispose.add(() => controller.dispose());
+
             this.dispose.add(
-                noScriptIFrameController.setResizeListener((value) =>
-                    this.updateIFrameHeight(value),
-                ),
+                controller.setResizeListener((value) => this.updateIFrameHeight(value)),
             );
         } else {
+            const controller = new IFrameController(this.host);
+
+            this.iframeController = controller;
+
+            this.dispose.add(() => controller.dispose());
+
             this.dispose.add(
                 controller.on('resize', (value) => this.updateIFrameHeight(value.height)),
             );
@@ -164,7 +167,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         return this.controllerInitialiazedFuse.resolve();
     }
 
-    private executeOnController(execution: (controller: IFrameController) => void) {
+    private executeOnController(execution: (controller: BaseIFrameController) => void) {
         return this.taskQueue.run(async () => {
             if (this.iframeController === null) {
                 throw new Error(

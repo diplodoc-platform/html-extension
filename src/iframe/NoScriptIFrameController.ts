@@ -1,12 +1,12 @@
 import debounce from 'lodash.debounce';
 
-import {Disposable} from '../utils';
+import {BaseIFrameController} from './BaseIFrameController';
 
 const DEFAULT_RESIZE_DELAY = 150;
 
 type ResizeListener = (value: number) => void;
 
-export class NoScriptIFrameController extends Disposable {
+export class NoScriptIFrameController extends BaseIFrameController {
     private static observables = new Set<NoScriptIFrameController>();
     private static resizeCheckerActive = false;
 
@@ -27,6 +27,11 @@ export class NoScriptIFrameController extends Disposable {
             }
         }
 
+        // rAF has a separate place in the event loop and is called only when
+        // the browser is ready to repaint. The browser itself makes sure
+        // not to call it for background tabs or frames out of viewport.
+        // The size recalculation is only needed along with the display update,
+        // so this is the most appropriate place in the event loop.
         requestAnimationFrame(NoScriptIFrameController.checkResize);
     }
 
@@ -39,15 +44,14 @@ export class NoScriptIFrameController extends Disposable {
         NoScriptIFrameController.checkResize();
     }
 
-    private domContainer: HTMLIFrameElement;
     private resizeObserver: ResizeObserver | undefined;
     private lastHeight = 0;
     private resizeListener: ResizeListener | undefined;
 
-    constructor(frame: HTMLIFrameElement) {
-        super();
-
-        this.domContainer = frame;
+    // The controller is not useless, as there is a narrower type of argument here.
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+    constructor(iframe: HTMLIFrameElement) {
+        super(iframe);
     }
 
     setResizeListener(listener: ResizeListener) {
@@ -67,7 +71,7 @@ export class NoScriptIFrameController extends Disposable {
     }
 
     updateHeight() {
-        const frameWindow = this.domContainer.contentWindow;
+        const frameWindow = (this.iframe as HTMLIFrameElement).contentWindow;
 
         if (!frameWindow || !this.resizeListener) {
             return;
