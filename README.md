@@ -82,13 +82,23 @@ const {result} = await transform(
   {
     plugins: [
       htmlExtension.transform({
-        sanitize: (dirtyHtml) =>
-          sanitizeHtml(dirtyHtml, {
-            allowedTags: ['article', 'h1', 'h2', 'p', 'span'],
-            allowedAttributes: {
-              '*': ['class'],
-            },
-          }),
+        sanitize: {
+          head: (dirtyHtml) =>
+            sanitizeHtml(dirtyHtml, {
+              allowedTags: ['title', 'style', 'link', 'meta'],
+              allowedAttributes: {
+                meta: ['name', 'http-equiv', 'content', 'charset'],
+                link: ['rel', 'href'],
+              },
+            }),
+          body: (dirtyHtml) =>
+            sanitizeHtml(dirtyHtml, {
+              allowedTags: ['article', 'h1', 'h2', 'p', 'span'],
+              allowedAttributes: {
+                '*': ['class'],
+              },
+            }),
+        },
         containerClasses: 'my-own-class',
       }),
     ],
@@ -168,7 +178,8 @@ Options:
   Default: `srcdoc`.
 
 - `isolatedSandboxHost` - fully-qualified URL of the [IFrame runtime](#a-note-on-isolated-strategy-usage) used specifically by `isolated` mode. Has no effect when other modes are used. This can still be overriden by [`EmbedsConfig.isolatedSandboxHostURIOverride`](./src/types.ts#L8) via [`EmbeddedContentRootController.initialize`](./src/runtime/EmbeddedContentRootController.ts#L53) and [`EmbeddedContentRootController.setConfig`](./src/runtime/EmbeddedContentRootController.ts#L94).
-- `sanitize` - optional function that will be used to sanitize content in `srcdoc` and `shadow` modes if supplied.
+
+- `sanitize` - optional function that will be used to sanitize content in `srcdoc` and `shadow` modes if supplied. It can be an object with the keys `head` and `body`, to separately specify the sanitizer function for the `<head>` (from options) and `<body>` (processed HTML) content. If one of the keys is missing from the object, the corresponding content will not be processed. The sanitizer for the `head` is relevant only for the `srcdoc` mode.
 
 - `sandbox` - sandbox-mode, used by `srcdoc` and `isolated` embedding strategy (see iframe sandbox attribute). Disabled by default. You should specify `allow-same-origin` to allow host runtime (iframe resize, fragment links), `allow-popups allow-popups-to-escape-sandbox` to allow open links in new tab (links with `target="_blank"`), and `allow-top-navigation-by-user-activation` to allow open links in current tab (links with `target="_parent"`).
 
