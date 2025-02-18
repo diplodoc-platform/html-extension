@@ -118,7 +118,9 @@ export function transform({
             sandbox,
             embedContentTransformFn: (raw) => {
                 const deprecatedHeadContent = concatStylesIncludeDirectives(
-                    `<base target="${baseTarget}">`,
+                    `<base target="${baseTarget}">` +
+                        // It's important to disable script by default in the srcDoc mode
+                        `<meta http-equiv="Content-Security-Policy" content="script-src 'none'">`,
                     styles,
                 );
 

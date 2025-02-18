@@ -96,6 +96,8 @@ const {result} = await transform(
 );
 ```
 
+If you use the `head` option, don't forget to add the meta-tag `<meta http-equiv="Content-Security-Policy" content="script-src 'none'">` to prevent scripts execution.
+
 ## Embedding strategies
 
 The extension supports three different embedding strategies:
