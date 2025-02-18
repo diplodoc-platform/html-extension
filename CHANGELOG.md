@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.0](https://github.com/diplodoc-platform/html-extension/compare/v2.5.0...v2.6.0) (2025-02-18)
+
+
+### Features
+
+* add sandbox option ([#61](https://github.com/diplodoc-platform/html-extension/issues/61)) ([852f835](https://github.com/diplodoc-platform/html-extension/commit/852f83566509e934ae6b9fa3c223995ebf543626))
+* Add separate sanitize for head and body content ([#60](https://github.com/diplodoc-platform/html-extension/issues/60)) ([186e1a7](https://github.com/diplodoc-platform/html-extension/commit/186e1a79c3a8034e0e36b0f4895bd94cdbc83595))
+* **srcDoc:** Add CSP with scripts prevention ([#63](https://github.com/diplodoc-platform/html-extension/issues/63)) ([e2faaa2](https://github.com/diplodoc-platform/html-extension/commit/e2faaa22e0ed24f0fd4d6157fbce4810e48e96ca))
+
 ## [2.5.0](https://github.com/diplodoc-platform/html-extension/compare/v2.4.0...v2.5.0) (2024-11-27)
 
 
