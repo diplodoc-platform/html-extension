@@ -5,7 +5,11 @@ import {DATAATTR_SANDBOX_MODE} from '../../constants';
 import {RenderRuleFactoryOptions} from './defs';
 
 export const makeSrcdocModeEmbedRenderRule =
-    ({embedContentTransformFn, containerClassNames = ''}: RenderRuleFactoryOptions): RenderRule =>
+    ({
+        embedContentTransformFn,
+        containerClassNames = '',
+        sandbox,
+    }: RenderRuleFactoryOptions): RenderRule =>
     (tokens, idx, _opts, _env, self) => {
         const token = tokens[idx];
 
@@ -19,6 +23,10 @@ export const makeSrcdocModeEmbedRenderRule =
         token.attrSet('frameborder', '0');
         token.attrSet('style', 'width:100%');
         token.attrSet(DATAATTR_SANDBOX_MODE, 'srcdoc');
+
+        if (sandbox) {
+            token.attrSet('sandbox', sandbox === true ? '' : sandbox);
+        }
 
         return `<iframe ${self.renderAttrs(token)}></iframe>`;
     };

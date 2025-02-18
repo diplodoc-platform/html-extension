@@ -25,6 +25,17 @@ exports[`HTML extension – plugin should generate html token 1`] = `
 ]
 `;
 
+exports[`HTML extension – plugin should render HTML in sandboxed iframe 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot;&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
+&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-same-origin"
+>
+</iframe>
+`;
+
 exports[`HTML extension – plugin should render html block 1`] = `
 <iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot;&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
 &lt;/body&gt;&lt;/html&gt;"

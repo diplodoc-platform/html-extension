@@ -20,6 +20,7 @@ export const makeIsolatedModeEmbedRenderRule =
         baseTarget,
         isolatedSandboxHost,
         containerClassNames = '',
+        sandbox,
     }: RenderRuleFactoryOptions & IsolatedModeEmbedOptions): RenderRule =>
     (tokens, idx, _opts, _env, self) => {
         const token = tokens[idx];
@@ -38,6 +39,10 @@ export const makeIsolatedModeEmbedRenderRule =
 
         if (typeof isolatedSandboxHost === 'string') {
             token.attrSet(DATAATTR_ISOLATED_SANDBOX_PREFERRED_HOST, isolatedSandboxHost);
+        }
+
+        if (sandbox) {
+            token.attrSet('sandbox', sandbox === true ? '' : sandbox);
         }
 
         return `<iframe ${self.renderAttrs(token)}></iframe>`;

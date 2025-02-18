@@ -8,7 +8,7 @@ export type {Commands, Events} from './IFrameController';
 const $$PublisherInstanceSymbol = Symbol.for('$$RPCAPIPublisher');
 
 const onDOMReady = () => {
-    const controller = new IFrameController(globalThis.document.body);
+    const controller = new IFrameController(globalThis.window);
     const publisher = new APIPublisher(new PostMessageChannel(globalThis.parent));
 
     publisher
