@@ -1,6 +1,6 @@
 import {nanoid} from 'nanoid';
 
-import {EmbeddingMode, EmbedsConfig} from '../types';
+import {EmbeddingMode, EmbedsConfig, HTMLRuntimeConfig} from '../types';
 import {Disposable} from '../utils';
 
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
@@ -9,6 +9,7 @@ import {ShadowRootController} from './ShadowRootController';
 import {SrcDocIFrameController} from './SrcDocIFrameController';
 
 import {IHTMLIFrameElementConfig} from '.';
+import { HTML_RUNTIME_CONFIG_SYMBOL } from '../constants';
 
 const findAllSrcDocEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=srcdoc]');
@@ -16,6 +17,12 @@ const findAllShadowContainers = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLDivElement>('div[data-yfm-sandbox-mode=shadow]');
 const findAllIFrameEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=isolated]');
+
+const embedFinders: Record<EmbeddingMode, (scope: ParentNode) => NodeListOf<HTMLElement>> = {
+    srcdoc: findAllSrcDocEmbeds,
+    shadow: findAllShadowContainers,
+    isolated: findAllIFrameEmbeds,
+}
 
 const modeToController: Record<
     EmbeddingMode,
@@ -31,6 +38,7 @@ export class EmbeddedContentRootController extends Disposable {
     private children: Map<string, IEmbeddedContentController> = new Map();
     private config: EmbedsConfig;
     private document: Document;
+    private runtimeConfig: HTMLRuntimeConfig;
 
     constructor(
         document: Document,
@@ -43,6 +51,7 @@ export class EmbeddedContentRootController extends Disposable {
 
         this.config = config;
         this.document = document;
+        this.runtimeConfig = window[HTML_RUNTIME_CONFIG_SYMBOL] || {};
 
         // initialize on DOM ready
         this.document.addEventListener('DOMContentLoaded', () => this.initialize());
@@ -54,11 +63,20 @@ export class EmbeddedContentRootController extends Disposable {
     }
 
     initialize = async (configOverrideForThisInitCycle?: EmbedsConfig) => {
-        const dirtyEmbeds = [
-            ...findAllSrcDocEmbeds(this.document),
-            ...findAllShadowContainers(this.document),
-            ...findAllIFrameEmbeds(this.document),
-        ].filter(
+        const { disabledModes } = this.runtimeConfig;
+
+        const embeds = Object.keys(embedFinders).reduce<HTMLElement[]>((result, current) => {
+            const modeKey = current as EmbeddingMode;
+
+            if (!disabledModes?.includes(modeKey)) {
+                return result.concat(...embedFinders[modeKey](this.document));
+            }
+
+            return result;
+        }, [])
+
+
+        const dirtyEmbeds = embeds.filter(
             (el) =>
                 typeof el.dataset.yfmEmbedId !== 'string' ||
                 !this.children.has(el.dataset.yfmEmbedId),

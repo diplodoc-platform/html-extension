@@ -1,4 +1,4 @@
-import {GLOBAL_SYMBOL, QUEUE_SYMBOL} from './constants';
+import {GLOBAL_SYMBOL, HTML_RUNTIME_CONFIG_SYMBOL, QUEUE_SYMBOL} from './constants';
 import {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
@@ -33,9 +33,14 @@ export type SanitizeConfig = {
     body?: Sanitize;
 };
 
+export type HTMLRuntimeConfig = {
+    disabledModes?: EmbeddingMode[];
+};
+
 declare global {
     interface Window {
         [GLOBAL_SYMBOL]: ScriptStore;
         [QUEUE_SYMBOL]: boolean;
+        [HTML_RUNTIME_CONFIG_SYMBOL]: HTMLRuntimeConfig,
     }
 }
