@@ -2,6 +2,7 @@ import {nanoid} from 'nanoid';
 
 import {EmbeddingMode, EmbedsConfig, HTMLRuntimeConfig} from '../types';
 import {Disposable} from '../utils';
+import {HTML_RUNTIME_CONFIG_SYMBOL} from '../constants';
 
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
@@ -9,7 +10,6 @@ import {ShadowRootController} from './ShadowRootController';
 import {SrcDocIFrameController} from './SrcDocIFrameController';
 
 import {IHTMLIFrameElementConfig} from '.';
-import { HTML_RUNTIME_CONFIG_SYMBOL } from '../constants';
 
 const findAllSrcDocEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=srcdoc]');
@@ -22,7 +22,7 @@ const embedFinders: Record<EmbeddingMode, (scope: ParentNode) => NodeListOf<HTML
     srcdoc: findAllSrcDocEmbeds,
     shadow: findAllShadowContainers,
     isolated: findAllIFrameEmbeds,
-}
+};
 
 const modeToController: Record<
     EmbeddingMode,
@@ -63,7 +63,7 @@ export class EmbeddedContentRootController extends Disposable {
     }
 
     initialize = async (configOverrideForThisInitCycle?: EmbedsConfig) => {
-        const { disabledModes } = this.runtimeConfig;
+        const {disabledModes} = this.runtimeConfig;
 
         const embeds = Object.keys(embedFinders).reduce<HTMLElement[]>((result, current) => {
             const modeKey = current as EmbeddingMode;
@@ -73,8 +73,7 @@ export class EmbeddedContentRootController extends Disposable {
             }
 
             return result;
-        }, [])
-
+        }, []);
 
         const dirtyEmbeds = embeds.filter(
             (el) =>

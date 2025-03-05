@@ -41,6 +41,6 @@ declare global {
     interface Window {
         [GLOBAL_SYMBOL]: ScriptStore;
         [QUEUE_SYMBOL]: boolean;
-        [HTML_RUNTIME_CONFIG_SYMBOL]: HTMLRuntimeConfig,
+        [HTML_RUNTIME_CONFIG_SYMBOL]: HTMLRuntimeConfig;
     }
 }
