@@ -21,6 +21,7 @@ build({
     outfile: 'build/utils/index.js',
     minify: true,
     platform: 'browser',
+    format: 'cjs',
 });
 
 build({
