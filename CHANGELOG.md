@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/diplodoc-platform/html-extension/compare/v2.6.0...v2.7.0) (2025-03-07)
+
+
+### Features
+
+* add ability to disable html block modes in runtime ([#66](https://github.com/diplodoc-platform/html-extension/issues/66)) ([2c82ffd](https://github.com/diplodoc-platform/html-extension/commit/2c82ffdbe15fc516defac43a5e6ef67c6541114a))
+
+
+### Bug Fixes
+
+* **peer-deps:** add v19 react to peer deps ([#68](https://github.com/diplodoc-platform/html-extension/issues/68)) ([ea71c05](https://github.com/diplodoc-platform/html-extension/commit/ea71c053155f371d5cf153d06d4c1423d8f746d3))
+
 ## [2.6.0](https://github.com/diplodoc-platform/html-extension/compare/v2.5.0...v2.6.0) (2025-02-18)
 
 
