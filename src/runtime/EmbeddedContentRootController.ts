@@ -65,6 +65,8 @@ export class EmbeddedContentRootController extends Disposable {
     initialize = async (configOverrideForThisInitCycle?: EmbedsConfig) => {
         const {disabledModes} = this.runtimeConfig;
 
+        // MAJOR: separate runtime controllers and chunks, so the consumer could
+        // import only one runtime mode: import('@diplodoc/html-extension/runtime/srcdoc');
         const embeds = Object.keys(embedFinders).reduce<HTMLElement[]>((result, current) => {
             const modeKey = current as EmbeddingMode;
 

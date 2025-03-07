@@ -34,6 +34,7 @@ Example with some styles:
 
 ```md
 ::: html
+
 <style>
   :root {
     --dark-bg-color: #000;
@@ -153,6 +154,16 @@ Or you can just include runtime's source code in your bundle.
 ```js
 import '@diplodoc/html-extension/runtime';
 ```
+
+To setup runtime config you can use function `setupRuntimeConfig(config: HTMLRuntimeConfig)`, where
+
+```ts
+type HTMLRuntimeConfig = {
+  disabledModes: ('shadow' | 'srcdoc' | 'isolated')[];
+};
+```
+
+Mods listed in the array `disabledModes` disables runtime controllers for this mods, so the elements on the page with `data-yfm-sandbox-mode={disabledMode}` will not be transformed by runtime.
 
 ## MarkdownIt transform plugin
 
