@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/diplodoc-platform/html-extension/compare/v2.7.0...v2.7.1) (2025-03-07)
+
+
+### Bug Fixes
+
+* **plugin:** added HtmlRuntimeConfig, EmbeddingMode export types ([#69](https://github.com/diplodoc-platform/html-extension/issues/69)) ([33f3e9f](https://github.com/diplodoc-platform/html-extension/commit/33f3e9f886383984ae8db7dc7f690279829ef1de))
+
 ## [2.7.0](https://github.com/diplodoc-platform/html-extension/compare/v2.6.0...v2.7.0) (2025-03-07)
 
 
