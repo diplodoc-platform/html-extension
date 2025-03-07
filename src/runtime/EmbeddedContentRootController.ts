@@ -1,7 +1,8 @@
 import {nanoid} from 'nanoid';
 
-import {EmbeddingMode, EmbedsConfig} from '../types';
+import {EmbeddingMode, EmbedsConfig, HTMLRuntimeConfig} from '../types';
 import {Disposable} from '../utils';
+import {HTML_RUNTIME_CONFIG_SYMBOL} from '../constants';
 
 import {EmbeddedIFrameController} from './EmbeddedIFrameController';
 import {IEmbeddedContentController} from './IEmbeddedContentController';
@@ -17,6 +18,12 @@ const findAllShadowContainers = (scope: ParentNode) =>
 const findAllIFrameEmbeds = (scope: ParentNode) =>
     scope.querySelectorAll<HTMLIFrameElement>('iframe[data-yfm-sandbox-mode=isolated]');
 
+const embedFinders: Record<EmbeddingMode, (scope: ParentNode) => NodeListOf<HTMLElement>> = {
+    srcdoc: findAllSrcDocEmbeds,
+    shadow: findAllShadowContainers,
+    isolated: findAllIFrameEmbeds,
+};
+
 const modeToController: Record<
     EmbeddingMode,
     new (node: HTMLElement, config: IHTMLIFrameElementConfig) => IEmbeddedContentController
@@ -31,6 +38,7 @@ export class EmbeddedContentRootController extends Disposable {
     private children: Map<string, IEmbeddedContentController> = new Map();
     private config: EmbedsConfig;
     private document: Document;
+    private runtimeConfig: HTMLRuntimeConfig;
 
     constructor(
         document: Document,
@@ -43,6 +51,7 @@ export class EmbeddedContentRootController extends Disposable {
 
         this.config = config;
         this.document = document;
+        this.runtimeConfig = window[HTML_RUNTIME_CONFIG_SYMBOL] || {};
 
         // initialize on DOM ready
         this.document.addEventListener('DOMContentLoaded', () => this.initialize());
@@ -54,11 +63,21 @@ export class EmbeddedContentRootController extends Disposable {
     }
 
     initialize = async (configOverrideForThisInitCycle?: EmbedsConfig) => {
-        const dirtyEmbeds = [
-            ...findAllSrcDocEmbeds(this.document),
-            ...findAllShadowContainers(this.document),
-            ...findAllIFrameEmbeds(this.document),
-        ].filter(
+        const {disabledModes} = this.runtimeConfig;
+
+        // MAJOR: separate runtime controllers and chunks, so the consumer could
+        // import only one runtime mode: import('@diplodoc/html-extension/runtime/srcdoc');
+        const embeds = Object.keys(embedFinders).reduce<HTMLElement[]>((result, current) => {
+            const modeKey = current as EmbeddingMode;
+
+            if (!disabledModes?.includes(modeKey)) {
+                return result.concat(...embedFinders[modeKey](this.document));
+            }
+
+            return result;
+        }, []);
+
+        const dirtyEmbeds = embeds.filter(
             (el) =>
                 typeof el.dataset.yfmEmbedId !== 'string' ||
                 !this.children.has(el.dataset.yfmEmbedId),

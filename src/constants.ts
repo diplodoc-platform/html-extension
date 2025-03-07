@@ -1,5 +1,6 @@
 export const GLOBAL_SYMBOL = Symbol.for('diplodocHtml');
 export const QUEUE_SYMBOL = Symbol.for('queue');
+export const HTML_RUNTIME_CONFIG_SYMBOL = Symbol.for('htmlRuntimeConfig');
 
 export const DEFAULT_IFRAME_HEIGHT_PADDING = 34;
 
