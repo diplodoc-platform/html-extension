@@ -1,5 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HTML extension – plugin default sanitize should remove foreignObject tag 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;&lt;svg&gt;&lt;style&gt;&lt;/style&gt;&lt;/svg&gt;&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+>
+</iframe>
+`;
+
+exports[`HTML extension – plugin default sanitize should remove script inside template tag 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;&lt;template id=&quot;template&quot;&gt;&lt;svg&gt;&lt;/svg&gt;&lt;/template&gt;
+&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+>
+</iframe>
+`;
+
+exports[`HTML extension – plugin default sanitize should remove script tag 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;&lt;svg&gt;&lt;/svg&gt;
+&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+>
+</iframe>
+`;
+
 exports[`HTML extension – plugin should apply sanitize function 1`] = `
 <iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot;&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot;&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;sanitized&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;"
@@ -47,7 +76,7 @@ exports[`HTML extension – plugin should generate html token 1`] = `
 `;
 
 exports[`HTML extension – plugin should render HTML in sandboxed iframe 1`] = `
-<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot;&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot;&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
 &lt;/body&gt;&lt;/html&gt;"
         frameborder="0"
         style="width:100%"
@@ -58,7 +87,7 @@ exports[`HTML extension – plugin should render HTML in sandboxed iframe 1`] = 
 `;
 
 exports[`HTML extension – plugin should render html block 1`] = `
-<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot;&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot;&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;html-div&quot;&gt;content&lt;/div&gt;
 &lt;/body&gt;&lt;/html&gt;"
         frameborder="0"
         style="width:100%"
