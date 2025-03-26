@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/diplodoc-platform/html-extension/compare/v2.7.1...v2.8.0) (2025-03-26)
+
+
+### Features
+
+* **plugin:** added default sanitize ([#72](https://github.com/diplodoc-platform/html-extension/issues/72)) ([9f961b8](https://github.com/diplodoc-platform/html-extension/commit/9f961b867c1b594b818911288351473fd82ea72e))
+
 ## [2.7.1](https://github.com/diplodoc-platform/html-extension/compare/v2.7.0...v2.7.1) (2025-03-07)
 
 
