@@ -29,7 +29,7 @@ const getSanitizeFunction = (): SanitizeFn => {
 // MAJOR: use `import {sanitize} from '@diplodoc/transform/lib/sanitize.js'`
 const diplodocSanitize = getSanitizeFunction();
 
-const {defaultOptions} = sanitizeModule;
+const {defaultOptions: sanitizeDefaultOptions} = sanitizeModule;
 
 // yfmHtmlBlock additional css properties white list
 const getYfmHtmlBlockWhiteList = () => {
@@ -104,36 +104,41 @@ const getYfmHtmlBlockWhiteList = () => {
     return whiteList;
 };
 
-// yfmHtmlBlock additional allowedTags
-const yfmHtmlBlockAllowedTags = ['link', 'base', 'style'];
-
-// yfmHtmlBlock additional allowedTags
-const yfmHtmlBlockAllowedAttributes = {
-    link: ['rel', 'href'],
-    base: ['target'],
-    style: [],
+const defaultEmptyOptions: SanitizeOptions = {
+    allowedTags: [],
+    cssWhiteList: {},
+    allowedAttributes: {},
 };
 
-export const getYfmHtmlBlockOptions = (defaultOptions: SanitizeOptions): SanitizeOptions => {
-    type AllowedAttributesType = Record<
-        string,
-        (string | {name: string; multiple?: boolean | undefined; values: string[]})[]
-    >;
+type AllowedAttributesType = Record<
+    string,
+    (string | {name: string; multiple?: boolean | undefined; values: string[]})[]
+>;
+
+export const getYfmHtmlBlockOptions = (
+    options: SanitizeOptions = defaultEmptyOptions,
+    defaultOptions: SanitizeOptions = sanitizeDefaultOptions,
+): SanitizeOptions => {
     const defaultAllowedAttributes = defaultOptions.allowedAttributes as AllowedAttributesType;
 
     return {
         ...defaultOptions,
         allowedAttributes: {
             ...defaultAllowedAttributes,
-            ...yfmHtmlBlockAllowedAttributes,
+            ...options.allowedAttributes,
         },
         allowedTags:
-            typeof defaultOptions.allowedTags === 'boolean'
-                ? defaultOptions.allowedTags
-                : [...(defaultOptions.allowedTags ?? []), ...yfmHtmlBlockAllowedTags],
+            typeof options.allowedTags === 'boolean'
+                ? options.allowedTags
+                : [
+                      ...(Array.isArray(defaultOptions.allowedTags)
+                          ? defaultOptions.allowedTags
+                          : []),
+                      ...(Array.isArray(options.allowedTags) ? options.allowedTags : []),
+                  ],
         cssWhiteList: {
             ...defaultOptions.cssWhiteList,
-            ...getYfmHtmlBlockWhiteList(),
+            ...options.cssWhiteList,
         },
     };
 };
@@ -147,4 +152,25 @@ export const getSanitizeYfmHtmlBlock =
     (content: string) =>
         sanitize(content, getYfmHtmlBlockOptions(options));
 
-export const htmlBlockDefaultSanitizer = getSanitizeYfmHtmlBlock({options: defaultOptions});
+export const htmlBlockDefaultSanitizer = {
+    head: getSanitizeYfmHtmlBlock({
+        options: {
+            allowedTags: ['title', 'style', 'link', 'meta'],
+            allowedAttributes: {
+                meta: ['name', 'http-equiv', 'content', 'charset'],
+                link: ['rel', 'href'],
+            },
+        },
+    }),
+    body: getSanitizeYfmHtmlBlock({
+        options: {
+            allowedTags: ['link', 'base', 'style'],
+            allowedAttributes: {
+                link: ['rel', 'href'],
+                base: ['target'],
+                style: [],
+            },
+            cssWhiteList: getYfmHtmlBlockWhiteList(),
+        },
+    }),
+};
