@@ -155,19 +155,18 @@ export const getSanitizeYfmHtmlBlock =
 export const htmlBlockDefaultSanitizer = {
     head: getSanitizeYfmHtmlBlock({
         options: {
-            allowedTags: ['title', 'style', 'link', 'meta'],
+            allowedTags: ['title', 'style', 'link', 'meta', 'base'],
             allowedAttributes: {
                 meta: ['name', 'http-equiv', 'content', 'charset'],
                 link: ['rel', 'href'],
+                base: ['target'],
             },
         },
     }),
     body: getSanitizeYfmHtmlBlock({
         options: {
-            allowedTags: ['link', 'base', 'style'],
+            allowedTags: ['style'],
             allowedAttributes: {
-                link: ['rel', 'href'],
-                base: ['target'],
                 style: [],
             },
             cssWhiteList: getYfmHtmlBlockWhiteList(),
