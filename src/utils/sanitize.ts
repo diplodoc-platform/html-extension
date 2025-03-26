@@ -1,4 +1,3 @@
-export const defaultSanitize = () => {};
 import type {SanitizeOptions} from '@diplodoc/transform/lib/sanitize';
 
 import * as sanitizeModule from '@diplodoc/transform/lib/sanitize';
