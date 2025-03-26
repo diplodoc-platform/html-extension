@@ -4,6 +4,7 @@ import {directiveParser, registerContainerDirective} from '@diplodoc/directive';
 
 import {ISOLATED_TOKEN_TYPE, SHADOW_TOKEN_TYPE, SRCDOC_TOKEN_TYPE} from '../constants';
 import {BaseTarget, EmbeddingMode, Sanitize, SanitizeConfig, StylesObject} from '../types';
+import {htmlBlockDefaultSanitizer} from '../utils/sanitize';
 
 import {addHiddenProperty, dynrequire, getStyles} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -102,7 +103,7 @@ export function transform({
     containerClasses = '',
     bundle = true,
     isolatedSandboxHost,
-    sanitize,
+    sanitize = htmlBlockDefaultSanitizer,
     styles,
     baseTarget = '_parent',
     head: headContent,
