@@ -99,3 +99,44 @@ describe('HTML extension – plugin', () => {
         ).toMatchSnapshot();
     });
 });
+
+describe('HTML extension – plugin default sanitize', () => {
+    it('should remove foreignObject tag', () => {
+        expect(
+            html(
+                dd`
+            :::html
+                <svg><style><foreignObject><iframe srcdoc='<script/src=https://some.com></script>'>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
+
+    it('should remove script tag', () => {
+        expect(
+            html(
+                dd`
+            :::html
+                <svg><style><script>a</script></style></svg>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
+
+    it('should remove script inside template tag', () => {
+        expect(
+            html(
+                dd`
+            :::html
+                <template id="template"><svg><style> \* <script href="https://some.com"></script></style></svg></template>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
+});
