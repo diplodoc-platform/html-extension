@@ -77,7 +77,10 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
 
-        this.updateIFrameHeight();
+        this.updateIFrameHeight(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.host.contentWindow!.document.documentElement.getBoundingClientRect().height,
+        );
 
         this.addAnchorLinkHandlers();
         this.handleHashChange();
@@ -147,7 +150,9 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
             this.dispose.add(() => controller.dispose());
 
-            this.dispose.add(controller.setResizeListener(() => this.updateIFrameHeight()));
+            this.dispose.add(
+                controller.setResizeListener((value) => this.updateIFrameHeight(value)),
+            );
         } else {
             const controller = new IFrameController(this.host);
 
@@ -155,7 +160,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
             this.dispose.add(() => controller.dispose());
 
-            this.dispose.add(controller.on('resize', () => this.updateIFrameHeight()));
+            this.dispose.add(controller.on('resize', (value) => this.updateIFrameHeight(value)));
         }
 
         return this.controllerInitialiazedFuse.resolve();
@@ -173,15 +178,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         });
     }
 
-    private updateIFrameHeight() {
-        const contentWindow = this.host.contentWindow;
-
-        if (!contentWindow) {
-            return;
-        }
-
-        const html = contentWindow.document.documentElement;
-
-        this.host.style.height = `${html.getBoundingClientRect().height}px`;
+    private updateIFrameHeight(value: number) {
+        this.host.style.height = `${value}px`;
     }
 }

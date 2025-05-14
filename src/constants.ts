@@ -2,6 +2,8 @@ export const GLOBAL_SYMBOL = Symbol.for('diplodocHtml');
 export const QUEUE_SYMBOL = Symbol.for('queue');
 export const HTML_RUNTIME_CONFIG_SYMBOL = Symbol.for('htmlRuntimeConfig');
 
+export const DEFAULT_EMBED_IFRAME_HEIGHT_PADDING = 34;
+
 export const SRCDOC_TOKEN_TYPE = 'yfm_html_block';
 export const SHADOW_TOKEN_TYPE = 'yfm_html_block_shadow';
 export const ISOLATED_TOKEN_TYPE = 'yfm_html_block_isolated';
