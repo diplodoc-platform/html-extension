@@ -12,7 +12,7 @@ type Command<T> = T extends (...args: infer A) => infer R
     : never;
 
 export type Events = {
-    resize: (rect: DOMRect) => void;
+    resize: (height: number) => void;
 };
 
 export type Commands = {
@@ -36,7 +36,7 @@ export class IFrameController extends BaseIFrameController {
             debounce(this.dispatchResize, DEFAULT_RESIZE_DELAY),
         );
 
-        this.resizeObserver.observe(this.domContainer);
+        this.resizeObserver.observe(this.domHtml);
 
         this.dispose.add(() => this.resizeObserver.disconnect());
     }
@@ -49,7 +49,9 @@ export class IFrameController extends BaseIFrameController {
 
     private dispatchResize: ResizeObserverCallback = (entries) => {
         for (const entry of entries) {
-            this.eventHandlers.resize.forEach((handler) => handler(entry.contentRect));
+            this.eventHandlers.resize.forEach((handler) =>
+                handler(entry.target.getBoundingClientRect().height),
+            );
         }
     };
 }

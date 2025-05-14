@@ -3,6 +3,8 @@ import {Disposable, updateClassNames, updateStyles} from '../utils';
 export abstract class BaseIFrameController extends Disposable {
     protected readonly iframe: HTMLIFrameElement | Window;
     protected readonly domContainer: HTMLElement;
+    protected readonly domHtml: HTMLElement;
+
     private classNames: string[] = [];
     private styles: Record<string, string> = {};
 
@@ -10,11 +12,15 @@ export abstract class BaseIFrameController extends Disposable {
         super();
 
         this.iframe = iframe;
-        this.domContainer =
+
+        const doc =
             'contentWindow' in iframe
                 ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  iframe.contentWindow!.document.body
-                : iframe.document.body;
+                  iframe.contentWindow!.document
+                : iframe.document;
+
+        this.domContainer = doc.body;
+        this.domHtml = doc.documentElement;
     }
 
     setClassNames = (classNames: string[] | undefined = []) => {
