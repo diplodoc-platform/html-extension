@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/diplodoc-platform/html-extension/compare/v2.8.0...v2.9.0) (2025-05-16)
+
+
+### Features
+
+* **runtime:** remove default padding for not-embedded frames ([#74](https://github.com/diplodoc-platform/html-extension/issues/74)) ([39ec3b6](https://github.com/diplodoc-platform/html-extension/commit/39ec3b6fd7fb9bf0b4b4f593f663df78e024c00f))
+
 ## [2.8.0](https://github.com/diplodoc-platform/html-extension/compare/v2.7.1...v2.8.0) (2025-03-26)
 
 
