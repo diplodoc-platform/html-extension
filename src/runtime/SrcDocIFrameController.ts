@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {BaseIFrameController} from '../iframe/BaseIFrameController';
 
 import {Deferred, Disposable, TaskQueue} from '../utils';
