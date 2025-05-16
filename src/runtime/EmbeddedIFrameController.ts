@@ -2,7 +2,7 @@ import {RPCConsumer} from '../rpcAdapter/RPCConsumer';
 import {PostMessageChannel} from '../rpcAdapter/PostMessageChannel';
 import {EmbedsConfig} from '../types';
 import {Disposable} from '../utils';
-import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
+import {DEFAULT_EMBED_IFRAME_HEIGHT_PADDING} from '../constants';
 
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 
@@ -56,9 +56,7 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
             new PostMessageChannel(this.iframeElement.contentWindow!),
         );
 
-        this.dispose.add(
-            this.rpcConsumer.on('resize', (value) => this.updateIFrameHeight(value.height)),
-        );
+        this.dispose.add(this.rpcConsumer.on('resize', (value) => this.updateIFrameHeight(value)));
 
         this.dispose.add(() => this.rpcConsumer.dispose());
     }
@@ -102,6 +100,6 @@ export class EmbeddedIFrameController extends Disposable implements IEmbeddedCon
     }
 
     private updateIFrameHeight(value: number) {
-        this.iframeElement.style.height = `${value + DEFAULT_IFRAME_HEIGHT_PADDING}px`;
+        this.iframeElement.style.height = `${value + DEFAULT_EMBED_IFRAME_HEIGHT_PADDING}px`;
     }
 }

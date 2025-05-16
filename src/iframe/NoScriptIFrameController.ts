@@ -77,7 +77,7 @@ export class NoScriptIFrameController extends BaseIFrameController {
             return;
         }
 
-        const height = frameWindow.document.body.clientHeight;
+        const height = frameWindow.document.documentElement.getBoundingClientRect().height;
 
         if (height !== this.lastHeight) {
             this.lastHeight = height;

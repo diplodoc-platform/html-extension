@@ -5,7 +5,6 @@ import {isNoScriptIFrame} from '../utils/isNoScriptIFrame';
 import {IFrameController} from '../iframe/IFrameController';
 import {NoScriptIFrameController} from '../iframe/NoScriptIFrameController';
 import {EmbedsConfig} from '../types';
-import {DEFAULT_IFRAME_HEIGHT_PADDING} from '../constants';
 
 import {IEmbeddedContentController} from './IEmbeddedContentController';
 
@@ -76,9 +75,10 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
         await this.instantiateController();
         await this.setRootClassNames(this.config.classNames);
         await this.setRootStyles(this.config.styles);
+
         this.updateIFrameHeight(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.host.contentWindow!.document.body.getBoundingClientRect().height,
+            this.host.contentWindow!.document.documentElement.getBoundingClientRect().height,
         );
 
         this.addAnchorLinkHandlers();
@@ -159,9 +159,7 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
 
             this.dispose.add(() => controller.dispose());
 
-            this.dispose.add(
-                controller.on('resize', (value) => this.updateIFrameHeight(value.height)),
-            );
+            this.dispose.add(controller.on('resize', (value) => this.updateIFrameHeight(value)));
         }
 
         return this.controllerInitialiazedFuse.resolve();
@@ -180,9 +178,6 @@ export class SrcDocIFrameController extends Disposable implements IEmbeddedConte
     }
 
     private updateIFrameHeight(value: number) {
-        // DEFAULT_IFRAME_HEIGHT_PADDING is used to account for the height
-        // difference resulting from the calculation of height by the script,
-        // due to margin collapsing.
-        this.host.style.height = `${value + DEFAULT_IFRAME_HEIGHT_PADDING}px`;
+        this.host.style.height = `${value}px`;
     }
 }
