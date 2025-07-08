@@ -95,3 +95,25 @@ exports[`HTML extension – plugin should render html block 1`] = `
 >
 </iframe>
 `;
+
+exports[`HTML extension – plugin with special characters should render html block with dash in first line 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;-
+&lt;div class=&quot;html-div&quot;&gt;content with dash in first line&lt;/div&gt;
+&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+>
+</iframe>
+`;
+
+exports[`HTML extension – plugin with special characters should render html block with equals sign in first line 1`] = `
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_parent&quot; /&gt;&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;script-src 'none'&quot; /&gt;&lt;/head&gt;&lt;body&gt;=
+&lt;div class=&quot;html-div&quot;&gt;content with equals sign in first line&lt;/div&gt;
+&lt;/body&gt;&lt;/html&gt;"
+        frameborder="0"
+        style="width:100%"
+        data-yfm-sandbox-mode="srcdoc"
+>
+</iframe>
+`;
