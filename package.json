@@ -109,6 +109,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@diplodoc/directive": "^0.3.0"
+    "@diplodoc/directive": "^0.3.3"
   }
 }

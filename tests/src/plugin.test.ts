@@ -100,6 +100,36 @@ describe('HTML extension – plugin', () => {
     });
 });
 
+describe('HTML extension – plugin with special characters', () => {
+    it('should render html block with dash in first line', () => {
+        expect(
+            html(
+                dd`
+            :::html
+            -
+            <div class="html-div">content with dash in first line</div>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
+
+    it('should render html block with equals sign in first line', () => {
+        expect(
+            html(
+                dd`
+            :::html
+            =
+            <div class="html-div">content with equals sign in first line</div>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
+});
+
 describe('HTML extension – plugin default sanitize', () => {
     it('should remove foreignObject tag', () => {
         expect(
