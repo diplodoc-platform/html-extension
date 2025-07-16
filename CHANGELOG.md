@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.1](https://github.com/diplodoc-platform/html-extension/compare/v2.9.0...v2.9.1) (2025-07-16)
+
+
+### Bug Fixes
+
+* **block:** lheading on first line does not break directive block ([#76](https://github.com/diplodoc-platform/html-extension/issues/76)) ([7cfb02a](https://github.com/diplodoc-platform/html-extension/commit/7cfb02a6a6b96efb92bcf05ef65383d756e14fcc))
+
 ## [2.9.0](https://github.com/diplodoc-platform/html-extension/compare/v2.8.0...v2.9.0) (2025-05-16)
 
 
