@@ -4,8 +4,8 @@ import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 import {htmlPlugin} from '@craftamap/esbuild-plugin-html';
 
-import pkg from '../package.json' assert {type: 'json'};
-import tsConfig from '../tsconfig.json' assert {type: 'json'};
+import pkg from '../package.json' with {type: 'json'};
+import tsConfig from '../tsconfig.json' with {type: 'json'};
 
 /** @type {import('esbuild').BuildOptions} */
 const common = {
