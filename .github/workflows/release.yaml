@@ -12,8 +12,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: yandex-cloud/ui-release-action@main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          github-token: ${{ secrets.YC_UI_BOT_GITHUB_TOKEN }}
-          npm-token: ${{ secrets.ROBOT_DATAUI_NPM_TOKEN }}
           node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm (>= 11.5.1)
+        run: |
+          [ "$(printf '%s\n' "11.5.1" "$(npm -v)" | sort -V | head -n1)" = "11.5.1" ] || npm install -g npm@latest
+        shell: bash
+      - run: npm ci
+        shell: bash
+      - run: npm publish
+        if: ${{ steps.release.outputs.release_created }}
+        shell: bash
