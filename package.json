@@ -4,6 +4,9 @@
   "description": "HTML plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
+  "engines": {
+    "npm": ">=11.5.1"
+  },
   "typesVersions": {
     "*": {
       "index.d.ts": [
