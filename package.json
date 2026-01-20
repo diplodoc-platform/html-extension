@@ -60,7 +60,7 @@
   },
   "scripts": {
     "build": "run-p build:*",
-    "build:js": "./esbuild/build.mjs",
+    "build:js": "node ./esbuild/build.mjs",
     "build:declarations": "tsc --project tsconfig.publish.json --emitDeclarationOnly --outDir ./build",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "cd tests && npm ci && npm test -- --ci",
