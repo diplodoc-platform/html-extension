@@ -1,5 +1,6 @@
+import type {EmbeddedContentRootController} from './runtime/EmbeddedContentRootController';
+
 import {GLOBAL_SYMBOL, QUEUE_SYMBOL} from './constants';
-import {EmbeddedContentRootController} from './runtime/EmbeddedContentRootController';
 
 type ControllerLoadedCallback = (controller: EmbeddedContentRootController) => void;
 export type ScriptStore = ControllerLoadedCallback[] | null;

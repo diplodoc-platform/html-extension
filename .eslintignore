@@ -10,8 +10,10 @@ node_modules
 /cache
 /coverage
 /external
+/example
 .lintstagedrc.js
 .eslintrc.js
 .prettierrc.js
 .stylelintrc.js
 esbuild/**/*.mjs
+jest.config.js

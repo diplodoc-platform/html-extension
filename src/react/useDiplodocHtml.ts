@@ -1,8 +1,10 @@
+import type {EmbeddedContentRootController} from '../runtime/EmbeddedContentRootController';
+import type {ScriptStore} from '../common';
+import type {EmbedsConfig} from '../types';
+
 import {useEffect, useState} from 'react';
 
-import {EmbeddedContentRootController} from '../runtime/EmbeddedContentRootController';
-import {ScriptStore, getScriptStore} from '../common';
-import {EmbedsConfig} from '../types';
+import {getScriptStore} from '../common';
 
 const noop = () => {};
 

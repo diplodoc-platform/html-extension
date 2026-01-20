@@ -1,5 +1,5 @@
-import {GLOBAL_SYMBOL, HTML_RUNTIME_CONFIG_SYMBOL, QUEUE_SYMBOL} from './constants';
-import {ScriptStore} from './common';
+import type {GLOBAL_SYMBOL, HTML_RUNTIME_CONFIG_SYMBOL, QUEUE_SYMBOL} from './constants';
+import type {ScriptStore} from './common';
 
 export type ControllerCallback<T> = (controller: T) => void;
 

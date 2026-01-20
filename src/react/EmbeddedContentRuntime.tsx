@@ -1,4 +1,6 @@
-import {FC, useMemo} from 'react';
+import type {FC} from 'react';
+
+import {useMemo} from 'react';
 
 import {useDiplodocEmbeddedContent} from './useDiplodocHtml';
 

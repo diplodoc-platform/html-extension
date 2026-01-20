@@ -1,8 +1,7 @@
-import {RenderRule} from 'markdown-it/lib/renderer';
+import type {RenderRule} from 'markdown-it/lib/renderer';
+import type {RenderRuleFactoryOptions} from './defs';
 
 import {DATAATTR_SANDBOX_MODE} from '../../constants';
-
-import {RenderRuleFactoryOptions} from './defs';
 
 export const makeSrcdocModeEmbedRenderRule =
     ({

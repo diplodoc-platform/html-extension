@@ -1,4 +1,4 @@
-import {StylesObject} from '../types';
+import type {StylesObject} from '../types';
 
 export function addHiddenProperty<
     B extends Record<string | symbol, unknown>,

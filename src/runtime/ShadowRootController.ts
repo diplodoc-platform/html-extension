@@ -1,8 +1,8 @@
-import {EmbedsConfig} from '../types';
+import type {EmbedsConfig} from '../types';
+import type {IEmbeddedContentController} from './IEmbeddedContentController';
+
 import {updateClassNames, updateStyles} from '../utils/reconcile';
 import {Disposable} from '../utils';
-
-import {IEmbeddedContentController} from './IEmbeddedContentController';
 
 type DatasetShape = {
     yfmSandboxMode: 'shadow';

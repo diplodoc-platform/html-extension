@@ -1,12 +1,11 @@
 import type {BaseIFrameController} from '../iframe/BaseIFrameController';
+import type {EmbedsConfig} from '../types';
+import type {IEmbeddedContentController} from './IEmbeddedContentController';
 
 import {Deferred, Disposable, TaskQueue} from '../utils';
 import {isNoScriptIFrame} from '../utils/isNoScriptIFrame';
 import {IFrameController} from '../iframe/IFrameController';
 import {NoScriptIFrameController} from '../iframe/NoScriptIFrameController';
-import {EmbedsConfig} from '../types';
-
-import {IEmbeddedContentController} from './IEmbeddedContentController';
 
 const PARENT_LOADED_AND_RESIZED_TIMEOUT = 500;
 

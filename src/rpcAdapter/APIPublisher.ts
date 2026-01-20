@@ -1,16 +1,16 @@
 import type {Commands, Events} from '../iframe';
-
-import {Disposable} from '../utils';
-
-import {
+import type {
     CallRejectionMessage,
     CallRequestMessage,
     CallSuccessMessage,
     IMessageChannel,
     PublicationMessage,
     TypedMessage,
-    isMessage,
 } from './commonDefs';
+
+import {Disposable} from '../utils';
+
+import {isMessage} from './commonDefs';
 
 type Handler<T extends Commands[keyof Commands] = Commands[keyof Commands]> = (
     ...args: T['Args']

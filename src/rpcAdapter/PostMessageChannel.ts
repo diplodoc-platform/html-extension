@@ -1,6 +1,7 @@
-import {Deferred, TaskQueue, queueFromFuse} from '../utils';
+import type {Deferred, TaskQueue} from '../utils';
+import type {HandshakeServiceMessage, IMessageChannel} from './commonDefs';
 
-import {HandshakeServiceMessage, IMessageChannel} from './commonDefs';
+import {queueFromFuse} from '../utils';
 
 const isHandshakeServiceMessage = (
     maybeMessage: unknown,

@@ -1,18 +1,18 @@
 import type {Commands, Events} from '../iframe';
-
-import {nanoid} from 'nanoid';
-
-import {Deferred, Disposable, timeout} from '../utils';
-
-import {
+import type {
     CallRequestMessage,
     CallResponseMessage,
     CallSuccessMessage,
     IMessageChannel,
     PublicationMessage,
     TypedMessage,
-    isMessage,
 } from './commonDefs';
+
+import {nanoid} from 'nanoid';
+
+import {Deferred, Disposable, timeout} from '../utils';
+
+import {isMessage} from './commonDefs';
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 type EventListener<T = unknown> = (eventData: T) => void;
