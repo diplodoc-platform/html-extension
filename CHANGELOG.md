@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.2](https://github.com/diplodoc-platform/html-extension/compare/v2.9.1...v2.9.2) (2026-02-09)
+
+
+### Bug Fixes
+
+* update version actions, node 22 ([017979a](https://github.com/diplodoc-platform/html-extension/commit/017979a18f7865ace8966ee5a91c75301c5bf037))
+
 ## [2.9.1](https://github.com/diplodoc-platform/html-extension/compare/v2.9.0...v2.9.1) (2025-07-16)
 
 
