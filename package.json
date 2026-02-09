@@ -89,7 +89,7 @@
     }
   },
   "devDependencies": {
-    "@craftamap/esbuild-plugin-html": "^0.7.0",
+    "@craftamap/esbuild-plugin-html": "^0.9.0",
     "@diplodoc/lint": "^1.12.0",
     "@diplodoc/transform": "^4.0.0",
     "@diplodoc/tsconfig": "^1.0.2",
@@ -99,7 +99,7 @@
     "@types/markdown-it": "^13.0.9",
     "@types/node": "^22.19.7",
     "@types/react": "^18.2.14",
-    "@types/sanitize-html": "2.11.0",
+    "@types/sanitize-html": "2.16.0",
     "esbuild-sass-plugin": "^3.3.1",
     "github-slugger": "^1.5.0",
     "lodash.debounce": "^4.0.8",
