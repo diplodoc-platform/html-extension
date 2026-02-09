@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {build} from 'esbuild';
+import {build} from '@diplodoc/lint/esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 import {htmlPlugin} from '@craftamap/esbuild-plugin-html';
 
