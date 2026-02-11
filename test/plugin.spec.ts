@@ -1,20 +1,18 @@
 import MarkdownIt from 'markdown-it';
-import transform from '@diplodoc/transform';
 import dd from 'ts-dedent';
+import {describe, expect, it} from 'vitest';
 
-import {type PluginOptions, transform as htmlTransform} from '../../src/plugin';
+import {type PluginOptions, transform as htmlTransform} from '../src/plugin';
 
-const html = (text: string, opts?: Partial<PluginOptions>) => {
-    return transform(text, {
-        needToSanitizeHtml: false,
-        plugins: [htmlTransform({bundle: false, ...opts})],
-    }).result.html;
-};
+function html(text: string, opts?: Partial<PluginOptions>) {
+    const md = new MarkdownIt().use(htmlTransform({bundle: false, ...opts}));
+    return md.render(text);
+}
 
-const tokens = (text: string, opts?: Partial<PluginOptions>) => {
+function tokens(text: string, opts?: Partial<PluginOptions>) {
     const md = new MarkdownIt().use(htmlTransform({bundle: false, ...opts}));
     return md.parse(text, {});
-};
+}
 
 describe('HTML extension – plugin', () => {
     it('should render html block', () => {
@@ -72,7 +70,7 @@ describe('HTML extension – plugin', () => {
             `,
                 {
                     embeddingMode: 'srcdoc',
-                    sanitize: (html) => html.replace('should-be-replaced', 'sanitized'),
+                    sanitize: (h) => h.replace('should-be-replaced', 'sanitized'),
                 },
             ),
         ).toMatchSnapshot();
@@ -91,8 +89,8 @@ describe('HTML extension – plugin', () => {
                     embeddingMode: 'srcdoc',
                     head: '<title>replace-head | replace-body</title>',
                     sanitize: {
-                        head: (html) => html.replace('replace-head', 'sanitized'),
-                        body: (html) => html.replace('replace-body', 'sanitized'),
+                        head: (h) => h.replace('replace-head', 'sanitized'),
+                        body: (h) => h.replace('replace-body', 'sanitized'),
                     },
                 },
             ),
