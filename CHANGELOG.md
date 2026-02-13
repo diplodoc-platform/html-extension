@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.3](https://github.com/diplodoc-platform/html-extension/compare/v2.9.2...v2.9.3) (2026-02-13)
+
+
+### Bug Fixes
+
+* Update infra to 1.13.2 ([b7f2f6f](https://github.com/diplodoc-platform/html-extension/commit/b7f2f6f874193d7eba2b786f26bbdfb69ed1451c))
+
 ## [2.9.2](https://github.com/diplodoc-platform/html-extension/compare/v2.9.1...v2.9.2) (2026-02-09)
 
 
