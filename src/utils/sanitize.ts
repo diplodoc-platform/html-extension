@@ -30,6 +30,9 @@ const getSanitizeFunction = (): SanitizeFn => {
 const diplodocSanitize = getSanitizeFunction();
 
 const {defaultOptions: sanitizeDefaultOptions} = sanitizeModule;
+const sanitizeDefaultAllowedTags = Array.isArray(sanitizeDefaultOptions.allowedTags)
+    ? sanitizeDefaultOptions.allowedTags
+    : [];
 
 // yfmHtmlBlock additional css properties white list
 const getYfmHtmlBlockWhiteList = () => {
@@ -104,72 +107,71 @@ const getYfmHtmlBlockWhiteList = () => {
     return whiteList;
 };
 
-const defaultEmptyOptions: SanitizeOptions = {
-    allowedTags: [],
-    cssWhiteList: {},
-    allowedAttributes: {},
-};
-
 type AllowedAttributesType = Record<
     string,
     (string | {name: string; multiple?: boolean | undefined; values: string[]})[]
 >;
 
-export const getYfmHtmlBlockOptions = (
-    options: SanitizeOptions = defaultEmptyOptions,
-    defaultOptions: SanitizeOptions = sanitizeDefaultOptions,
-): SanitizeOptions => {
-    const defaultAllowedAttributes = defaultOptions.allowedAttributes as AllowedAttributesType;
+/**
+ * Options for building sanitize config for yfm-html-block
+ */
+export interface YfmHtmlBlockBuildOptions {
+    allowedTags?: string[];
+    disallowedTags?: string[];
+    allowedAttributes?: SanitizeOptions['allowedAttributes'];
+    cssWhiteList?: SanitizeOptions['cssWhiteList'];
+}
+
+export const buildYfmHtmlBlockOptions = (options: YfmHtmlBlockBuildOptions): SanitizeOptions => {
+    const {
+        allowedTags = [],
+        disallowedTags = [],
+        allowedAttributes = {},
+        cssWhiteList = {},
+    } = options;
+
+    const disallowed = new Set(disallowedTags.map((t) => t.toLowerCase()));
+
+    const mergedAllowedTags = [...sanitizeDefaultAllowedTags, ...allowedTags].filter(
+        (tag) => !disallowed.has(tag.toLowerCase()),
+    );
 
     return {
-        ...defaultOptions,
+        ...sanitizeDefaultOptions,
+        allowedTags: [...new Set(mergedAllowedTags)],
         allowedAttributes: {
-            ...defaultAllowedAttributes,
-            ...options.allowedAttributes,
+            ...(sanitizeDefaultOptions.allowedAttributes as AllowedAttributesType),
+            ...allowedAttributes,
         },
-        allowedTags:
-            typeof options.allowedTags === 'boolean'
-                ? options.allowedTags
-                : [
-                      ...(Array.isArray(defaultOptions.allowedTags)
-                          ? defaultOptions.allowedTags
-                          : []),
-                      ...(Array.isArray(options.allowedTags) ? options.allowedTags : []),
-                  ],
         cssWhiteList: {
-            ...defaultOptions.cssWhiteList,
-            ...options.cssWhiteList,
+            ...sanitizeDefaultOptions.cssWhiteList,
+            ...cssWhiteList,
         },
     };
 };
 
-export interface GetSanitizeYfmHtmlBlockArgs {
-    options: SanitizeOptions;
-    sanitize?: (html: string, options?: SanitizeOptions) => string;
-}
-export const getSanitizeYfmHtmlBlock =
-    ({options, sanitize = diplodocSanitize}: GetSanitizeYfmHtmlBlockArgs) =>
-    (content: string) =>
-        sanitize(content, getYfmHtmlBlockOptions(options));
+export const yfmHtmlBlockOptions = {
+    head: {
+        allowedTags: ['title', 'style', 'link', 'meta', 'base'],
+        disallowedTags: ['iframe', 'frame', 'frameset', 'object', 'embed'],
+        allowedAttributes: {
+            meta: ['name', 'http-equiv', 'content', 'charset'],
+            link: ['rel', 'href'],
+            base: ['target'],
+        },
+        cssWhiteList: {},
+    },
+    body: {
+        allowedTags: ['style'],
+        disallowedTags: ['iframe', 'frame', 'frameset', 'object', 'embed'],
+        allowedAttributes: {style: []},
+        cssWhiteList: getYfmHtmlBlockWhiteList(),
+    },
+};
 
 export const htmlBlockDefaultSanitizer = {
-    head: getSanitizeYfmHtmlBlock({
-        options: {
-            allowedTags: ['title', 'style', 'link', 'meta', 'base'],
-            allowedAttributes: {
-                meta: ['name', 'http-equiv', 'content', 'charset'],
-                link: ['rel', 'href'],
-                base: ['target'],
-            },
-        },
-    }),
-    body: getSanitizeYfmHtmlBlock({
-        options: {
-            allowedTags: ['style'],
-            allowedAttributes: {
-                style: [],
-            },
-            cssWhiteList: getYfmHtmlBlockWhiteList(),
-        },
-    }),
+    head: (content: string) =>
+        diplodocSanitize(content, buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.head)),
+    body: (content: string) =>
+        diplodocSanitize(content, buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.body)),
 };

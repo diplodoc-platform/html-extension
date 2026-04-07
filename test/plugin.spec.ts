@@ -167,4 +167,17 @@ describe('HTML extension – plugin default sanitize', () => {
             ),
         ).toMatchSnapshot();
     });
+
+    it('should neutralize iframe mutation', () => {
+        expect(
+            html(
+                dd`
+            :::html
+                <iframe><style>div{ font-family: '</iframe>1<script src=/x/alert.js></script>' }</style>
+            :::
+            `,
+                {embeddingMode: 'srcdoc'},
+            ),
+        ).toMatchSnapshot();
+    });
 });
