@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.3](https://github.com/diplodoc-platform/html-extension/compare/v2.9.2...v2.9.3) (2026-04-08)
+
+
+### Bug Fixes
+
+* **sanitize:** block iframe in default body sanitizer ([#97](https://github.com/diplodoc-platform/html-extension/issues/97)) ([b155de8](https://github.com/diplodoc-platform/html-extension/commit/b155de824dff637f6130267391f694e857cbc992))
+* Update infra to 1.13.2 ([b7f2f6f](https://github.com/diplodoc-platform/html-extension/commit/b7f2f6f874193d7eba2b786f26bbdfb69ed1451c))
+
 ## [2.9.2](https://github.com/diplodoc-platform/html-extension/compare/v2.9.1...v2.9.2) (2026-02-09)
 
 
