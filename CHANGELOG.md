@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.4](https://github.com/diplodoc-platform/html-extension/compare/v2.9.3...v2.9.4) (2026-04-14)
+
+
+### Bug Fixes
+
+* **sanitize:** extend head css whitelist options ([8c2a067](https://github.com/diplodoc-platform/html-extension/commit/8c2a067689b0dcd777e700f49d76878f79b27bbe))
+
 ## [2.9.3](https://github.com/diplodoc-platform/html-extension/compare/v2.9.2...v2.9.3) (2026-04-08)
 
 
