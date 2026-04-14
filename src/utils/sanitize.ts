@@ -150,6 +150,7 @@ export const buildYfmHtmlBlockOptions = (options: YfmHtmlBlockBuildOptions): San
     };
 };
 
+const cssWhiteList = getYfmHtmlBlockWhiteList();
 export const yfmHtmlBlockOptions = {
     head: {
         allowedTags: ['title', 'style', 'link', 'meta', 'base'],
@@ -159,13 +160,13 @@ export const yfmHtmlBlockOptions = {
             link: ['rel', 'href'],
             base: ['target'],
         },
-        cssWhiteList: {},
+        cssWhiteList,
     },
     body: {
         allowedTags: ['style'],
         disallowedTags: ['iframe', 'frame', 'frameset', 'object', 'embed'],
         allowedAttributes: {style: []},
-        cssWhiteList: getYfmHtmlBlockWhiteList(),
+        cssWhiteList,
     },
 };
 
