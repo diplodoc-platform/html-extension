@@ -163,16 +163,48 @@ export const yfmHtmlBlockOptions = {
         cssWhiteList,
     },
     body: {
-        allowedTags: ['style'],
-        disallowedTags: ['iframe', 'frame', 'frameset', 'object', 'embed'],
-        allowedAttributes: {style: []},
+        allowedTags: ['style', 'iframe'],
+        disallowedTags: ['frame', 'frameset', 'object', 'embed'],
+        allowedAttributes: {
+            style: [],
+            iframe: [
+                'src',
+                'width',
+                'height',
+                'frameborder',
+                'loading',
+                'title',
+                'referrerpolicy',
+                'sandbox',
+            ],
+        },
         cssWhiteList,
     },
 };
 
+// Matches full closing tags of raw-text elements, including optional whitespace/attributes before >.
+const DANGEROUS_CLOSING_TAGS =
+    /<\/(?:iframe|textarea|noscript|xmp|noembed|noframes|plaintext|script)[^>]*>/gi;
+
+/**
+ * Remove closing tags of raw-text elements from inside <style> blocks
+ */
+const stripDangerousClosingTagsInStyles = (html: string): string =>
+    html.replaceAll(
+        /(<style[^>]*>)([\s\S]*?)(<\/style\s*>)/gi,
+        (_match, open: string, content: string, close: string) =>
+            open + content.replaceAll(DANGEROUS_CLOSING_TAGS, '') + close,
+    );
+
 export const htmlBlockDefaultSanitizer = {
     head: (content: string) =>
-        diplodocSanitize(content, buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.head)),
+        diplodocSanitize(
+            stripDangerousClosingTagsInStyles(content),
+            buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.head),
+        ),
     body: (content: string) =>
-        diplodocSanitize(content, buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.body)),
+        diplodocSanitize(
+            stripDangerousClosingTagsInStyles(content),
+            buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.body),
+        ),
 };
