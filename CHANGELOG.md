@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.6](https://github.com/diplodoc-platform/html-extension/compare/v2.9.5...v2.9.6) (2026-04-16)
+
+
+### Bug Fixes
+
+* **sanitize:** prevent mutation XSS by canonicalizing HTML ([#101](https://github.com/diplodoc-platform/html-extension/issues/101)) ([9cf9fd6](https://github.com/diplodoc-platform/html-extension/commit/9cf9fd6fff4855f7a9d371a03b65b794b65282e0))
+
 ## [2.9.5](https://github.com/diplodoc-platform/html-extension/compare/v2.9.4...v2.9.5) (2026-04-16)
 
 
