@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.5](https://github.com/diplodoc-platform/html-extension/compare/v2.9.4...v2.9.5) (2026-04-16)
+
+
+### Bug Fixes
+
+* **sanitize:** strip dangerous closing tags inside style tag ([#102](https://github.com/diplodoc-platform/html-extension/issues/102)) ([10305f4](https://github.com/diplodoc-platform/html-extension/commit/10305f49a2bafa0542d734ac17eed13a99f9b33b))
+
 ## [2.9.4](https://github.com/diplodoc-platform/html-extension/compare/v2.9.3...v2.9.4) (2026-04-14)
 
 
