@@ -1,6 +1,11 @@
 import type {SanitizeOptions} from '@diplodoc/transform/lib/sanitize';
+import type {DefaultTreeAdapterMap} from 'parse5';
 
+import {parseFragment, serialize} from 'parse5';
 import * as sanitizeModule from '@diplodoc/transform/lib/sanitize';
+
+type DefaultTreeAdapterMapNode = DefaultTreeAdapterMap['node'];
+type DefaultTreeAdapterMapElement = DefaultTreeAdapterMap['element'];
 
 type SanitizeFn = (
     html: string,
@@ -182,29 +187,60 @@ export const yfmHtmlBlockOptions = {
     },
 };
 
-// Matches full closing tags of raw-text elements, including optional whitespace/attributes before >.
-const DANGEROUS_CLOSING_TAGS =
-    /<\/(?:iframe|textarea|noscript|xmp|noembed|noframes|plaintext|script)[^>]*>/gi;
+/**
+ * Tags whose content is treated as raw text by the HTML5 spec.
+ * A fake closing tag hidden inside their content can trick parsers into
+ * executing attacker-controlled markup.
+ *
+ * We strip children of these elements after parsing with a
+ * spec-compliant parser (parse5) so that sanitize-html (htmlparser2)
+ * never sees the ambiguous raw-text content.
+ */
+const RAW_TEXT_TAGS_TO_STRIP: ReadonlySet<string> = new Set([
+    'iframe',
+    'noscript',
+    'xmp',
+    'noembed',
+    'noframes',
+    'plaintext',
+]);
+
+function stripRawTextChildren(node: DefaultTreeAdapterMapNode): void {
+    if (!('childNodes' in node)) {
+        return;
+    }
+
+    for (const child of node.childNodes) {
+        stripRawTextChildren(child);
+    }
+
+    if (
+        'tagName' in node &&
+        RAW_TEXT_TAGS_TO_STRIP.has((node as DefaultTreeAdapterMapElement).tagName)
+    ) {
+        (node as DefaultTreeAdapterMapElement).childNodes = [];
+    }
+}
 
 /**
- * Remove closing tags of raw-text elements from inside <style> blocks
+ * Normalize HTML through a spec-compliant HTML5 parser to prevent
+ * mutation XSS attacks.
+ *
+ * 1. Parse with parse5 (follows HTML5 spec exactly like browsers).
+ * 2. Strip children of raw-text elements (iframe, noscript, etc.)
+ *    so that fake closing tags hidden in their content cannot trick
+ *    the downstream htmlparser2-based sanitizer.
+ * 3. Re-serialize to canonical HTML safe for sanitize-html.
  */
-const stripDangerousClosingTagsInStyles = (html: string): string =>
-    html.replaceAll(
-        /(<style[^>]*>)([\s\S]*?)(<\/style\s*>)/gi,
-        (_match, open: string, content: string, close: string) =>
-            open + content.replaceAll(DANGEROUS_CLOSING_TAGS, '') + close,
-    );
+const canonicalize = (html: string): string => {
+    const tree = parseFragment(html);
+    stripRawTextChildren(tree);
+    return serialize(tree);
+};
 
 export const htmlBlockDefaultSanitizer = {
     head: (content: string) =>
-        diplodocSanitize(
-            stripDangerousClosingTagsInStyles(content),
-            buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.head),
-        ),
+        diplodocSanitize(canonicalize(content), buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.head)),
     body: (content: string) =>
-        diplodocSanitize(
-            stripDangerousClosingTagsInStyles(content),
-            buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.body),
-        ),
+        diplodocSanitize(canonicalize(content), buildYfmHtmlBlockOptions(yfmHtmlBlockOptions.body)),
 };

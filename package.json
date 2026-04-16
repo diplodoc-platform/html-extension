@@ -113,6 +113,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@diplodoc/directive": "^0.3.3"
+    "@diplodoc/directive": "^0.3.3",
+    "parse5": "^8.0.0"
   }
 }
