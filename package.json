@@ -6,7 +6,6 @@
   "module": "build/esm/plugin/index.js",
   "types": "build/esm/plugin/index.d.ts",
   "engines": {
-    "node": ">=18",
     "npm": ">=11.5.1"
   },
   "typesVersions": {
