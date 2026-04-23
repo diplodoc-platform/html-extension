@@ -1,8 +1,11 @@
-import type {SanitizeOptions} from '@diplodoc/transform/lib/sanitize';
+// The `.js` extension is required for native-ESM deep-import resolution:
+// Node ESM rejects extension-less subpath imports for packages that do not
+// declare an `exports` map (which is the case for @diplodoc/transform).
+import type {SanitizeOptions} from '@diplodoc/transform/lib/sanitize.js';
 import type {DefaultTreeAdapterMap} from 'parse5';
 
 import {parseFragment, serialize} from 'parse5';
-import * as sanitizeModule from '@diplodoc/transform/lib/sanitize';
+import * as sanitizeModule from '@diplodoc/transform/lib/sanitize.js';
 
 type DefaultTreeAdapterMapNode = DefaultTreeAdapterMap['node'];
 type DefaultTreeAdapterMapElement = DefaultTreeAdapterMap['element'];
@@ -31,7 +34,6 @@ const getSanitizeFunction = (): SanitizeFn => {
     return sanitize instanceof Function ? sanitize : sanitizeAll;
 };
 
-// MAJOR: use `import {sanitize} from '@diplodoc/transform/lib/sanitize.js'`
 const diplodocSanitize = getSanitizeFunction();
 
 const {defaultOptions: sanitizeDefaultOptions} = sanitizeModule;
@@ -222,7 +224,7 @@ function stripRawTextChildren(node: DefaultTreeAdapterMapNode): void {
     }
 }
 
-/**
+/*
  * Normalize HTML through a spec-compliant HTML5 parser to prevent
  * mutation XSS attacks.
  *

@@ -2,6 +2,7 @@ import MarkdownIt from 'markdown-it';
 import dd from 'ts-dedent';
 import {describe, expect, it} from 'vitest';
 
+import {dynrequire} from '../src/plugin/require-shim';
 import {type PluginOptions, transform as htmlTransform} from '../src/plugin';
 
 function html(text: string, opts?: Partial<PluginOptions>) {
@@ -179,5 +180,11 @@ describe('HTML extension – plugin default sanitize', () => {
                 {embeddingMode: 'srcdoc'},
             ),
         ).toMatchSnapshot();
+    });
+});
+
+describe('require-shim stub', () => {
+    it('throws when alias was not applied during build', () => {
+        expect(() => dynrequire('any')).toThrow('require-shim: alias was not applied during build');
     });
 });
