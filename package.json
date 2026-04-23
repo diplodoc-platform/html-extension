@@ -2,49 +2,69 @@
   "name": "@diplodoc/html-extension",
   "version": "2.9.6",
   "description": "HTML plugin for Diplodoc transformer and builder",
-  "main": "build/plugin/index.js",
-  "types": "build/plugin/index.d.ts",
+  "main": "build/cjs/plugin/index.js",
+  "module": "build/esm/plugin/index.js",
+  "types": "build/esm/plugin/index.d.ts",
   "engines": {
+    "node": ">=18",
     "npm": ">=11.5.1"
   },
   "typesVersions": {
     "*": {
       "index.d.ts": [
-        "./build/plugin/index.d.ts"
+        "./build/esm/plugin/index.d.ts"
       ],
       "iframe": [
         "./build/iframe/index.d.ts"
       ],
       "plugin": [
-        "./build/plugin/index.d.ts"
+        "./build/esm/plugin/index.d.ts"
       ],
       "react": [
-        "./build/react/index.d.ts"
+        "./build/esm/react/index.d.ts"
       ],
       "runtime": [
-        "./build/runtime/index.d.ts"
+        "./build/esm/runtime/index.d.ts"
       ],
       "utils": [
-        "./build/utils/index.d.ts"
+        "./build/esm/utils/index.d.ts"
       ]
     }
   },
   "exports": {
     ".": {
-      "types": "./build/plugin/index.d.ts",
-      "default": "./build/plugin/index.js"
+      "import": {
+        "types": "./build/esm/plugin/index.d.ts",
+        "default": "./build/esm/plugin/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/plugin/index.d.ts",
+        "default": "./build/cjs/plugin/index.js"
+      }
     },
     "./runtime": {
-      "types": "./build/runtime/index.d.ts",
+      "types": "./build/esm/runtime/index.d.ts",
       "default": "./build/runtime/index.js"
     },
     "./react": {
-      "types": "./build/react/index.d.ts",
-      "default": "./build/react/index.js"
+      "import": {
+        "types": "./build/esm/react/index.d.ts",
+        "default": "./build/esm/react/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/react/index.d.ts",
+        "default": "./build/cjs/react/index.js"
+      }
     },
     "./utils": {
-      "types": "./build/utils/index.d.ts",
-      "default": "./build/utils/index.js"
+      "import": {
+        "types": "./build/esm/utils/index.d.ts",
+        "default": "./build/esm/utils/index.js"
+      },
+      "require": {
+        "types": "./build/cjs/utils/index.d.ts",
+        "default": "./build/cjs/utils/index.js"
+      }
     },
     "./iframe": {
       "default": "./build/iframe/runtime.html"
@@ -59,13 +79,16 @@
     "url": "https://github.com/diplodoc-platform/diplodoc/issues"
   },
   "scripts": {
-    "build": "run-p build:*",
+    "clean": "rimraf build",
+    "build": "npm run clean && run-p \"build:**\"",
     "build:js": "node ./esbuild/build.mjs",
-    "build:declarations": "tsc --project tsconfig.publish.json --emitDeclarationOnly --outDir ./build",
-    "prepublishOnly": "npm run lint && npm run test && npm run build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "build:declarations:esm": "tsc --project tsconfig.esm.json --emitDeclarationOnly --outDir ./build/esm && node ./esbuild/fix-esm-dts.mjs",
+    "build:declarations:cjs": "tsc --project tsconfig.cjs.json --emitDeclarationOnly",
+    "prepublishOnly": "npm run lint && npm run test && npm run test:built",
+    "test": "vitest run --exclude test/built-bundles.spec.ts",
+    "test:watch": "vitest --exclude test/built-bundles.spec.ts",
+    "test:coverage": "vitest run --exclude test/built-bundles.spec.ts --coverage",
+    "test:built": "npm run build && vitest run test/built-bundles.spec.ts",
     "typecheck": "tsc -p . --noEmit",
     "lint": "lint update && lint",
     "lint:fix": "lint update && lint fix",
@@ -76,6 +99,9 @@
   "license": "MIT",
   "files": [
     "build"
+  ],
+  "sideEffects": [
+    "./build/runtime/index.js"
   ],
   "peerDependencies": {
     "@diplodoc/transform": "^4.0.0",
@@ -108,6 +134,7 @@
     "markdown-it": "^13.0.1",
     "nanoid": "^5.0.7",
     "npm-run-all": "^4.1.5",
+    "rimraf": "^6.1.3",
     "ts-dedent": "^2.2.0",
     "typescript": "^5.3.3",
     "vitest": "^3.2.4"

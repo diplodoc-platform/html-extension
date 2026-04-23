@@ -1,6 +1,6 @@
 import {dynrequire} from './utils';
 
-const PATH_TO_RUNTIME = '../runtime';
+const PATH_TO_RUNTIME = '../../runtime';
 
 interface CopyRuntimeFilesPaths {
     runtimeJsPath: string;
