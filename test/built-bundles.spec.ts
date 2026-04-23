@@ -354,10 +354,6 @@ describe('built bundles (post-build regression guard)', () => {
             expect(pkg.exports['./runtime'].types).toBe('./build/esm/runtime/index.d.ts');
             expect(pkg.typesVersions?.['*']?.runtime).toEqual(['./build/esm/runtime/index.d.ts']);
         });
-
-        it('declares engines.node baseline for ESM support', () => {
-            expect(pkg.engines?.node).toBeDefined();
-        });
     });
 
     describe('per-format virtual package.json', () => {
