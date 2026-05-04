@@ -47,7 +47,15 @@ build({
     entryPoints: ['src/plugin/index.ts'],
     outfile: 'build/plugin/index.js',
     platform: 'node',
-    packages: 'external',
+    // parse5 is ESM-only (v8+), so we bundle it into the CJS output instead of
+    // leaving it as an external require() that would break Jest and other CJS consumers.
+    // All other node_modules remain external as before.
+    external: [
+        '@diplodoc/directive',
+        '@diplodoc/transform',
+        '@diplodoc/transform/*',
+        'markdown-it',
+    ],
     define: {
         PACKAGE: JSON.stringify(pkg.name),
     },
