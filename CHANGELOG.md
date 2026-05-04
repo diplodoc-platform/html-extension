@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.7](https://github.com/diplodoc-platform/html-extension/compare/v2.9.6...v2.9.7) (2026-05-04)
+
+
+### Bug Fixes
+
+* return support CJS for parse5 ([696753a](https://github.com/diplodoc-platform/html-extension/commit/696753a786ec6b04cb1dfa0f6ab235c5cfc73a8f))
+
 ## [2.9.6](https://github.com/diplodoc-platform/html-extension/compare/v2.9.5...v2.9.6) (2026-04-16)
 
 
