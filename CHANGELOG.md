@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.8](https://github.com/diplodoc-platform/html-extension/compare/v2.9.7...v2.9.8) (2026-05-28)
+
+
+### Bug Fixes
+
+* align parse5 with transform ([#109](https://github.com/diplodoc-platform/html-extension/issues/109)) ([434b599](https://github.com/diplodoc-platform/html-extension/commit/434b59987b4080e215ca5a0eb095976078d5e709))
+* **deps:** updated node to 24 ([#115](https://github.com/diplodoc-platform/html-extension/issues/115)) ([5106383](https://github.com/diplodoc-platform/html-extension/commit/51063831ba094c8b232a593582aa7336e70ae1fc))
+
 ## [2.9.7](https://github.com/diplodoc-platform/html-extension/compare/v2.9.6...v2.9.7) (2026-05-04)
 
 
