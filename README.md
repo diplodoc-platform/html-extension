@@ -1,3 +1,7 @@
+**english** | [русский](https://github.com/diplodoc-platform/html-extension/blob/master/README.ru.md)
+
+---
+
 [![NPM version](https://img.shields.io/npm/v/@diplodoc/html-extension.svg?style=flat)](https://www.npmjs.org/package/@diplodoc/html-extension)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_html-extension&metric=alert_status)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_html-extension)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_html-extension&metric=coverage)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_html-extension)
