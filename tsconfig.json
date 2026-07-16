@@ -4,7 +4,7 @@
     "target": "es2022",
     "module": "es2022",
     "declaration": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": ["src", "test"]
 }
