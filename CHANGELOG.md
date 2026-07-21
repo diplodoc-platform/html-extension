@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.10](https://github.com/diplodoc-platform/html-extension/compare/v2.9.9...v2.9.10) (2026-07-21)
+
+
+### Bug Fixes
+
+* update react ([#126](https://github.com/diplodoc-platform/html-extension/issues/126)) ([420b563](https://github.com/diplodoc-platform/html-extension/commit/420b5634a42b844726997fcb746f359ff16399e6))
+
 ## [2.9.9](https://github.com/diplodoc-platform/html-extension/compare/v2.9.8...v2.9.9) (2026-05-28)
 
 
