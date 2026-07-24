@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.12](https://github.com/diplodoc-platform/html-extension/compare/v2.9.11...v2.9.12) (2026-07-24)
+
+
+### Bug Fixes
+
+* **deps:** Update dev:@diplodoc/transform@4.77.5 ([#135](https://github.com/diplodoc-platform/html-extension/issues/135)) ([084c4e6](https://github.com/diplodoc-platform/html-extension/commit/084c4e663800ddb2c9b3c3e3014cd1e6dac80642))
+
 ## [2.9.11](https://github.com/diplodoc-platform/html-extension/compare/v2.9.10...v2.9.11) (2026-07-22)
 
 
