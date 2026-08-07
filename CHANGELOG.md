@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.13](https://github.com/diplodoc-platform/html-extension/compare/v2.9.12...v2.9.13) (2026-08-07)
+
+
+### Bug Fixes
+
+* Upgrade typescript to 5.9.3 DOCSTOOLS-6357 ([3f32a46](https://github.com/diplodoc-platform/html-extension/commit/3f32a4680da87a5817b215bc7d82b7abdaa9f6e8))
+* Upgrade typescript to 6.0.3 DOCSTOOLS-6359 ([7054348](https://github.com/diplodoc-platform/html-extension/commit/7054348425281de15f106f7a208a575ac165b375))
+
 ## [2.9.12](https://github.com/diplodoc-platform/html-extension/compare/v2.9.11...v2.9.12) (2026-07-24)
 
 
