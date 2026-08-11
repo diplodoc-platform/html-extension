@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.publish.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": "./build/cjs"
+  },
+  "exclude": ["src/**/*.esm.ts"]
+}

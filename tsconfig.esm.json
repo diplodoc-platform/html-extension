@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.publish.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "outDir": "./build/esm"
+  },
+  "exclude": ["src/**/*.cjs.ts"]
+}
