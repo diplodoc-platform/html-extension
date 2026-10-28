@@ -80,7 +80,7 @@
   ],
   "peerDependencies": {
     "@diplodoc/transform": "^4.78.12",
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^15.0.2",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
@@ -105,7 +105,7 @@
     "github-slugger": "^1.5.0",
     "js-beautify": "^1.15.4",
     "lodash.debounce": "^4.0.8",
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^15.0.2",
     "nanoid": "^5.0.7",
     "npm-run-all": "^4.1.5",
     "ts-dedent": "^2.2.0",
