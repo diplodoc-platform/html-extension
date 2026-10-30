@@ -11,6 +11,29 @@
 
 # @diplodoc/html-extension
 
+## TypeScript host entry points
+
+For native markdown-it 13, import the factory from the root entry:
+
+```ts
+import MarkdownIt from 'markdown-it';
+import {transform as htmlPlugin} from '@diplodoc/html-extension';
+
+new MarkdownIt().use(htmlPlugin({bundle: false}));
+```
+
+When integrating with an installed Diplodoc Transform 4 or 5 host, import its
+explicit factory contract:
+
+```ts
+import {transform as htmlPlugin} from '@diplodoc/html-extension/transform-host';
+
+const plugin = htmlPlugin({bundle: false});
+```
+
+The host entry uses the installed Transform plugin type. Both entries reference
+the same runtime factory; the root entry retains its native markdown-it 13 types.
+
 ## Customizable HTML embedding solution for YFM-aware applications.
 
 This is an extension of the Diplodoc platform, which allows embedding HTML via Markdown directives.
