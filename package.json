@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/html-extension",
-  "version": "2.9.15",
+  "version": "2.9.16-transform5.0",
   "description": "HTML plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
@@ -26,6 +26,9 @@
       ],
       "utils": [
         "./build/utils/index.d.ts"
+      ],
+      "transform-host": [
+        "./build/plugin/transform-host.d.ts"
       ]
     }
   },
@@ -48,6 +51,10 @@
     },
     "./iframe": {
       "default": "./build/iframe/runtime.html"
+    },
+    "./transform-host": {
+      "types": "./build/plugin/transform-host.d.ts",
+      "default": "./build/plugin/index.js"
     }
   },
   "homepage": "https://diplodoc.com/",
@@ -79,7 +86,7 @@
     "build"
   ],
   "peerDependencies": {
-    "@diplodoc/transform": "^4.78.12",
+    "@diplodoc/transform": "^4.78.12 || ^5.0.0 || 5.0.0-transform5.0",
     "markdown-it": "^13.0.1",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
