@@ -1,40 +1,15 @@
-import type {SanitizeOptions} from '@diplodoc/transform/lib/sanitize';
+import type {SanitizeOptions} from '@diplodoc/transform/sanitize';
 import type {DefaultTreeAdapterMap} from 'parse5';
 
 import {parseFragment, serialize} from 'parse5';
-import * as sanitizeModule from '@diplodoc/transform/lib/sanitize';
+import {
+    sanitize as diplodocSanitize,
+    defaultOptions as sanitizeDefaultOptions,
+} from '@diplodoc/transform/sanitize';
 
 type DefaultTreeAdapterMapNode = DefaultTreeAdapterMap['node'];
 type DefaultTreeAdapterMapElement = DefaultTreeAdapterMap['element'];
 
-type SanitizeFn = (
-    html: string,
-    options?: SanitizeOptions,
-    additionalOptions?: SanitizeOptions,
-) => string;
-
-interface SanitizeModule {
-    sanitize?: SanitizeFn;
-    default?: SanitizeFn;
-}
-
-const sanitizeAll = () => {
-    if (typeof console !== 'undefined') {
-        // eslint-disable-next-line no-console
-        console.warn('[YfmHtmlBlock]: sanitize function not found');
-    }
-    return '';
-};
-const getSanitizeFunction = (): SanitizeFn => {
-    const module = sanitizeModule as SanitizeModule;
-    const sanitize = 'sanitize' in module && module.sanitize ? module.sanitize : module.default;
-    return sanitize instanceof Function ? sanitize : sanitizeAll;
-};
-
-// MAJOR: use `import {sanitize} from '@diplodoc/transform/lib/sanitize.js'`
-const diplodocSanitize = getSanitizeFunction();
-
-const {defaultOptions: sanitizeDefaultOptions} = sanitizeModule;
 const sanitizeDefaultAllowedTags = Array.isArray(sanitizeDefaultOptions.allowedTags)
     ? sanitizeDefaultOptions.allowedTags
     : [];

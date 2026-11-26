@@ -1,4 +1,5 @@
-import type MarkdownIt from 'markdown-it';
+import type MarkdownItConstructor from 'markdown-it';
+import type {MarkdownIt} from 'markdown-it';
 import type {BaseTarget, EmbeddingMode, Sanitize, SanitizeConfig, StylesObject} from '../types';
 
 import {directiveParser, registerContainerDirective} from '@diplodoc/directive';
@@ -33,6 +34,11 @@ export interface PluginOptions {
 
 type TransformOptions = {
     output?: string;
+};
+type TransformPlugin = (md: MarkdownIt, options?: TransformOptions) => void;
+type HtmlEnvMeta = {
+    script?: string[];
+    style?: string[];
 };
 
 const emptyOptions = {};
@@ -79,17 +85,16 @@ const registerTransform = (
         },
         match: (_params, state) => {
             const {env} = state;
-            env.meta ||= {};
-            env.meta.script ||= [];
-            env.meta.style ||= [];
-            if (!env.meta.script.includes(runtimeJsPath)) {
-                env.meta.script.push(runtimeJsPath);
+            const meta = (env.meta ??= {}) as HtmlEnvMeta;
+            const script = (meta.script ??= []);
+            meta.style ??= [];
+            if (!script.includes(runtimeJsPath)) {
+                script.push(runtimeJsPath);
             }
 
-            addHiddenProperty(env, 'bundled', new Set<string>());
-
+            const {bundled} = addHiddenProperty(env, 'bundled', new Set<string>());
             if (bundle) {
-                copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
+                copyRuntimeFiles({runtimeJsPath, output}, bundled);
             }
 
             return true;
@@ -108,11 +113,11 @@ export function transform({
     baseTarget = '_parent',
     head: headContent,
     sandbox,
-}: Partial<PluginOptions> = emptyOptions): MarkdownIt.PluginWithOptions<TransformOptions> {
+}: Partial<PluginOptions> = emptyOptions) {
     const sanitizeHead = typeof sanitize === 'function' ? sanitize : sanitize?.head;
     const sanitizeBody = typeof sanitize === 'function' ? sanitize : sanitize?.body;
 
-    const plugin: MarkdownIt.PluginWithOptions<TransformOptions> = (md, options) => {
+    const plugin: TransformPlugin = (md, options) => {
         const {output = '.'} = options || {};
 
         registerTransform(md, {embeddingMode, runtimeJsPath, bundle, output});
@@ -161,9 +166,9 @@ export function transform({
         });
     };
 
-    Object.assign(plugin, {
+    return Object.assign(plugin, {
         collect(input: string, {destRoot}: {destRoot: string}) {
-            const MdIt = dynrequire('markdown-it');
+            const MdIt: typeof MarkdownItConstructor = dynrequire('markdown-it');
             const md = new MdIt().use((md: MarkdownIt) => {
                 registerTransform(md, {
                     embeddingMode,
@@ -176,6 +181,4 @@ export function transform({
             md.parse(input, {});
         },
     });
-
-    return plugin;
 }

@@ -1,10 +1,10 @@
-import type {RenderRule} from 'markdown-it/lib/renderer';
+import type {RendererRule} from 'markdown-it';
 import type {RenderRuleFactoryOptions} from './defs';
 
 import {DATAATTR_SANDBOX_CONTENT, DATAATTR_SANDBOX_MODE} from '../../constants';
 
 export const makeShadowModeEmbedRenderRule =
-    ({embedContentTransformFn, containerClassNames = ''}: RenderRuleFactoryOptions): RenderRule =>
+    ({embedContentTransformFn, containerClassNames = ''}: RenderRuleFactoryOptions): RendererRule =>
     (tokens, idx, _opts, _env, self) => {
         const token = tokens[idx];
 
