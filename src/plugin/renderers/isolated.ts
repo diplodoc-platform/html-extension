@@ -1,4 +1,4 @@
-import type {RenderRule} from 'markdown-it/lib/renderer';
+import type {RendererRule} from 'markdown-it';
 import type {RenderRuleFactoryOptions} from './defs';
 
 import {
@@ -20,7 +20,7 @@ export const makeIsolatedModeEmbedRenderRule =
         isolatedSandboxHost,
         containerClassNames = '',
         sandbox,
-    }: RenderRuleFactoryOptions & IsolatedModeEmbedOptions): RenderRule =>
+    }: RenderRuleFactoryOptions & IsolatedModeEmbedOptions): RendererRule =>
     (tokens, idx, _opts, _env, self) => {
         const token = tokens[idx];
 

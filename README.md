@@ -178,6 +178,8 @@ Mods listed in the array `disabledModes` disables runtime controllers for this m
 
 Plugin for [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package.
 
+Version 3 supports Transform 5 and Markdown-it 15. The `@diplodoc/html-extension/transform-host` entry exports the same plugin factory as the root entry.
+
 Options:
 
 - `runtimeJsPath` - name on runtime script which will be exposed in results `script` section.<br>

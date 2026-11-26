@@ -1,4 +1,4 @@
-import type {RenderRule} from 'markdown-it/lib/renderer';
+import type {RendererRule} from 'markdown-it';
 import type {RenderRuleFactoryOptions} from './defs';
 
 import {DATAATTR_SANDBOX_MODE} from '../../constants';
@@ -8,7 +8,7 @@ export const makeSrcdocModeEmbedRenderRule =
         embedContentTransformFn,
         containerClassNames = '',
         sandbox,
-    }: RenderRuleFactoryOptions): RenderRule =>
+    }: RenderRuleFactoryOptions): RendererRule =>
     (tokens, idx, _opts, _env, self) => {
         const token = tokens[idx];
 
